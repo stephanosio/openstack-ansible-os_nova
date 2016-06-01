@@ -352,6 +352,7 @@ nova_apt_packages:
   - genisoimage
   - git
   - libpq-dev
+  - iptables
 
 # Spice console apt packages
 nova_spice_apt_packages:

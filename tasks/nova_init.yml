@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_metadata_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -22,7 +22,7 @@
     service_home: "{{ nova_system_home_folder }}"
   when: inventory_hostname in groups['nova_api_metadata']
 
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_cert_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -31,7 +31,7 @@
     service_home: "{{ nova_system_home_folder }}"
   when: inventory_hostname in groups['nova_cert']
 
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_conductor_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -40,7 +40,7 @@
     service_home: "{{ nova_system_home_folder }}"
   when: inventory_hostname in groups['nova_conductor']
 
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -49,7 +49,7 @@
     service_home: "{{ nova_system_home_folder }}"
   when: inventory_hostname in groups['nova_api_os_compute']
 
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_scheduler_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -58,7 +58,7 @@
     service_home: "{{ nova_system_home_folder }}"
   when: inventory_hostname in groups['nova_scheduler']
 
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_compute_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -68,7 +68,7 @@
   when: inventory_hostname in groups['nova_compute']
 
 # Upstart init script for spice console.
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_spice_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -80,7 +80,7 @@
     - nova_console_type == "spice"
 
 # Upstart init script for novnc console.
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_novncproxy_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -91,7 +91,7 @@
     - inventory_hostname in groups ['nova_console']
     - nova_console_type == "novnc"
 
-- include: nova_upstart_common_init.yml
+- include: nova_init_common.yml
   vars:
     program_name: "{{ nova_consoleauth_program_name }}"
     service_name: "{{ nova_service_name }}"
@@ -99,4 +99,3 @@
     system_group: "{{ nova_system_group_name }}"
     service_home: "{{ nova_system_home_folder }}"
   when: inventory_hostname in groups['nova_console']
-

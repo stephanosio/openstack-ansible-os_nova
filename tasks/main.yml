@@ -13,6 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Detect whether the init system is upstart of systemd.
+- name: Check init system
+  command: cat /proc/1/comm
+  register: _pid1_name
+  tags:
+    - always
+
+- name: Set the name of pid1
+  set_fact:
+    pid1_name: "{{ _pid1_name.stdout }}"
+  tags:
+    - always
+
+- name: Gather variables for each operating system
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - always
+
 - include: nova_virt_detect.yml
   when: nova_virt_type is not defined
   tags:
@@ -23,7 +45,7 @@
 - include: nova_install.yml
 - include: nova_console_install.yml
 - include: nova_post_install.yml
-- include: nova_upstart_init.yml
+- include: nova_init.yml
 
 - include: nova_db_setup.yml
   when: >
