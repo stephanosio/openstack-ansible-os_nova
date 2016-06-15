@@ -1,1 +1,83 @@
 ---
+# Copyright 2014, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+## APT Cache options
+cache_timeout: 600
+
+# Common apt packages
+nova_packages:
+  - genisoimage
+  - git
+  - libpq-dev
+  - iptables
+
+# Spice console apt packages
+nova_spice_packages:
+  - spice-html5
+
+nova_novnc_packages:
+  - libjs-jquery
+  - libjs-sphinxdoc
+  - libjs-underscore
+  - libjs-swfobject
+  - librabbitmq1
+  - libyaml-0-2
+
+nova_compute_kvm_packages:
+  - bridge-utils
+  - genisoimage
+  - kpartx
+  - libvirt-bin
+  - open-iscsi
+  - python-libguestfs
+  - python-libvirt
+  - qemu
+  - qemu-utils
+  - sysfsutils
+  - vlan
+  - nfs-common
+  - dosfstools
+  - dosfstools-dbg
+  - multipath-tools
+
+# Ubuntu Cloud Archive variables
+nova_uca_enable: True
+uca_openstack_release: mitaka
+uca_repo_url: "http://ubuntu-cloud.archive.canonical.com/ubuntu"
+uca_repo_dist: "{{ ansible_lsb.codename }}-updates/{{ uca_openstack_release }}"
+uca_repo: "deb {{ uca_repo_url }} {{ uca_repo_dist }} main"
+
+# nova powervm virt driver
+nova_compute_powervm_packages:
+  - bridge-utils
+  - genisoimage
+  - kpartx
+  - open-iscsi
+  - python-libguestfs
+  - sysfsutils
+  - vlan
+  - nfs-common
+  - dosfstools
+  - dosfstools-dbg
+  - multipath-tools
+  - pvm-novalink
+
+novalink_repo:
+  repo: "deb [arch=ppc64el] ftp://public.dhe.ibm.com/systems/virtualization/Novalink/debian/ novalink_1.0.0 non-free"
+  state: "present"
+
+novalink_gpg_keys:
+  - url: "ftp://public.dhe.ibm.com/systems/virtualization/Novalink/debian/novalink-gpg-pub.key"
+    state: "present"
