@@ -24,5 +24,5 @@
     name: "{{ item }}"
     state: restarted
     pattern: "{{ item }}"
-  with_items: nova_service_names
+  with_items: "{{ nova_service_names }}"
   failed_when: false
