@@ -24,9 +24,6 @@
         state: "present"
       delegate_to: "10.100.102.101"
       when: inventory_hostname == groups['keystone_all'][0]
-      tags:
-        - aodh-rabbitmq
-        - aodh-rabbitmq-vhost
     - name: Ensure rabbitmq user
       rabbitmq_user:
         user: "{{ keystone_rabbitmq_userid }}"
@@ -38,9 +35,6 @@
         state: "present"
       delegate_to: "10.100.102.101"
       when: inventory_hostname == groups['keystone_all'][0]
-      tags:
-        - aodh-rabbitmq
-        - aodh-rabbitmq-user
     - name: Create DB for service
       mysql_db:
         login_user: "root"
@@ -50,8 +44,6 @@
         state: "present"
       delegate_to: "10.100.102.101"
       when: inventory_hostname == groups['keystone_all'][0]
-      tags:
-        - mysql-db-setup
     - name: Grant access to the DB for the service
       mysql_user:
         login_user: "root"
@@ -67,8 +59,6 @@
         - "%"
       delegate_to: "10.100.102.101"
       when: inventory_hostname == groups['keystone_all'][0]
-      tags:
-        - mysql-db-setup
   roles:
     - role: os_keystone
   vars_files:
