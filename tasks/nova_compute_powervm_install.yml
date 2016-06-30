@@ -122,3 +122,41 @@
   tags:
     - nova-install
     - nova-pip-packages
+
+- name: Register nova module path (no venv)
+  command: python -c 'import nova; print nova.__file__'
+  register: nova_module_path
+  when:
+    - not nova_venv_enabled | bool
+  tags:
+    - nova-powervm-libs
+
+- name: Register nova_powervm module path (no venv)
+  command: python -c 'import nova_powervm; print nova_powervm.__file__'
+  register: nova_powervm_module_path
+  when:
+    - not nova_venv_enabled | bool
+  tags:
+    - nova-powervm-libs
+
+- name: Link nova_powervm module into the nova virt (no venv)
+  file:
+    src: "{{ nova_powervm_module_path.stdout | dirname }}/virt/powervm"
+    dest: "{{ nova_module_path.stdout | dirname }}/virt/powervm"
+    state: link
+    force: "yes"
+  when:
+    - not nova_venv_enabled | bool
+  tags:
+    - nova-powervm-libs
+
+- name: Link nova_powervm module into the nova virt (venv)
+  file:
+    src: "{{ nova_venv_bin | dirname }}/lib/python2.7/site-packages/nova_powervm/virt/powervm"
+    dest: "{{ nova_venv_bin | dirname }}/lib/python2.7/site-packages/nova/virt/powervm"
+    state: link
+    force: "yes"
+  when:
+    - nova_venv_enabled | bool
+  tags:
+    - nova-powervm-libs

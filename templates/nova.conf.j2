@@ -103,7 +103,9 @@ auth_strategy = keystone
 
 ## Vif
 linuxnet_interface_driver = {{ nova_linuxnet_interface_driver }}
+{% if nova_virt_type in ['kvm', 'qemu', 'xen'] %}
 libvirt_vif_type = ethernet
+{% endif %}
 vif_plugging_timeout = 10
 vif_plugging_is_fatal = False
 
@@ -251,7 +253,7 @@ admin_url = {{ keystone_service_adminuri }}/v2.0
 api_endpoint = {{ ironic_service_adminurl }}
 {% endif %}
 
-
+{% if nova_virt_type in ['kvm', 'qemu', 'xen'] %}
 [libvirt]
 inject_partition = {{ nova_libvirt_inject_partition }}
 inject_password = {{ nova_libvirt_inject_password }}
@@ -275,3 +277,4 @@ images_rbd_ceph_conf = /etc/ceph/ceph.conf
 live_migration_flag = "{{ nova_libvirt_live_migration_flag }}"
 hw_disk_discard = {{ nova_libvirt_hw_disk_discard }}
 disk_cachemodes = {{ nova_libvirt_disk_cachemodes }}
+{% endif %}
