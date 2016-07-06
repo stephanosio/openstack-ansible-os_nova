@@ -36,9 +36,6 @@
         state: "present"
       delegate_to: "10.100.102.101"
       when: inventory_hostname == groups['nova_all'][0]
-      tags:
-        - nova-rabbitmq
-        - nova-rabbitmq-vhost
     - name: Ensure rabbitmq user
       rabbitmq_user:
         user: "{{ nova_rabbitmq_userid }}"
@@ -50,9 +47,6 @@
         state: "present"
       delegate_to: "10.100.102.101"
       when: inventory_hostname == groups['nova_all'][0]
-      tags:
-        - nova-rabbitmq
-        - nova-rabbitmq-user
     - name: Create DB for service
       mysql_db:
         login_user: "{{ galera_root_user }}"
@@ -62,8 +56,6 @@
         state: "present"
       delegate_to: "10.100.102.101"
       when: inventory_hostname == groups['nova_all'][0]
-      tags:
-        - mysql-db-setup
     - name: Grant access to the DB for the service
       mysql_user:
         login_user: "{{ galera_root_user }}"
@@ -79,8 +71,6 @@
         - "%"
       delegate_to: "10.100.102.101"
       when: inventory_hostname == groups['nova_all'][0]
-      tags:
-        - mysql-db-setup
     - name: Create API DB for service
       mysql_db:
         login_user: "{{ galera_root_user }}"
@@ -89,8 +79,6 @@
         name: "{{ nova_api_galera_database }}"
         state: "present"
       when: inventory_hostname == groups['nova_all'][0]
-      tags:
-        - nova-db-setup
     - name: Grant access to the API DB for the service
       mysql_user:
         login_user: "{{ galera_root_user }}"
@@ -105,8 +93,6 @@
         - "localhost"
         - "%"
       when: inventory_hostname == groups['nova_all'][0]
-      tags:
-        - nova-db-setup
   roles:
     - role: "{{ rolename | basename }}"
   vars_files:
