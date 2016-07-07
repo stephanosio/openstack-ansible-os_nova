@@ -19,9 +19,6 @@ nova_ceilometer_enabled: False
 ## Verbosity Options
 debug: False
 
-## APT Cache options
-cache_timeout: 600
-
 nova_git_repo: https://git.openstack.org/openstack/nova
 nova_git_install_branch: master
 nova_requirements_git_repo: https://git.openstack.org/openstack/requirements
@@ -347,44 +344,8 @@ nova_service_names:
   - "{{ nova_consoleauth_program_name }}"
   - "{{ nova_novncproxy_program_name }}"
 
-# Common apt packages
-nova_apt_packages:
-  - genisoimage
-  - git
-  - libpq-dev
-  - iptables
-
-# Spice console apt packages
-nova_spice_apt_packages:
-  - spice-html5
-
-nova_novnc_apt_packages:
-  - libjs-jquery
-  - libjs-sphinxdoc
-  - libjs-underscore
-  - libjs-swfobject
-  - librabbitmq1
-  - libyaml-0-2
-
 nova_novnc_pip_packages:
   - websockify
-
-nova_compute_kvm_apt_packages:
-  - bridge-utils
-  - genisoimage
-  - kpartx
-  - libvirt-bin
-  - open-iscsi
-  - python-libguestfs
-  - python-libvirt
-  - qemu
-  - qemu-utils
-  - sysfsutils
-  - vlan
-  - nfs-common
-  - dosfstools
-  - dosfstools-dbg
-  - multipath-tools
 
 # nova packages that must be installed before anything else
 nova_requires_pip_packages:
@@ -416,35 +377,5 @@ nova_rootwrap_conf_overrides: {}
 nova_api_paste_ini_overrides: {}
 nova_policy_overrides: {}
 
-# Ubuntu Cloud Archive variables
-nova_uca_enable: True
-uca_openstack_release: mitaka
-uca_apt_repo_url: "http://ubuntu-cloud.archive.canonical.com/ubuntu"
-uca_repo_dist: "{{ ansible_lsb.codename }}-updates/{{ uca_openstack_release }}"
-uca_repo: "deb {{ uca_apt_repo_url }} {{ uca_repo_dist }} main"
-
-# nova powervm virt driver
-nova_compute_powervm_apt_packages:
-  - bridge-utils
-  - genisoimage
-  - kpartx
-  - open-iscsi
-  - python-libguestfs
-  - sysfsutils
-  - vlan
-  - nfs-common
-  - dosfstools
-  - dosfstools-dbg
-  - multipath-tools
-  - pvm-novalink
-
 nova_compute_powervm_pip_packages:
   - nova-powervm
-
-novalink_apt_repo:
-  repo: "deb [arch=ppc64el] ftp://public.dhe.ibm.com/systems/virtualization/Novalink/debian/ novalink_1.0.0 non-free"
-  state: "present"
-
-novalink_gpg_keys:
-  - url: "ftp://public.dhe.ibm.com/systems/virtualization/Novalink/debian/novalink-gpg-pub.key"
-    state: "present"
