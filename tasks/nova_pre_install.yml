@@ -74,17 +74,6 @@
   tags:
     - nova-dirs
 
-- name: Create nova venv dir
-  file:
-    path: "{{ item.path }}"
-    state: directory
-  with_items:
-    - { path: "/openstack/venvs" }
-    - { path: "{{ nova_venv_bin }}" }
-  when: nova_venv_enabled | bool
-  tags:
-    - nova-dirs
-
 - name: Test for log directory or link
   shell: |
     if [ -h "/var/log/nova"  ]; then

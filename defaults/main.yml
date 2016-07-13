@@ -29,15 +29,7 @@ nova_developer_constraints:
 
 # Name of the virtual env to deploy into
 nova_venv_tag: untagged
-nova_venv_bin: "/openstack/venvs/nova-{{ nova_venv_tag }}/bin"
-
-# Set this to enable or disable installing in a venv
-nova_venv_enabled: true
-
-# The bin path defaults to the venv path however if installation in a
-#  venv is disabled the bin path will be dynamically set based on the
-#  system path used when the installing.
-nova_bin: "{{ nova_venv_bin }}"
+nova_bin: "/openstack/venvs/nova-{{ nova_venv_tag }}/bin"
 
 nova_venv_download_url: http://127.0.0.1/venvs/untagged/ubuntu/nova.tgz
 

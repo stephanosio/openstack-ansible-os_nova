@@ -114,7 +114,7 @@ nova_service_project_name: service
 nova_service_region: RegionOne
 nova_service_user_domain_id: default
 nova_service_user_name: nova
-nova_venv_bin: "/openstack/venvs/nova-{{ nova_venv_tag }}/bin"
+nova_bin: "/openstack/venvs/nova-{{ nova_venv_tag }}/bin"
 nova_venv_tag: "testing"
 nova_virt_type: qemu
 openrc_os_auth_url: "http://127.0.0.1:5000/v3"
