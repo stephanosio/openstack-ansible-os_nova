@@ -52,6 +52,21 @@ nova_compute_kvm_packages:
   - dosfstools-dbg
   - multipath-tools
 
+nova_compute_lxd_packages:
+  - bridge-utils
+  - dosfstools
+  - dosfstools-dbg
+  - genisoimage
+  - kpartx
+  - lxd
+  - multipath-tools
+  - nfs-common
+  - open-iscsi
+  - python-libguestfs
+  - sysfsutils
+  - vlan
+
+
 # Ubuntu Cloud Archive variables
 uca_openstack_release: newton
 uca_repo_dist: "{{ ansible_lsb.codename }}-updates/{{ uca_openstack_release }}"

@@ -27,9 +27,16 @@ nova_git_repo: https://git.openstack.org/openstack/nova
 nova_git_install_branch: master
 nova_requirements_git_repo: https://git.openstack.org/openstack/requirements
 nova_requirements_git_install_branch: master
+
+nova_lxd_git_repo: https://git.openstack.org/openstack/nova-lxd
+nova_lxd_git_install_branch: master
+nova_lxd_requirements_git_repo: https://git.openstack.org/openstack/requirements
+nova_lxd_requirements_git_install_branch: master
+
 nova_developer_mode: false
 nova_developer_constraints:
   - "git+{{ nova_git_repo }}@{{ nova_git_install_branch }}#egg=nova"
+  - "git+{{ nova_lxd_git_repo }}@{{ nova_lxd_git_install_branch }}#egg=nova-lxd"
 
 # Name of the virtual env to deploy into
 nova_venv_tag: untagged
@@ -118,6 +125,14 @@ nova_virt_types:
     nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
     nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
+  lxc:
+    nova_compute_driver: lxd.LXDDriver
+    nova_scheduler_host_manager: host_manager
+    nova_reserved_host_memory_mb: 2048
+    nova_compute_manager: nova.compute.manager.ComputeManager
+    nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
+    nova_scheduler_use_baremetal_filters: False
+    nova_scheduler_tracks_instance_changes: True
   qemu:
     nova_compute_driver: libvirt.LibvirtDriver
     nova_scheduler_host_manager: host_manager
@@ -133,9 +148,17 @@ nova_virt_types:
     nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
 
-# Current supported choice: qemu or kvm or ironic or powervm
+
 # If this is not set, then the playbook will try to guess it.
 #nova_virt_type: kvm
+
+#if set, nova_virt_type must be one of these:
+nova_supported_virt_types:
+  - qemu
+  - kvm
+  - lxc
+  - ironic
+  - powervm
 
 ## Nova Auth
 nova_service_region: RegionOne
@@ -380,6 +403,10 @@ nova_pip_packages:
   - keystonemiddleware
   - nova
 
+nova_compute_lxd_pip_packages:
+  - pylxd
+  - nova-lxd
+
 nova_qemu_user: libvirt-qemu
 nova_qemu_group: kvm
 
@@ -391,3 +418,9 @@ nova_policy_overrides: {}
 
 nova_compute_powervm_pip_packages:
   - nova-powervm
+
+lxd_bind_address: 0.0.0.0
+lxd_bind_port: 8443
+lxd_storage_backend: dir
+# This needs to be set in the user_secrets.yml file.
+#lxd_trust_password:

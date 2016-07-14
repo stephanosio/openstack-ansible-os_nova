@@ -37,6 +37,13 @@
   tags:
     - always
 
+- fail: msg="Unsupported Virt Type Provided {{ nova_supported_virt_types }}"
+  when:
+    - nova_virt_type is defined
+    - nova_virt_type not in nova_supported_virt_types
+  tags:
+    - always
+
 - include: nova_virt_detect.yml
   when: nova_virt_type is not defined
   tags:

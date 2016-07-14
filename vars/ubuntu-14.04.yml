@@ -52,6 +52,20 @@ nova_compute_kvm_packages:
   - dosfstools-dbg
   - multipath-tools
 
+nova_compute_lxd_packages:
+  - bridge-utils
+  - dosfstools
+  - dosfstools-dbg
+  - genisoimage
+  - kpartx
+  - lxd
+  - multipath-tools
+  - nfs-common
+  - open-iscsi
+  - python-libguestfs
+  - sysfsutils
+  - vlan
+
 # Ubuntu Cloud Archive variables
 # There are no UCA packages for Trusty beyond Mitaka, so the selected
 # release here has to remain at Mitaka.
@@ -81,3 +95,6 @@ novalink_repo:
 novalink_gpg_keys:
   - url: "ftp://public.dhe.ibm.com/systems/virtualization/Novalink/debian/novalink-gpg-pub.key"
     state: "present"
+
+#lxd-specific variables
+lxd_default_release: "trusty-backports"
