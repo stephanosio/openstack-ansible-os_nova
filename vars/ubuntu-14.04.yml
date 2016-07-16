@@ -53,11 +53,11 @@ nova_compute_kvm_packages:
   - multipath-tools
 
 # Ubuntu Cloud Archive variables
-nova_uca_enable: True
+# There are no UCA packages for Trusty beyond Mitaka, so the selected
+# release here has to remain at Mitaka.
 uca_openstack_release: mitaka
-uca_repo_url: "http://ubuntu-cloud.archive.canonical.com/ubuntu"
 uca_repo_dist: "{{ ansible_lsb.codename }}-updates/{{ uca_openstack_release }}"
-uca_repo: "deb {{ uca_repo_url }} {{ uca_repo_dist }} main"
+uca_repo: "deb {{ uca_apt_repo_url }} {{ uca_repo_dist }} main"
 
 # nova powervm virt driver
 nova_compute_powervm_packages:
