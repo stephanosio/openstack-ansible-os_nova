@@ -102,9 +102,6 @@ nova_virt_types:
     nova_compute_driver: nova.virt.ironic.IronicDriver
     nova_scheduler_host_manager: ironic_host_manager
     nova_reserved_host_memory_mb: 0
-    # NOTE(mrda): It's possible to use ironic.nova.compute.manager.ClusteredComputeManager
-    # here, but at the current time it's not recommended
-    nova_compute_manager: nova.compute.manager.ComputeManager
     nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
     nova_scheduler_use_baremetal_filters: True
     nova_scheduler_tracks_instance_changes: False
@@ -112,7 +109,6 @@ nova_virt_types:
     nova_compute_driver: libvirt.LibvirtDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
-    nova_compute_manager: nova.compute.manager.ComputeManager
     nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
     nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
@@ -120,7 +116,6 @@ nova_virt_types:
     nova_compute_driver: libvirt.LibvirtDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
-    nova_compute_manager: nova.compute.manager.ComputeManager
     nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
     nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
@@ -128,7 +123,6 @@ nova_virt_types:
     nova_compute_driver: nova_powervm.virt.powervm.driver.PowerVMDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 8192
-    nova_compute_manager: nova.compute.manager.ComputeManager
     nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
     nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
@@ -218,7 +212,6 @@ nova_libvirt_inject_partition: -2
 nova_libvirt_inject_password: False
 nova_libvirt_disk_cachemodes: '{{ nova_libvirt_images_rbd_pool is defined | ternary("network=writeback", "") }}'
 nova_libvirt_hw_disk_discard: '{{ nova_libvirt_images_rbd_pool is defined | ternary("unmap", "ignore") }}'
-nova_libvirt_live_migration_flag: "VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_TUNNELLED"
 
 ## Nova conductor
 nova_conductor_program_name: nova-conductor
