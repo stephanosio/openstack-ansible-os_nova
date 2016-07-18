@@ -27,6 +27,9 @@ glance_galera_database: glance
 glance_git_install_branch: master
 glance_host: "{{ internal_lb_vip_address }}"
 glance_profiler_hmac_key: "secrete"
+glance_rabbitmq_port: "{{ rabbitmq_port }}"
+glance_rabbitmq_servers: "{{ rabbitmq_servers }}"
+glance_rabbitmq_use_ssl: "{{ rabbitmq_use_ssl }}"
 glance_rabbitmq_password: "secrete"
 glance_rabbitmq_userid: glance
 glance_rabbitmq_vhost: /glance
@@ -44,9 +47,9 @@ keystone_galera_address: 10.100.102.101
 keystone_galera_database: keystone
 keystone_git_install_branch: master
 keystone_rabbitmq_password: "secrete"
-keystone_rabbitmq_port: 5671
-keystone_rabbitmq_servers: 10.100.102.101
-keystone_rabbitmq_use_ssl: false
+keystone_rabbitmq_port: "{{ rabbitmq_port }}"
+keystone_rabbitmq_servers: "{{ rabbitmq_servers }}"
+keystone_rabbitmq_use_ssl: "{{ rabbitmq_use_ssl }}"
 keystone_rabbitmq_userid: keystone
 keystone_rabbitmq_vhost: /keystone
 keystone_requirements_git_install_branch: master
@@ -90,12 +93,16 @@ nova_developer_mode: true
 nova_galera_address: 10.100.102.101
 nova_galera_database: nova
 nova_git_install_branch: master
+nova_glance_api_servers: "http://{{ glance_host }}:{{ glance_service_port }}"
 nova_keystone_auth_plugin: password
 nova_management_address: "10.100.102.1"
 nova_metadata_port: 8775
 nova_metadata_proxy_secret: "secrete"
 nova_novncproxy_vncserver_listen: localhost
 nova_novncproxy_vncserver_proxyclient_address: localhost
+nova_rabbitmq_port: "{{ rabbitmq_port }}"
+nova_rabbitmq_servers: "{{ rabbitmq_servers }}"
+nova_rabbitmq_use_ssl: "{{ rabbitmq_use_ssl }}"
 nova_rabbitmq_password: "secrete"
 nova_rabbitmq_userid: nova
 nova_rabbitmq_vhost: /nova
@@ -118,9 +125,9 @@ openrc_os_password: "{{ keystone_auth_admin_password }}"
 # libvirt-bin, leading to nova-compute failing to start.
 # TODO(jmccrory) Revisit this at some point
 pip_install_options: "--no-binary libvirt-python"
-rabbitmq_port: 5671
+rabbitmq_port: 5672
 rabbitmq_servers: 10.100.102.101
-rabbitmq_use_ssl: true
+rabbitmq_use_ssl: False
 tempest_developer_mode: True
 tempest_git_install_branch: master
 tempest_venv_tag: "{{ tempest_git_install_branch }}"

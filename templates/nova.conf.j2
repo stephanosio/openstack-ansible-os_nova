@@ -160,7 +160,7 @@ vncserver_proxyclient_address = {{ nova_novncproxy_vncserver_proxyclient_address
 
 # Glance
 [glance]
-api_servers = {{ glance_api_servers }}
+api_servers = {{ nova_glance_api_servers }}
 
 # Neutron
 [neutron]
@@ -235,12 +235,12 @@ lock_path = /var/lock/nova
 
 
 [oslo_messaging_rabbit]
-rabbit_port = {{ rabbitmq_port }}
+rabbit_port = {{ nova_rabbitmq_port }}
 rabbit_userid = {{ nova_rabbitmq_userid }}
 rabbit_password = {{ nova_rabbitmq_password }}
 rabbit_virtual_host = {{ nova_rabbitmq_vhost }}
-rabbit_hosts = {{ rabbitmq_servers }}
-rabbit_use_ssl = {{ rabbitmq_use_ssl }}
+rabbit_hosts = {{ nova_rabbitmq_servers }}
+rabbit_use_ssl = {{ nova_rabbitmq_use_ssl }}
 
 
 {% if nova_virt_type == 'ironic' %}
