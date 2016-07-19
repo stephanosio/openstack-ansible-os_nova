@@ -126,7 +126,11 @@ memcached_servers = {{ memcached_servers }}
 instance_usage_audit = True
 instance_usage_audit_period = hour
 notify_on_state_change = vm_and_task_state
-notification_driver = messagingv2
+{% endif %}
+
+{% if nova_ceilometer_enabled %}
+[oslo_messaging_notifications]
+driver = messagingv2
 {% endif %}
 
 # Cinder
@@ -241,7 +245,6 @@ rabbit_password = {{ nova_rabbitmq_password }}
 rabbit_virtual_host = {{ nova_rabbitmq_vhost }}
 rabbit_hosts = {{ nova_rabbitmq_servers }}
 rabbit_use_ssl = {{ nova_rabbitmq_use_ssl }}
-
 
 {% if nova_virt_type == 'ironic' %}
 [ironic]
