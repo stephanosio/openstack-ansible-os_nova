@@ -70,17 +70,27 @@ nova_api_db_max_pool_size: 120
 nova_api_db_pool_timeout: 30
 
 ## RabbitMQ info
+
+## Configuration for RPC communications
+nova_rpc_backend: rabbit
+nova_rpc_thread_pool_size: 64
+nova_rpc_conn_pool_size: 30
+nova_rpc_response_timeout: 60
+
 nova_rabbitmq_servers: 127.0.0.1
 nova_rabbitmq_port: 5672
 nova_rabbitmq_userid: nova
 nova_rabbitmq_vhost: /nova
 nova_rabbitmq_use_ssl: False
 
-## RPC
-nova_rpc_backend: rabbit
-nova_rpc_thread_pool_size: 64
-nova_rpc_conn_pool_size: 30
-nova_rpc_response_timeout: 60
+## Configuration for notifications communication, i.e. [oslo_messaging_notifications]
+nova_rabbitmq_telemetry_userid: "{{ nova_rabbitmq_userid }}"
+nova_rabbitmq_telemetry_password: "{{ nova_rabbitmq_password }}"
+nova_rabbitmq_telemetry_vhost: "{{ nova_rabbitmq_vhost }}"
+nova_rabbitmq_telemetry_port: "{{ nova_rabbitmq_port }}"
+nova_rabbitmq_telemetry_servers: "{{ nova_rabbitmq_servers }}"
+nova_rabbitmq_telemetry_use_ssl: "{{ nova_rabbitmq_use_ssl }}"
+
 
 ## Nova virtualization Types
 # The nova_virt_types dictionary contains global overrides used for
