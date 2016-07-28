@@ -19,7 +19,7 @@
 - name: Drop authorized keys file script locally
   template:
     src: "nova-key-insert.sh.j2"
-    dest: "/usr/local/bin/openstack-nova-key.sh"
+    dest: "/var/tmp/openstack-nova-key.sh"
     mode: "0755"
   delegate_to: localhost
   when: inventory_hostname == groups['nova_compute'][0]
@@ -29,7 +29,7 @@
 
 - name: Copy templated authorized keys file script
   copy:
-    src: "/usr/local/bin/openstack-nova-key.sh"
+    src: "/var/tmp/openstack-nova-key.sh"
     dest: "/usr/local/bin/openstack-nova-key.sh"
     mode: "0755"
   tags:
