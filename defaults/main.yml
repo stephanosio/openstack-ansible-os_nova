@@ -126,7 +126,7 @@ nova_virt_types:
     nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
   powervm:
-    nova_compute_driver: nova_powervm.virt.powervm.driver.PowerVMDriver
+    nova_compute_driver: powervm.driver.PowerVMDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 8192
     nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
