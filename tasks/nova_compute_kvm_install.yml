@@ -13,28 +13,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Check if qemu save directory is a directory
+- name: Check the state of the default qemu save directory
   stat:
     path: "/var/lib/libvirt/qemu/save"
-  register: qemu_savedir_stat
+  register: _qemu_save_dir
 
-- name: Check if qemu save directory is empty
+- name: Check if the qemu save directory is empty
   shell: 'ls -1A /var/lib/libvirt/qemu/save'
-  register: qemu_savedir_empty
+  register: _qemu_save_dir_contents
 
-# We force the link creation if our tests passed, this removes the directory as
-# well
+- name: Move the existing save directory to nova_libvirt_save_path
+  command: "mv /var/lib/libvirt/qemu/save {{ nova_libvirt_save_path }}"
+  when:
+    - _qemu_save_dir.stat.isdir is defined
+    - _qemu_save_dir.stat.isdir | bool
+    - _qemu_save_dir_contents.stdout_lines | length == 0
+
+- name: Create the new save directory
+  file:
+    path: "{{ nova_libvirt_save_path }}"
+    state: directory
+
 - name: Symlink qemu save dir to nova_libvirt_save_path
   file:
-    path: "/var/lib/libvirt/qemu/save"
+    src: "{{ nova_libvirt_save_path }}"
+    dest: "/var/lib/libvirt/qemu/save"
     state: link
     owner: "{{ nova_qemu_user }}"
     group: "{{ nova_qemu_group }}"
-    src: "{{ nova_libvirt_save_path }}"
-    force: True
-  when:
-    - qemu_savedir_stat.stat.isdir
-    - qemu_savedir_empty.stdout_lines | length == 0
 
 - name: Install pip packages
   pip:
