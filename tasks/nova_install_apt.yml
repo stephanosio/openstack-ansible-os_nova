@@ -16,6 +16,7 @@
 - name: Add Ubuntu Cloud Archive key package
   apt:
     pkg: ubuntu-cloud-keyring
+    state: "{{ nova_package_state }}"
   when: nova_uca_enable
   register: nova_uca_add_keys
   tags:
@@ -55,7 +56,7 @@
 - name: Install apt packages (common)
   apt:
     pkg: "{{ item }}"
-    state: latest
+    state: "{{ nova_package_state }}"
   register: install_packages
   until: install_packages|success
   retries: 5
@@ -85,7 +86,7 @@
 - name: Install apt packages (novnc console)
   apt:
     pkg: "{{ item }}"
-    state: latest
+    state: "{{ nova_package_state }}"
   register: install_packages
   until: install_packages|success
   retries: 5
@@ -102,7 +103,7 @@
 - name: Install apt packages (compute - KVM)
   apt:
     pkg: "{{ item }}"
-    state: latest
+    state: "{{ nova_package_state }}"
   register: install_packages
   until: install_packages|success
   retries: 5
