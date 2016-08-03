@@ -77,7 +77,8 @@ osapi_compute_workers = {{ nova_osapi_compute_workers | default(api_threads) }}
 
 # Rpc all
 rpc_backend = {{ nova_rpc_backend }}
-transport_url = rabbit://{% for host in nova_rabbitmq_servers.split(',') %}{{ nova_rabbitmq_userid }}:{{ nova_rabbitmq_password }}@{{ host }}:{{ nova_rabbitmq_port }}/{{ nova_rabbitmq_vhost }}?rabbit_use_ssl={{ nova_rabbitmq_use_ssl }}{% if not loop.last %},{% endif %}{% endfor %}
+transport_url = rabbit://{% for host in nova_rabbitmq_servers.split(',') %}{{ nova_rabbitmq_userid }}:{{ nova_rabbitmq_password }}@{{ host }}:{{ nova_rabbitmq_port }}{% if not loop.last %},{% else %}/{{ nova_rabbitmq_vhost }}{% endif %}{% endfor %}
+
 executor_thread_pool_size = {{ nova_rpc_thread_pool_size }}
 rpc_conn_pool_size = {{ nova_rpc_conn_pool_size }}
 rpc_response_timeout = {{ nova_rpc_response_timeout }}
@@ -127,7 +128,7 @@ notify_on_state_change = vm_and_task_state
 {% if nova_ceilometer_enabled %}
 [oslo_messaging_notifications]
 driver = messagingv2
-transport_url = rabbit://{% for host in nova_rabbitmq_telemetry_servers.split(',') %}{{ nova_rabbitmq_telemetry_userid }}:{{ nova_rabbitmq_telemetry_password }}@{{ host }}:{{ nova_rabbitmq_telemetry_port }}/{{ nova_rabbitmq_telemetry_vhost }}?rabbit_use_ssl={{ nova_rabbitmq_telemetry_use_ssl }}{% if not loop.last %},{% endif %}{% endfor %}
+transport_url = rabbit://{% for host in nova_rabbitmq_telemetry_servers.split(',') %}{{ nova_rabbitmq_telemetry_userid }}:{{ nova_rabbitmq_telemetry_password }}@{{ host }}:{{ nova_rabbitmq_telemetry_port }}{% if not loop.last %},{% else %}/{{ nova_rabbitmq_telemetry_vhost }}{% endif %}{% endfor %}
 {% endif %}
 
 # Cache
@@ -243,11 +244,6 @@ lock_path = /var/lock/nova
 
 
 [oslo_messaging_rabbit]
-rabbit_port = {{ nova_rabbitmq_port }}
-rabbit_userid = {{ nova_rabbitmq_userid }}
-rabbit_password = {{ nova_rabbitmq_password }}
-rabbit_virtual_host = {{ nova_rabbitmq_vhost }}
-rabbit_hosts = {{ nova_rabbitmq_servers }}
 rabbit_use_ssl = {{ nova_rabbitmq_use_ssl }}
 
 {% if nova_virt_type == 'ironic' %}
