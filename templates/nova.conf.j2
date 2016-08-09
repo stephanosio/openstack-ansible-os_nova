@@ -105,7 +105,7 @@ auth_strategy = keystone
 
 ## Vif
 linuxnet_interface_driver = {{ nova_linuxnet_interface_driver }}
-{% if nova_virt_type in ['kvm', 'qemu', 'xen'] %}
+{% if nova_virt_type in ['kvm', 'lxc', 'qemu', 'xen'] %}
 libvirt_vif_type = ethernet
 {% endif %}
 vif_plugging_timeout = 10
@@ -258,7 +258,7 @@ admin_url = {{ keystone_service_adminuri }}/v2.0
 api_endpoint = {{ ironic_service_adminurl }}
 {% endif %}
 
-{% if nova_virt_type in ['kvm', 'qemu', 'xen'] %}
+{% if nova_virt_type in ['kvm', 'lxc', 'qemu', 'xen'] %}
 [libvirt]
 inject_partition = {{ nova_libvirt_inject_partition }}
 inject_password = {{ nova_libvirt_inject_password }}
