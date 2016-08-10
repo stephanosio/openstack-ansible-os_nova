@@ -1,31 +1,19 @@
-OpenStack-Ansible Nova
-######################
+======================
+OpenStack-Ansible nova
+======================
 
-Ansible role that installs and configures OpenStack Nova and all of its
+Ansible role that installs and configures OpenStack nova and all of its
 corresponding services.
 
-Default Variables
-=================
+This role will install the following:
+    * nova-api
+    * nova-conductor
+    * nova-scheduler
+    * nova-console
+    * nova-cert
+    * nova-compute
 
-.. literalinclude:: ../../defaults/main.yml
-   :language: yaml
-   :start-after: under the License.
+Documentation for the project can be found at:
+`<http://docs.openstack.org/developer/openstack-ansible-os_keystone/>`_
 
-
-Required Variables
-==================
-
-.. code-block:: yaml
-    # comma separated list of Glance internalUrls
-    glance_api_servers: "http://glance_host:9292"
-
-
-Example Playbook
-================
-
-.. code-block:: yaml
-    - name: Playbook for deploying nova
-      hosts: nova_all
-      user: root
-      roles:
-        - { role: "os_nova" }
+The project home is at: `<http://launchpad.net/openstack-ansible>`_
