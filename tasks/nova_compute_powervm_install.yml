@@ -100,12 +100,3 @@
   tags:
     - nova-install
     - nova-pip-packages
-
-- name: Link nova_powervm module into the nova virt
-  file:
-    src: "{{ nova_bin | dirname }}/lib/python2.7/site-packages/nova_powervm/virt/powervm"
-    dest: "{{ nova_bin | dirname }}/lib/python2.7/site-packages/nova/virt/powervm"
-    state: link
-    force: "yes"
-  tags:
-    - nova-powervm-libs
