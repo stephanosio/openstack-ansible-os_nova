@@ -16,6 +16,9 @@
 - name: Check the state of the default qemu save directory
   stat:
     path: "/var/lib/libvirt/qemu/save"
+  until: _qemu_save_dir.stat.exists | bool
+  retries: 5
+  delay: 10
   register: _qemu_save_dir
 
 - name: Check if the qemu save directory is empty
