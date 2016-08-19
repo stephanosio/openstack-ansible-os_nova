@@ -47,6 +47,9 @@ Currently supported CPU architectures:
  - x86_64 / amd64
  - ppc64le
 
+At this time, ppc64le is only supported for the Compute node type. It can not
+be used to manage the OpenStack-Ansible management nodes.
+
 
 Compute driver compatibility
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,8 +61,8 @@ compute drivers are supported:
  - lxd (via nova-lxd)
  - powervm (via nova-powervm)
 
-The driver type will automatically be detected by the OpenStack Ansible Nova
-role for the following compute driver types:
+The driver type is automatically detected by the OpenStack Ansible Nova role
+for the following compute driver types:
  - libvirt
  - ironic
  - powervm
