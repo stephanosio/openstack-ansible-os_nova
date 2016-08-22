@@ -19,7 +19,7 @@ fi
 
 {% for item in groups['nova_compute'] %}
 {% if hostvars[item]['nova_pubkey'] is defined %}
-KEY="{{ hostvars[item]['nova_pubkey'] | b64decode }}"
+KEY="{{ hostvars[item]['nova_pubkey'] | b64decode | trim }}"
 if ! grep -q -w "${KEY}" "${USER_HOME}/.ssh/authorized_keys"; then
   echo "${KEY}" | tee -a "${USER_HOME}/.ssh/authorized_keys"
   EXIT_CODE=3
