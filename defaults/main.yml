@@ -125,7 +125,7 @@ nova_virt_types:
     nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
     nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
-  lxc:
+  lxd:
     nova_compute_driver: lxd.LXDDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
@@ -156,7 +156,7 @@ nova_virt_types:
 nova_supported_virt_types:
   - qemu
   - kvm
-  - lxc
+  - lxd
   - ironic
   - powervm
 

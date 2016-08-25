@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-nova_virt_type: lxc
+nova_virt_type: lxd
 
 tempest_img_url: "http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-lxc.tar.gz"
 tempest_img_disk_format: raw
