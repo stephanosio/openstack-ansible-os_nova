@@ -128,7 +128,7 @@
   with_items: "{{ nova_compute_lxd_packages }}"
   when:
     - inventory_hostname in groups['nova_compute']
-    - nova_virt_type == 'lxc'
+    - nova_virt_type == 'lxd'
   tags:
     - nova-apt-packages
     - nova-compute-lxd-apt-packages

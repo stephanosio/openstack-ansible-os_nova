@@ -20,7 +20,7 @@
   when: nova_virt_type == 'powervm'
 
 - include: nova_compute_lxd.yml
-  when: nova_virt_type == 'lxc'
+  when: nova_virt_type == 'lxd'
 
 - include: nova_compute_key_populate.yml
 
