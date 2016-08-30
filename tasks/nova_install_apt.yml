@@ -61,7 +61,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: "{{ nova_packages | deprecated(nova_apt_packages, 'nova_apt_packages', 'nova_packages', 'Ocata') }}"
+  with_items: "{{ nova_distro_packages }}"
   tags:
     - nova-install
     - nova-apt-packages
@@ -74,7 +74,7 @@
   until: remove_packages|success
   retries: 5
   delay: 2
-  with_items: "{{ nova_spice_packages | deprecated(nova_spice_apt_packages, 'nova_spice_apt_packages', 'nova_spice_packages', 'Ocata') }}"
+  with_items: "{{ nova_spice_distro_packages }}"
   when:
     - inventory_hostname in groups['nova_console']
     - nova_console_type == "spice"
@@ -91,7 +91,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: "{{ nova_novnc_packages | deprecated(nova_novnc_apt_packages, 'nova_novnc_apt_packages', 'nova_novnc_packages', 'Ocata') }}"
+  with_items: "{{ nova_novnc_distro_packages }}"
   when:
     - inventory_hostname in groups['nova_console']
     - nova_console_type == "novnc"
@@ -108,7 +108,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: "{{ nova_compute_kvm_packages | deprecated(nova_compute_kvm_apt_packages, 'nova_compute_kvm_apt_packages', 'nova_compute_kvm_packages', 'Ocata') }}"
+  with_items: "{{ nova_compute_kvm_distro_packages }}"
   when:
     - inventory_hostname in groups['nova_compute']
     - nova_virt_type == 'kvm' or nova_virt_type == 'qemu'
@@ -125,7 +125,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: "{{ nova_compute_lxd_packages }}"
+  with_items: "{{ nova_compute_lxd_distro_packages }}"
   when:
     - inventory_hostname in groups['nova_compute']
     - nova_virt_type == 'lxd'
