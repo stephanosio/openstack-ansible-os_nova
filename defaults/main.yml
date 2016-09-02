@@ -415,6 +415,10 @@ nova_compute_lxd_pip_packages:
 nova_qemu_user: libvirt-qemu
 nova_qemu_group: kvm
 
+# Define the following variable to drop a replacement
+# file for /etc/libvirt/qemu.conf
+#qemu_conf_dict: {}
+
 # This variable is used by the repo_build process to determine
 # which host group to check for members of before building the
 # pip packages required by this role. The value is picked up
