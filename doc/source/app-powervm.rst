@@ -27,10 +27,72 @@ following pre-requisites must be fulfilled:
 .. _NovaLink: http://www.ibm.com/support/knowledgecenter/POWER8/p8eig/p8eig_kickoff.htm?cp=POWER8
 
 
-PowerVM configuration
-~~~~~~~~~~~~~~~~~~~~~
+PowerVM usage
+~~~~~~~~~~~~~
 
 The Compute driver for OpenStack-Ansible should automatically detect that it
 is of type PowerVM. If the user has specified a specific compute type, that
-is applicable to the whole cloud. It is advised that the deployer allows
-OSA to detect the appropriate compute node type.
+is applicable to the whole cloud. It is advised that the you allow OSA to
+detect the appropriate compute node type.
+
+The full set of configuration options for the PowerVM driver can be
+found in the ``nova-powervm`` usage_.
+
+.. _usage: http://nova-powervm.readthedocs.io/en/latest/devref/usage.html
+
+
+Configuring storage
+~~~~~~~~~~~~~~~~~~~
+
+There are various storage back ends available for PowerVM such as local disk
+and shared storage pools. For example, to enable local disk storage backed by
+a logical volume group, you can set:
+
+.. code-block:: yaml
+
+    nova_nova_conf_overrides:
+      powervm:
+        disk_driver: localdisk
+        volume_group_name: <<VOLUME GROUP NAME>>
+
+To enable iSCSI as the volume attachment type, you can set the
+``volume_adapter`` setting:
+
+.. code-block:: yaml
+
+    nova_nova_conf_overrides:
+      powervm:
+        volume_adapter: iscsi
+
+The default volume attachment type for PowerVM is fibre channel.
+
+Enabling VNC console
+~~~~~~~~~~~~~~~~~~~~
+
+PowerVM only supports connecting to instance consoles over VNC. As
+OpenStack-Ansible defaults to Spice console, you must set the
+``nova_console_type`` variable to enable NoVNC:
+
+.. code-block:: yaml
+
+    nova_console_type: novnc
+
+
+Enabling configuration drive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, PowerVM uses configuration drives to provide configuration
+information to instances built by nova. To enable this support in
+OpenStack-Ansible, you can set the ``nova_force_config_drive``
+variable as documented in the `nova configuration instructions`_.
+
+.. _nova configuration instructions: ./configure-nova.html#config-drive
+
+Additionally, you can enable flat network injection by using the
+``nova_nova_conf_overrides`` variable:
+
+.. code-block:: yaml
+
+    nova_nova_conf_overrides:
+      DEFAULT:
+        flat_injected: True
