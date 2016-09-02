@@ -32,7 +32,7 @@ nova_novnc_distro_packages:
   - libjs-sphinxdoc
   - libjs-underscore
   - libjs-swfobject
-  - librabbitmq1
+  - librabbitmq4
   - libyaml-0-2
 
 nova_compute_kvm_distro_packages:
