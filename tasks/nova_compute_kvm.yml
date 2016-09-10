@@ -47,7 +47,9 @@
     owner: "root"
     group: "root"
     mode: "0600"
-  when: qemu_conf_dict is defined
+  when:
+    - qemu_conf_dict is defined
+      or nova_network_type == 'calico'
   notify: Restart libvirt-bin
   tags:
     - nova-kvm
