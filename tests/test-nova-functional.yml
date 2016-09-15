@@ -21,8 +21,10 @@
     - name: Run tempest
       shell: |
         . {{ tempest_venv_bin }}/activate
-        {{ tempest_venv_bin | dirname }}/run_tempest.sh --no-virtual-env ${RUN_TEMPEST_OPTS} tempest.scenario.test_server_basic_ops.TestServerBasicOps.test_server_basic_ops
-      environment:
-        RUN_TEMPEST_OPTS: "--serial"
+        {{ tempest_venv_bin | dirname }}/run_tempest.sh --no-virtual-env --serial tempest.scenario.test_server_basic_ops.TestServerBasicOps.test_server_basic_ops
+      register: run_tempest
+      until: run_tempest|success
+      retries: 3
+      delay: 5
   vars_files:
     - test-vars.yml
