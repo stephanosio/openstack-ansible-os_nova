@@ -17,20 +17,6 @@
   when:
     - ansible_pkg_mgr == 'apt'
 
-- include: nova_console_spice_install.yml
-  when:
-    - inventory_hostname in groups['nova_console']
-    - nova_console_type == "spice"
-  tags:
-    - nova-spice-console
-
-- include: nova_console_novnc_install.yml
-  when:
-    - inventory_hostname in groups['nova_console']
-    - nova_console_type == "novnc"
-  tags:
-    - nova-novnc-console
-
 - name: Create developer mode constraint file
   copy:
     dest: "/opt/developer-pip-constraints.txt"
@@ -196,3 +182,17 @@
   tags:
     - nova-install
     - nova-pip-packages
+
+- include: nova_console_spice_install.yml
+  when:
+    - inventory_hostname in groups['nova_console']
+    - nova_console_type == "spice"
+  tags:
+    - nova-spice-console
+
+- include: nova_console_novnc_install.yml
+  when:
+    - inventory_hostname in groups['nova_console']
+    - nova_console_type == "novnc"
+  tags:
+    - nova-novnc-console
