@@ -63,20 +63,36 @@ compute drivers are supported:
 
 The driver type is automatically detected by the OpenStack Ansible Nova role
 for the following compute driver types:
- - libvirt
- - ironic
+ - libvirt (kvm / qemu)
  - powervm
 
-Any mix and match of compute node types can be used for those platforms.
+Any mix and match of compute node types can be used for those platforms,
+except for ironic.
 
 If using the lxd driver, the compute type must be specified using the
-``nova_virt_type`` variable in the ``/etc/openstack_deploy/user_variables.yml``
-file.
+``nova_virt_type`` variable.
+
+The ``nova_virt_type`` may be set in
+``/etc/openstack_deploy/user_variables.yml``, for example:
 
 .. code-block:: shell-session
 
    nova_virt_type: lxd
 
-It should be noted that if the ``nova_virt_type`` variable is set, then all
-nodes in the deployment will be set to that hypervisor type.  It is recommended
-to allow the automatic hypervisor detection.
+You can set ``nova_virt_type`` per host by using ``host_vars`` in
+``/etc/openstack_deploy/openstack_user_config.yml``. For example:
+
+ .. code-block:: shell-session
+
+   compute_hosts:
+    aio1:
+      ip: 172.29.236.100
+      host_vars:
+        nova_virt_type: lxd
+
+If ``nova_virt_type`` is set in ``/etc/openstack_deploy/user_variables.yml``,
+all nodes in the deployment are set to that hypervisor type.  Setting
+``nova_virt_type`` in both ``/etc/openstack_deploy/user_variables.yml`` and
+``/etc/openstack_deploy/openstack_user_config.yml`` will always result in the
+value specified in ``/etc/openstack_deploy/user_variables.yml`` being set on
+all hosts.
