@@ -13,11 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Playbook for deploying tempest
-  hosts: openstack1
-  user: root
-  gather_facts: true
-  roles:
-    - role: "os_tempest"
-  vars_files:
-    - test-vars.yml
+# This ensures that libvirt-python is built from source. A pre-built wheel
+# can be missing libvirt capabilities from the installed version of
+# libvirt-bin, leading to nova-compute failing to start.
+# TODO(jmccrory) Revisit this at some point
+pip_install_options: "--no-binary libvirt-python"

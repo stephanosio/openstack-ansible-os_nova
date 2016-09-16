@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Playbook for functional testing of nova
-  hosts: nova_api_os_compute
+  hosts: utility_all[0]
   user: root
   gather_facts: false
   tasks:
@@ -27,4 +27,4 @@
       retries: 3
       delay: 5
   vars_files:
-    - test-vars.yml
+    - playbooks/test-vars.yml
