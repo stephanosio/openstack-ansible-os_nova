@@ -13,12 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Restart libvirt-bin
-  service:
-    name: "libvirt-bin"
-    state: "restarted"
-    pattern: "libvirt-bin"
-
 - name: Reload systemd daemon
   command: "systemctl daemon-reload"
   notify:
@@ -28,6 +22,12 @@
   command: initctl reload-configuration
   notify:
     - Restart nova services
+
+- name: Restart libvirt-bin
+  service:
+    name: "{{ libvirt_service_name }}"
+    state: "restarted"
+    pattern: "{{ libvirt_service_name }}"
 
 - name: Restart nova services
   service:

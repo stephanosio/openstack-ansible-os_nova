@@ -25,6 +25,7 @@
   service:
    name: "{{ item.value.service_name }}"
    enabled: "yes"
+   state: "started"
   with_dict: "{{ nova_services }}"
   when: inventory_hostname in groups[item.value.group]
   notify:

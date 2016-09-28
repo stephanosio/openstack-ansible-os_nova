@@ -16,6 +16,9 @@
 - include: nova_install_apt.yml
   when: ansible_pkg_mgr == 'apt'
 
+- include: nova_install_yum.yml
+  when: ansible_pkg_mgr == 'yum'
+
 - name: Create developer mode constraint file
   copy:
     dest: "/opt/developer-pip-constraints.txt"

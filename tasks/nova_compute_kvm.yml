@@ -18,7 +18,7 @@
 - name: Add nova user to libvirtd group
   user:
     name: "{{ nova_system_user_name }}"
-    groups: "libvirtd"
+    groups: "{{ libvirt_group }}"
     append: "yes"
   tags:
     - nova-libvirt
@@ -56,25 +56,57 @@
     - nova-kvm
     - nova-libvirt
 
-- name: Set libvirt runtime options
+- name: Set libvirt runtime options (Ubuntu)
   lineinfile:
     dest: "/etc/default/libvirt-bin"
     line: 'libvirtd_opts="-d -l"'
     regexp: "^libvirtd_opts="
     backup: "yes"
-  when: nova_libvirtd_listen_tcp == 1
+  when:
+    - nova_libvirtd_listen_tcp == 1
+    - ansible_pkg_mgr == 'apt'
   notify: Restart libvirt-bin
   tags:
     - nova-kvm
     - nova-libvirt
 
-- name: Set libvirt runtime options
+- name: Set libvirt runtime options (Ubuntu)
   lineinfile:
     dest: "/etc/default/libvirt-bin"
     line: 'libvirtd_opts="-d"'
     regexp: "^libvirtd_opts="
     backup: "yes"
-  when: nova_libvirtd_listen_tcp == 0
+  when:
+    - nova_libvirtd_listen_tcp == 0
+    - ansible_pkg_mgr == 'apt'
+  notify: Restart libvirt-bin
+  tags:
+    - nova-kvm
+    - nova-libvirt
+
+- name: Set libvirt runtime options (CentOS)
+  lineinfile:
+    dest: "/etc/sysconfig/libvirtd"
+    line: 'LIBVIRTD_ARGS="-l"'
+    regexp: "^(#)?LIBVIRTD_ARGS=*"
+    backup: "yes"
+  when:
+    - nova_libvirtd_listen_tcp == 1
+    - ansible_pkg_mgr == 'yum'
+  notify: Restart libvirt-bin
+  tags:
+    - nova-kvm
+    - nova-libvirt
+
+- name: Set libvirt runtime options (CentOS)
+  lineinfile:
+    dest: "/etc/sysconfig/libvirtd"
+    line: 'LIBVIRTD_ARGS=""'
+    regexp: "^(#)?LIBVIRTD_ARGS=*"
+    backup: "yes"
+  when:
+    - nova_libvirtd_listen_tcp == 0
+    - ansible_pkg_mgr == 'yum'
   notify: Restart libvirt-bin
   tags:
     - nova-kvm

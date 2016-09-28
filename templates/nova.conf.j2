@@ -95,7 +95,8 @@ force_dhcp_release = True
 dhcpbridge_flagfile = /etc/nova/nova.conf
 firewall_driver = {{ nova_firewall_driver }}
 use_forwarded_for = {{ nova_network_services[nova_network_type]['use_forwarded_for'] | bool }}
-my_ip = {{ nova_management_address }}
+my_ip = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
+
 default_floating_pool = public
 use_neutron = True
 
@@ -162,8 +163,10 @@ enabled = {{ nova_console_agent_enabled }}
 keymap = {{ nova_console_keymap }}
 # Console Url and binds
 html5proxy_base_url = {{ nova_spice_html5proxy_base_url }}
-server_listen = {{ nova_management_address }}
-server_proxyclient_address = {{ nova_management_address }}
+server_listen = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
+
+server_proxyclient_address = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
+
 
 [vnc]
 enabled = False
