@@ -226,7 +226,7 @@ memcache_secret_key = {{ memcached_encryption_key }}
 check_revocations_for_cached = False
 
 
-{% if inventory_hostname in (groups['nova_conductor'] + groups['nova_scheduler'] + groups['nova_api_os_compute'] + groups['nova_api_metadata'] + groups['nova_console'] + groups['nova_cert']) %}
+{% if inventory_hostname in (groups['nova_conductor'] + groups['nova_scheduler'] + groups['nova_api_os_compute'] + groups['nova_api_metadata'] + groups['nova_console']) %}
 [database]
 connection = mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_password }}@{{ nova_galera_address }}/{{ nova_galera_database }}?charset=utf8
 max_overflow = {{ nova_db_max_overflow }}
