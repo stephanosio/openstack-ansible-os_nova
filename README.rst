@@ -10,7 +10,6 @@ This role will install the following:
     * nova-conductor
     * nova-scheduler
     * nova-console
-    * nova-cert
     * nova-compute
 
 Documentation for the project can be found at:

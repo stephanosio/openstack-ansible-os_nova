@@ -367,9 +367,6 @@ nova_services:
   nova-api-os-compute:
     group: nova_api_os_compute
     service_name: nova-api-os-compute
-  nova-cert:
-    group: nova_cert
-    service_name: nova-cert
   nova-compute:
     group: nova_compute
     service_name: nova-compute
