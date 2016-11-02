@@ -16,7 +16,7 @@
 - name: Install pip packages (venv)
   pip:
     name: "{{ nova_compute_ironic_pip_packages | join(' ') }}"
-    state: latest
+    state: "{{ nova_pip_package_state }}"
     virtualenv: "{{ nova_bin | dirname }}"
     virtualenv_site_packages: "no"
     extra_args: "{{ pip_install_options_fact|default('') }}"

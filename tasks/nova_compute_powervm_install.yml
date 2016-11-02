@@ -56,6 +56,8 @@
   tags:
     - nova-apt-packages
     - nova-compute-powervm-apt-packages
+    # do not trigger ANSIBLE0016
+    - skip_ansible_lint
 
 - name: Install apt packages
   apt:
@@ -72,6 +74,7 @@
 
 - name: Register pypowervm module path (venv)
   command: python -c 'import pypowervm; print pypowervm.__file__'
+  changed_when: false
   register: pypowervm_module_path
   tags:
     - nova-powervm-libs
@@ -88,7 +91,7 @@
 - name: Install pip packages
   pip:
     name: "{{ nova_compute_powervm_pip_packages | join(' ') }}"
-    state: latest
+    state: "{{ nova_pip_package_state }}"
     virtualenv: "{{ nova_bin | dirname }}"
     virtualenv_site_packages: "no"
     extra_args: "{{ pip_install_options|default('') }}"

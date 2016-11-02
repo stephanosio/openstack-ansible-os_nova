@@ -24,7 +24,8 @@
     - nova-libvirt
 
 - name: Ensure kvm permissions
-  shell: "udevadm trigger"
+  command: "udevadm trigger"
+  changed_when: false
   tags:
     - nova-kvm
 

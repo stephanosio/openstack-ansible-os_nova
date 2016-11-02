@@ -17,6 +17,7 @@
   command: "{{ nova_bin }}/nova-manage db sync"
   become: yes
   become_user: "{{ nova_system_user_name }}"
+  changed_when: false
   tags:
     - nova-db-setup
     - nova-setup
@@ -26,6 +27,7 @@
   command: "{{ nova_bin }}/nova-manage api_db sync"
   become: yes
   become_user: "{{ nova_system_user_name }}"
+  changed_when: false
   tags:
     - nova-db-setup
     - nova-setup
@@ -35,6 +37,7 @@
   command: "{{ nova_bin }}/nova-manage db online_data_migrations"
   become: yes
   become_user: "{{ nova_system_user_name }}"
+  changed_when: false
   tags:
     - nova-db-setup
     - nova-setup

@@ -22,7 +22,8 @@
   register: _qemu_save_dir
 
 - name: Check if the qemu save directory is empty
-  shell: 'ls -1A /var/lib/libvirt/qemu/save'
+  command: 'ls -1A /var/lib/libvirt/qemu/save'
+  changed_when: false
   register: _qemu_save_dir_contents
 
 - name: Move the existing save directory to nova_libvirt_save_path
@@ -48,7 +49,7 @@
 - name: Install pip packages
   pip:
     name: "{{ nova_compute_pip_packages | join(' ') }}"
-    state: latest
+    state: "{{ nova_pip_package_state }}"
     virtualenv: "{{ nova_bin | dirname }}"
     virtualenv_site_packages: "no"
     extra_args: "{{ pip_install_options|default('') }}"

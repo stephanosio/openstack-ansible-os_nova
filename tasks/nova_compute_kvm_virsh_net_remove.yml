@@ -15,6 +15,7 @@
 
 - name: Check for libvirt default network
   shell: "virsh net-list | awk '/default/'"
+  changed_when: false
   register: default_net
   tags:
     - nova-kvm

@@ -24,6 +24,7 @@
     - nova-powervm
 
 - name: Ensure powervm permissions
-  shell: "udevadm trigger"
+  command: "udevadm trigger"
+  changed_when: false
   tags:
     - nova-powervm
