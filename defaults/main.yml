@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Enable/Disable designate configurations
+nova_designate_enabled: False
+# Notification topics for designate.
+nova_notifications_designate: notifications_designate
 # Enable/Disable ceilometer configurations
 nova_ceilometer_enabled: False
 

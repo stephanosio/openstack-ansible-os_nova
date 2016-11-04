@@ -126,8 +126,17 @@ instance_usage_audit_period = hour
 notify_on_state_change = vm_and_task_state
 {% endif %}
 
-{% if nova_ceilometer_enabled %}
+# Notifications
+{% if nova_ceilometer_enabled or nova_designate_enabled %}
 [oslo_messaging_notifications]
+{% set notification_topics = [] %}
+{% if neutron_ceilometer_enabled %}
+{%   set _ = notification_topics.append('notifications') %}
+{% endif %}
+{% if neutron_designate_enabled %}
+{%   set _ = notification_topics.append(nova_notifications_designate) %}
+{% endif %}
+notification_topics = {{ notification_topics | join(',') }}
 driver = messagingv2
 transport_url = rabbit://{% for host in nova_rabbitmq_telemetry_servers.split(',') %}{{ nova_rabbitmq_telemetry_userid }}:{{ nova_rabbitmq_telemetry_password }}@{{ host }}:{{ nova_rabbitmq_telemetry_port }}{% if not loop.last %},{% else %}/{{ nova_rabbitmq_telemetry_vhost }}{% endif %}{% endfor %}
 {% endif %}
