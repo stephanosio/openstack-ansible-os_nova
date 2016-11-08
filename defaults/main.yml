@@ -417,6 +417,7 @@ nova_pip_packages:
 nova_compute_lxd_pip_packages:
   - pylxd
   - nova-lxd
+  - pyOpenSSL
 
 nova_qemu_user: libvirt-qemu
 nova_qemu_group: kvm
