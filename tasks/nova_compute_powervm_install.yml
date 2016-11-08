@@ -29,22 +29,13 @@
   apt_repository:
     repo: "{{ novalink_repo.repo }}"
     state: "{{ novalink_repo.state }}"
+    update_cache: yes
   register: add_nv_repos
   until: add_nv_repos|success
   retries: 5
   delay: 2
   tags:
     - novalink-repo
-
-- name: Update apt if needed
-  apt:
-    update_cache: yes
-  when: add_nv_repos|changed
-  tags:
-    - nova-apt-packages
-    - nova-compute-powervm-apt-packages
-    # do not trigger ANSIBLE0016
-    - skip_ansible_lint
 
 - name: Install apt packages
   apt:
