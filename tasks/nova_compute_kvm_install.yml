@@ -48,7 +48,7 @@
 
 - name: Install pip packages
   pip:
-    name: "{{ nova_compute_pip_packages | join(' ') }}"
+    name: "{{ nova_compute_pip_packages }}"
     state: "{{ nova_pip_package_state }}"
     virtualenv: "{{ nova_bin | dirname }}"
     virtualenv_site_packages: "no"

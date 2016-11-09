@@ -30,7 +30,7 @@
 
 - name: Install requires pip packages
   pip:
-    name: "{{ nova_requires_pip_packages | join(' ') }}"
+    name: "{{ nova_requires_pip_packages }}"
     state: "{{ nova_pip_package_state }}"
     extra_args: >-
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
@@ -87,7 +87,7 @@
 
 - name: Install pip packages
   pip:
-    name: "{{ nova_pip_packages | join(' ') }}"
+    name: "{{ nova_pip_packages }}"
     state: "{{ nova_pip_package_state }}"
     virtualenv: "{{ nova_bin | dirname }}"
     virtualenv_site_packages: "no"
