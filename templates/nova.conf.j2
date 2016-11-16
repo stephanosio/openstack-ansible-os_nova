@@ -51,7 +51,6 @@ scheduler_default_filters = {{ nova_scheduler_default_filters }}
 scheduler_driver_task_period = {{ nova_scheduler_driver_task_period }}
 scheduler_host_manager = {{ nova_scheduler_host_manager }}
 scheduler_host_subset_size = {{ nova_scheduler_host_subset_size }}
-scheduler_max_attempts = {{ nova_scheduler_max_attempts }}
 scheduler_weight_classes = {{ nova_scheduler_weight_classes }}
 scheduler_use_baremetal_filters = {{ nova_scheduler_use_baremetal_filters }}
 scheduler_tracks_instance_changes = {{ nova_scheduler_tracks_instance_changes }}
@@ -302,3 +301,6 @@ disk_cachemodes = {{ nova_libvirt_disk_cachemodes }}
 
 [wsgi]
 api_paste_config = /etc/nova/api-paste.ini
+
+[scheduler]
+max_attempts = {{ nova_scheduler_max_attempts }}
