@@ -33,6 +33,3 @@
 
 # Install Tempest
 - include: common/test-install-tempest.yml
-
-# Test Nova
-- include: test-nova-functional.yml
