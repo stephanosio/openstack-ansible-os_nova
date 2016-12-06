@@ -56,10 +56,10 @@
     - nova-kvm
     - nova-libvirt
 
-- name: Set libvirt runtime options (Ubuntu)
+- name: Set libvirt runtime options when listening on tcp (Ubuntu)
   lineinfile:
     dest: "/etc/default/libvirt-bin"
-    line: 'libvirtd_opts="-d -l"'
+    line: 'libvirtd_opts="{% if ansible_service_mgr != "systemd" %}-d{% endif%} -l"'
     regexp: "^libvirtd_opts="
     backup: "yes"
   when:
@@ -70,10 +70,10 @@
     - nova-kvm
     - nova-libvirt
 
-- name: Set libvirt runtime options (Ubuntu)
+- name: Set libvirt runtime options when not listening on tcp (Ubuntu)
   lineinfile:
     dest: "/etc/default/libvirt-bin"
-    line: 'libvirtd_opts="-d"'
+    line: 'libvirtd_opts="{% if ansible_service_mgr != "systemd" %}-d{% endif%}"'
     regexp: "^libvirtd_opts="
     backup: "yes"
   when:
