@@ -15,10 +15,6 @@ rootwrap_config = /etc/nova/rootwrap.conf
 service_down_time = 120
 default_schedule_zone = {{ nova_default_schedule_zone }}
 
-{% if nova_external_ssl | bool %}
-secure_proxy_ssl_header = {{ nova_secure_proxy_ssl_header }}
-{% endif %}
-
 # Quota
 quota_cores = {{ nova_quota_cores }}
 quota_fixed_ips = {{ nova_quota_fixed_ips }}
@@ -29,7 +25,6 @@ quota_injected_files = {{ nova_quota_injected_files }}
 quota_instances = {{ nova_quota_instances }}
 quota_key_pairs = {{ nova_quota_key_pairs }}
 quota_metadata_items = {{ nova_quota_metadata_items }}
-quota_networks = {{ nova_quota_networks }}
 quota_ram = {{ nova_quota_ram }}
 quota_security_group_rules = {{ nova_quota_security_group_rules }}
 quota_security_groups = {{ nova_quota_security_groups }}
@@ -76,11 +71,9 @@ enabled_apis = {{ nova_enabled_apis }}
 osapi_compute_workers = {{ nova_osapi_compute_workers | default(api_threads) }}
 
 # Rpc all
-rpc_backend = {{ nova_rpc_backend }}
 transport_url = rabbit://{% for host in nova_rabbitmq_servers.split(',') %}{{ nova_rabbitmq_userid }}:{{ nova_rabbitmq_password }}@{{ host }}:{{ nova_rabbitmq_port }}{% if not loop.last %},{% else %}/{{ nova_rabbitmq_vhost }}{% endif %}{% endfor %}
 
 executor_thread_pool_size = {{ nova_rpc_thread_pool_size }}
-rpc_conn_pool_size = {{ nova_rpc_conn_pool_size }}
 rpc_response_timeout = {{ nova_rpc_response_timeout }}
 
 # Metadata
@@ -210,7 +203,6 @@ ovs_bridge = {{ nova_network_services[nova_network_type]['ovs_bridge'] }}
 {% endif %}
 
 [conductor]
-topic = conductor
 workers = {{ nova_conductor_workers | default(api_threads) }}
 
 
@@ -262,6 +254,8 @@ lock_path = {{ nova_lock_path }}
 
 [oslo_messaging_rabbit]
 rabbit_use_ssl = {{ nova_rabbitmq_use_ssl }}
+rpc_conn_pool_size = {{ nova_rpc_conn_pool_size }}
+
 
 {% if nova_virt_type == 'ironic' %}
 [ironic]
@@ -282,7 +276,6 @@ auth_type = {{ ironic_keystone_auth_plugin }}
 inject_partition = {{ nova_libvirt_inject_partition }}
 inject_password = {{ nova_libvirt_inject_password }}
 inject_key = {{ nova_libvirt_inject_key }}
-use_usb_tablet = False
 use_virtio_for_bridges = True
 cpu_mode = {{ nova_cpu_mode }}
 virt_type = {{ nova_virt_type }}
@@ -305,6 +298,9 @@ disk_cachemodes = {{ nova_libvirt_disk_cachemodes }}
 
 [wsgi]
 api_paste_config = /etc/nova/api-paste.ini
+{% if nova_external_ssl | bool %}
+secure_proxy_ssl_header = {{ nova_secure_proxy_ssl_header }}
+{% endif %}
 
 [scheduler]
 max_attempts = {{ nova_scheduler_max_attempts }}
