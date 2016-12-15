@@ -11,7 +11,7 @@ Nova role for OpenStack-Ansible
 :tags: openstack, nova, cloud, ansible
 :category: \*nix
 
-This role will install the following Upstart services:
+This role will install the following Systemd services:
     * nova-server
     * nova-compute
 

@@ -18,22 +18,15 @@
   notify:
     - Restart nova services
 
-- name: Reload upstart init scripts
-  command: initctl reload-configuration
-  notify:
-    - Restart nova services
-
 - name: Restart libvirt-bin
   service:
     name: "{{ libvirt_service_name }}"
     state: "restarted"
-    pattern: "{{ libvirt_service_name }}"
 
 - name: Restart nova services
   service:
     name: "{{ item.value.service_name }}"
     state: "restarted"
-    pattern: "{{ item.value.service_name }}"
   with_dict: "{{ nova_services }}"
   when:
     - inventory_hostname in groups[item.value.group]

@@ -17,7 +17,6 @@
   service:
     name: "{{ libvirt_service_name }}"
     state: "started"
-    pattern: "{{ libvirt_service_name }}"
 
 - name: Check the state of the default qemu save directory
   stat:

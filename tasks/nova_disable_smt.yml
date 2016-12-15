@@ -34,14 +34,3 @@
     - smt_disable_result.rc == 0
   notify:
     - Reload systemd daemon
-
-- name: Upstart script to disable SMT
-  copy:
-    src: "smt.conf"
-    dest: "/etc/init/smt.conf"
-  when:
-    - ansible_service_mgr != 'systemd'
-    - smt_disable_result.rc is defined
-    - smt_disable_result.rc == 0
-  notify:
-    - Reload upstart init scripts
