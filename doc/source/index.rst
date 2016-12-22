@@ -15,6 +15,9 @@ This role will install the following Systemd services:
     * nova-server
     * nova-compute
 
+To clone or view the source code for this repository, visit the role repository
+for `os_nova <https://github.com/openstack/openstack-ansible-os_nova>`_.
+
 Default variables
 ~~~~~~~~~~~~~~~~~
 
