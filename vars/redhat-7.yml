@@ -47,6 +47,7 @@ nova_compute_kvm_distro_packages:
   - libvirt-devel
   - libvirt-python
   - nfs-utils
+  - openstack-selinux
   - python-libguestfs
   - qemu
   - qemu-img-ev
