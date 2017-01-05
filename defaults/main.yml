@@ -43,6 +43,9 @@ nova_developer_constraints:
 nova_venv_tag: untagged
 nova_bin: "/openstack/venvs/nova-{{ nova_venv_tag }}/bin"
 
+# venv_download, even when true, will use the fallback method of building the
+# venv from scratch if the venv download fails.
+nova_venv_download: "{{ not nova_developer_mode | bool }}"
 nova_venv_download_url: http://127.0.0.1/venvs/untagged/ubuntu/nova.tgz
 
 nova_fatal_deprecations: False
