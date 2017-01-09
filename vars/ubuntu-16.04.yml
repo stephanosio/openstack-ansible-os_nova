@@ -69,6 +69,8 @@ nova_compute_lxd_distro_packages:
   - sysfsutils
   - vlan
 
+nova_nginx_distro_packages:
+  - nginx-full
 
 # Ubuntu Cloud Archive variables
 uca_openstack_release: newton
@@ -99,3 +101,6 @@ novalink_repo:
 novalink_gpg_keys:
   - url: "http://public.dhe.ibm.com/systems/virtualization/Novalink/debian/novalink-gpg-pub.key"
     state: "present"
+
+nova_nginx_conf_path: "sites-available"
+nova_nginx_user_name: "www-data"

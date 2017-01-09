@@ -202,6 +202,20 @@ service_metadata_proxy = {{ nova_metadata_proxy_enabled }}
 ovs_bridge = {{ nova_network_services[nova_network_type]['ovs_bridge'] }}
 {% endif %}
 
+{% if nova_placement_service_enabled | bool %}
+# Placement
+[placement]
+os_region_name = {{ nova_placement_service_region }}
+auth_type = "password"
+password = {{ nova_placement_service_password }}
+username = {{ nova_placement_service_username }}
+project_name = {{ nova_placement_service_project_name }}
+user_domain_name = {{ nova_placement_service_user_domain_id }}
+project_domain_name = {{ nova_placement_service_project_domain_id }}
+auth_url = {{ keystone_service_adminurl }}
+insecure = {{ keystone_service_adminuri_insecure | bool }}
+{% endif %}
+
 [conductor]
 workers = {{ nova_conductor_workers | default(api_threads) }}
 
@@ -226,7 +240,7 @@ token_cache_time = 300
 memcache_security_strategy = ENCRYPT
 memcache_secret_key = {{ memcached_encryption_key }}
 
-{% if inventory_hostname in (groups['nova_conductor'] + groups['nova_scheduler'] + groups['nova_api_os_compute'] + groups['nova_api_metadata'] + groups['nova_console']) %}
+{% if inventory_hostname in (groups['nova_conductor'] + groups['nova_scheduler'] + groups['nova_api_os_compute'] + groups['nova_api_metadata'] + groups['nova_console'] + groups['nova_api_placement'])%}
 [database]
 connection = mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_password }}@{{ nova_galera_address }}/{{ nova_galera_database }}?charset=utf8
 max_overflow = {{ nova_db_max_overflow }}
@@ -239,8 +253,15 @@ connection = mysql+pymysql://{{ nova_api_galera_user }}:{{ nova_api_container_my
 max_overflow = {{ nova_api_db_max_overflow }}
 max_pool_size = {{ nova_api_db_max_pool_size }}
 pool_timeout = {{ nova_api_db_pool_timeout }}
-{% endif %}
 
+{% if nova_placement_service_enabled | bool %}
+[placement_database]
+connection = mysql+pymysql://{{ nova_placement_galera_user }}:{{ nova_placement_container_mysql_password }}@{{ nova_placement_galera_address }}/{{ nova_placement_galera_database }}?charset=utf8
+max_overflow = {{ nova_placement_db_max_overflow }}
+max_pool_size = {{ nova_placement_db_max_pool_size }}
+pool_timeout = {{ nova_placement_db_pool_timeout }}
+{% endif %}
+{% endif %}
 
 [oslo_concurrency]
 lock_path = {{ nova_lock_path }}

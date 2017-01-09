@@ -90,6 +90,9 @@ openstack1
 [nova_scheduler]
 openstack1
 
+[nova_api_placement]
+openstack1
+
 [nova_all:children]
 nova_api_metadata
 nova_api_os_compute
@@ -97,6 +100,7 @@ nova_compute
 nova_conductor
 nova_console
 nova_scheduler
+nova_api_placement
 
 [utility_all]
 infra1

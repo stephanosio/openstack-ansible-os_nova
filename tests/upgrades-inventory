@@ -82,6 +82,9 @@ openstack1
 [nova_cert]
 openstack1
 
+[nova_api_placement]
+openstack1
+
 [nova_compute]
 localhost
 
@@ -102,6 +105,7 @@ nova_compute
 nova_conductor
 nova_console
 nova_scheduler
+nova_api_placement
 
 [utility_all]
 infra1

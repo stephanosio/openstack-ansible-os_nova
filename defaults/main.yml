@@ -86,6 +86,17 @@ nova_api_db_max_overflow: 10
 nova_api_db_max_pool_size: 120
 nova_api_db_pool_timeout: 30
 
+## DB Placement
+nova_placement_galera_user: nova_placement
+nova_placement_galera_database: nova_placement
+nova_placement_db_max_overflow: 10
+nova_placement_db_max_pool_size: 120
+nova_placement_db_pool_timeout: 30
+
+## DB Cells
+nova_cell0_database: "nova_cell0"
+nova_cell1_name: "cell1"
+
 ## RabbitMQ info
 
 ## Configuration for RPC communications
@@ -229,6 +240,42 @@ nova_metadata_port: 8775
 nova_enable_instance_password: True
 nova_force_config_drive: False
 
+## Nova placement
+nova_placement_service_enabled: True
+nova_placement_service_user_domain_id: Default
+nova_placement_service_project_domain_id: Default
+nova_placement_service_in_ldap: "{{ nova_service_in_ldap }}"
+nova_placement_service_username: placement
+nova_placement_service_name: placement
+nova_placement_service_role_name: "{{ nova_service_role_name }}"
+nova_placement_service_type: placement
+nova_placement_service_project_name: "{{ nova_service_project_name }}"
+nova_placement_service_region: "{{ nova_service_region }}"
+nova_placement_service_description: "Openstack Placement Service"
+nova_placement_service_port: 8780
+nova_placement_service_proto: "{{ nova_service_proto }}"
+nova_placement_ssl: false
+nova_placement_service_publicuri_proto: "{{ openstack_service_publicuri_proto | default(nova_placement_service_proto) }}"
+nova_placement_service_adminuri_proto: "{{ openstack_service_adminuri_proto | default(nova_placement_service_proto) }}"
+nova_placement_service_internaluri_proto: "{{ openstack_service_internaluri_proto | default(nova_placement_service_proto) }}"
+# TODO(andymccr): A bug in nova forces the compute host to connect to publicURL
+# Pending this patch merging: https://review.openstack.org/#/c/426163/
+nova_placement_service_publicuri: "{{ nova_placement_service_internaluri_proto }}://{{ internal_lb_vip_address }}:{{ nova_placement_service_port }}"
+nova_placement_service_publicurl: "{{ nova_placement_service_publicuri }}/placement"
+nova_placement_service_adminuri: "{{ nova_placement_service_adminuri_proto }}://{{ internal_lb_vip_address }}:{{ nova_placement_service_port }}"
+nova_placement_service_adminurl: "{{ nova_placement_service_adminuri }}/placement"
+nova_placement_service_internaluri: "{{ nova_placement_service_internaluri_proto }}://{{ internal_lb_vip_address }}:{{ nova_placement_service_port }}"
+nova_placement_service_internalurl: "{{ nova_placement_service_internaluri }}/placement"
+
+## Nova placement nginx & uwsgi settings
+nova_placement_nginx_access_log_format_combined: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'
+nova_placement_nginx_access_log_format_extras: '$request_time $upstream_response_time'
+nova_placement_nginx_extra_conf:
+  - keepalive_timeout   70;
+nova_placement_uwsgi_socket_port: 8781
+nova_placement_uwsgi_http_port: 8782
+nova_wsgi_threads: 1
+nova_wsgi_processes: "{{ (ansible_processor_vcpus | int > 0) | ternary (ansible_processor_vcpus, 1) * 2}}"
 
 ## Nova libvirt
 nova_libvirt_inject_key: False
@@ -393,6 +440,12 @@ nova_services:
     group: nova_console
     service_name: nova-spicehtml5proxy
     condition: "{{ nova_console_type == 'spice' }}"
+  nova-placement-api:
+    group: nova_api_placement
+    service_name: nova-placement-api
+    condition: "{{ nova_placement_service_enabled | bool }}"
+    log_string: "--logto "
+    program_override: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-placement-uwsgi.ini"
 
 
 nova_novnc_pip_packages:
@@ -421,6 +474,9 @@ nova_pip_packages:
   - keystonemiddleware
   - nova
 
+nova_placement_pip_packages:
+  - uWSGI
+
 nova_compute_lxd_pip_packages:
   - pylxd
   - nova-lxd
@@ -444,6 +500,7 @@ nova_nova_conf_overrides: {}
 nova_rootwrap_conf_overrides: {}
 nova_api_paste_ini_overrides: {}
 nova_policy_overrides: {}
+nova_placement_uwsgi_ini_overrides: {}
 
 nova_compute_powervm_pip_packages:
   - nova-powervm

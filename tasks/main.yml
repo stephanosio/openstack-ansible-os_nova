@@ -51,12 +51,12 @@
   tags:
     - nova-config
 
-- include: nova_init_common.yml
+- include: nova_db_setup.yml
+  when: inventory_hostname == groups['nova_api_os_compute'][0]
   tags:
     - nova-config
 
-- include: nova_db_setup.yml
-  when: inventory_hostname == groups['nova_api_os_compute'][0]
+- include: nova_init_common.yml
   tags:
     - nova-config
 
@@ -65,6 +65,13 @@
   tags:
     - nova-config
 
+- include: nova_placement.yml
+  when:
+    - nova_placement_service_enabled | bool
+    - inventory_hostname in groups['nova_api_placement']
+  tags:
+    - nova-placement
+
 - include: nova_compute.yml
   when: inventory_hostname in groups['nova_compute']
   tags:
@@ -72,3 +79,8 @@
 
 - name: Flush handlers
   meta: flush_handlers
+
+- include: nova_db_post_setup.yml
+  when: inventory_hostname == groups['nova_api_os_compute'][0]
+  tags:
+    - nova-config
