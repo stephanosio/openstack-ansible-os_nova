@@ -24,6 +24,7 @@ nova_distro_packages:
   - git
   - iptables
   - libpqxx-devel
+  - which
 
 # Spice console yum packages
 nova_spice_distro_packages:
