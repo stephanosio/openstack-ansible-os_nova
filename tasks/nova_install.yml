@@ -67,7 +67,6 @@
   delay: 2
   with_items: "{{ nova_distro_packages }}"
   tags:
-    - nova-install
     - nova-apt-packages
 
 - name: Remove known problem packages for the Spice console
@@ -83,7 +82,6 @@
     - inventory_hostname in groups['nova_console']
     - nova_console_type == "spice"
   tags:
-    - nova-install
     - nova-apt-packages
     - nova-spice-apt-packages
 
@@ -100,7 +98,6 @@
     - inventory_hostname in groups['nova_console']
     - nova_console_type == "novnc"
   tags:
-    - nova-install
     - nova-apt-packages
     - nova-novnc-apt-packages
 
@@ -145,7 +142,6 @@
       {% endfor %}
   when: nova_developer_mode | bool
   tags:
-    - nova-install
     - nova-pip-packages
 
 - name: Install requires pip packages
@@ -160,7 +156,6 @@
   retries: 5
   delay: 2
   tags:
-    - nova-install
     - nova-pip-packages
 
 - name: Attempt venv download
@@ -171,7 +166,6 @@
   register: nova_get_venv
   when: not nova_developer_mode | bool
   tags:
-    - nova-install
     - nova-pip-packages
 
 - name: Remove existing venv
@@ -180,7 +174,6 @@
     state: absent
   when: nova_get_venv | changed
   tags:
-    - nova-install
     - nova-pip-packages
 
 - name: Create nova venv dir
@@ -189,7 +182,6 @@
     state: directory
   register: nova_venv_dir
   tags:
-    - nova-install
     - nova-pip-packages
 
 - name: Unarchive pre-built venv
@@ -202,7 +194,6 @@
     - nova_get_venv | changed or nova_venv_dir | changed
   notify: Restart nova services
   tags:
-    - nova-install
     - nova-pip-packages
 
 - name: Install pip packages
@@ -222,7 +213,6 @@
   when: nova_developer_mode | bool
   notify: Restart nova services
   tags:
-    - nova-install
     - nova-pip-packages
 
 - name: CentOS remove python from path first
@@ -241,7 +231,6 @@
     - not nova_developer_mode | bool
     - nova_get_venv | changed or nova_venv_dir | changed
   tags:
-    - nova-install
     - nova-pip-packages
 
 - include: nova_console_spice_install.yml

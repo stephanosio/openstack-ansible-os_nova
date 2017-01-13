@@ -14,6 +14,8 @@
 # limitations under the License.
 
 - include: nova_compute_kvm_install.yml
+  tags:
+    - nova-config
 
 - name: Add nova user to libvirtd group
   user:
@@ -21,12 +23,14 @@
     groups: "{{ libvirt_group }}"
     append: "yes"
   tags:
+    - nova-install
     - nova-libvirt
 
 - name: Ensure kvm permissions
   command: "udevadm trigger"
   changed_when: false
   tags:
+    - nova-config
     - nova-kvm
 
 - name: Set libvirtd config
@@ -38,6 +42,7 @@
     mode: 0644
   notify: Restart libvirt-bin
   tags:
+    - nova-config
     - nova-kvm
     - nova-libvirt
 
@@ -53,6 +58,7 @@
       or nova_network_type == 'calico'
   notify: Restart libvirt-bin
   tags:
+    - nova-config
     - nova-kvm
     - nova-libvirt
 
@@ -67,6 +73,7 @@
     - ansible_pkg_mgr == 'apt'
   notify: Restart libvirt-bin
   tags:
+    - nova-config
     - nova-kvm
     - nova-libvirt
 
@@ -81,6 +88,7 @@
     - ansible_pkg_mgr == 'yum'
   notify: Restart libvirt-bin
   tags:
+    - nova-config
     - nova-kvm
     - nova-libvirt
 
@@ -95,11 +103,19 @@
     - ansible_pkg_mgr == 'yum'
   notify: Restart libvirt-bin
   tags:
+    - nova-config
     - nova-kvm
     - nova-libvirt
 
 - include: nova_disable_smt.yml
   when:
     - ansible_architecture == 'ppc64le'
+  tags:
+    - nova-config
 
 - include: nova_compute_kvm_virsh_net_remove.yml
+  tags:
+    - nova-config
+    - nova-kvm
+    - nova-libvirt
+    - nova-kvm-virsh-net
