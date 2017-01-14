@@ -182,6 +182,7 @@
     path: "{{ nova_bin | dirname }}"
     state: directory
   register: nova_venv_dir
+  when: nova_get_venv | changed
   tags:
     - nova-pip-packages
 
@@ -190,9 +191,7 @@
     src: "/var/cache/{{ nova_venv_download_url | basename }}"
     dest: "{{ nova_bin | dirname }}"
     copy: "no"
-  when:
-    - not nova_developer_mode | bool
-    - nova_get_venv | changed
+  when: nova_get_venv | changed
   notify: Restart nova services
   tags:
     - nova-pip-packages
@@ -211,7 +210,7 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  when: nova_get_venv | failed or nova_get_venv | skipped or nova_developer_mode | bool
+  when: nova_get_venv | failed or nova_get_venv | skipped
   notify: Restart nova services
   tags:
     - nova-pip-packages
@@ -222,15 +221,12 @@
     state: "absent"
   when:
     - ansible_pkg_mgr == 'yum'
-    - not nova_developer_mode | bool
     - nova_get_venv | changed
 
 - name: Update virtualenv path
   command: >
     virtualenv-tools --update-path=auto --reinitialize {{ nova_bin | dirname }}
-  when:
-    - not nova_developer_mode | bool
-    - nova_get_venv | changed
+  when: nova_get_venv | changed
   tags:
     - nova-pip-packages
 
