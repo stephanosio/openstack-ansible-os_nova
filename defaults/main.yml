@@ -347,6 +347,8 @@ nova_ceph_client_uuid: 517a4663-3927-44bc-9ea7-4a90e1cd4c66
 # compute the number of api workers to use.
 # nova_metadata_workers: 16
 
+## Cap the maximun number of threads / workers when a user value is unspecified.
+nova_api_threads_max: 16
 
 ## Policy vars
 # Provide a list of access controls to update the default policy.json with. These changes will be merged
