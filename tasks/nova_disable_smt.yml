@@ -32,5 +32,10 @@
     - ansible_service_mgr == 'systemd'
     - smt_disable_result.rc is defined
     - smt_disable_result.rc == 0
-  notify:
-    - Reload systemd daemon
+  register: smt_disable_service
+
+- name: Enable systemd service which disables smt
+  service:
+    name: smt
+    enabled: yes
+  when: "{{ smt_disable_service | changed }}"
