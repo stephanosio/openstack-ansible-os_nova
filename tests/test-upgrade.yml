@@ -28,6 +28,9 @@
 # Install Neutron
 - include: common/test-install-neutron.yml
 
+# Install previous Nova
+- include: test-install-previous-nova.yml
+
 # Install Nova
 - include: common/test-install-nova.yml
 
