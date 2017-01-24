@@ -12,19 +12,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-- name: Reload systemd daemon
-  command: "systemctl daemon-reload"
-  notify:
-    - Restart nova services
-
 - name: Restart libvirt-bin
-  service:
+  systemd:
     name: "{{ libvirt_service_name }}"
     state: "restarted"
+    daemon_reload: yes
 
 - name: Restart nova services
-  service:
+  systemd:
     name: "{{ item.value.service_name }}"
     state: "restarted"
   with_dict: "{{ nova_services }}"
