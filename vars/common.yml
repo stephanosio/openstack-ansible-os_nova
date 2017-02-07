@@ -27,4 +27,4 @@ nova_packages_list:
   - packages: "{{ nova_compute_powervm_distro_packages }}"
     enabled: "{{ 'nova_compute' in group_names and nova_virt_type == 'powervm' }}"
   - packages: "{{ nova_nginx_distro_packages }}"
-    enabled: yes
+    enabled: "{{ 'nova_api_placement' in group_names }}"
