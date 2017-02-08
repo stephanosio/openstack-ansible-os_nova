@@ -16,7 +16,7 @@
 ## APT Cache options
 cache_timeout: 600
 
-libvirt_group: libvirtd
+libvirt_group: libvirt
 libvirt_service_name: libvirt-bin
 
 # Common apt packages
