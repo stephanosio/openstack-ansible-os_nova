@@ -30,9 +30,3 @@
 
 # Install previous Nova
 - include: test-install-previous-nova.yml
-
-# Install Nova
-- include: common/test-install-nova.yml
-
-# Install Tempest
-- include: common/test-install-tempest.yml
