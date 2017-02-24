@@ -212,7 +212,11 @@ memcache_secret_key = {{ memcached_encryption_key }}
 
 {% if inventory_hostname in (groups['nova_conductor'] + groups['nova_scheduler'] + groups['nova_api_os_compute'] + groups['nova_api_metadata'] + groups['nova_console'] + groups['nova_api_placement'])%}
 [database]
+{% if nova_galera_use_ssl | bool %}
+connection = mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_password }}@{{ nova_galera_address }}/{{ nova_galera_database }}?charset=utf8&ssl_ca={{ nova_galera_ssl_ca_cert }}
+{% else %}
 connection = mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_password }}@{{ nova_galera_address }}/{{ nova_galera_database }}?charset=utf8
+{% endif %}
 max_overflow = {{ nova_db_max_overflow }}
 max_pool_size = {{ nova_db_max_pool_size }}
 pool_timeout = {{ nova_db_pool_timeout }}
