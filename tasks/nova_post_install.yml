@@ -25,34 +25,6 @@
     - nova-config
     - nova-post-install
 
-- name: Distribute self signed Galera ssl CA cert
-  copy:
-    dest: "{{ nova_galera_ssl_ca_cert }}"
-    content: "{{ hostvars[galera_cluster_members[0]]['galera_ssl_ca_cert_fact'] | b64decode }}"
-    owner: "root"
-    group: "{{ item.group|default(nova_system_group_name) }}"
-    mode: "0640"
-  when:
-    - nova_galera_use_ssl | bool
-    - galera_user_ssl_ca_cert is undefined
-  tags:
-    - nova-config
-    - nova-post-install
-
-- name: Distribute user provided Galera ssl CA cert
-  copy:
-    dest: "{{ nova_galera_ssl_ca_cert }}"
-    src: "{{ galera_user_ssl_ca_cert }}"
-    owner: "root"
-    group: "{{ item.group|default(nova_system_group_name) }}"
-    mode: "0640"
-  when:
-    - nova_galera_use_ssl | bool
-    - galera_user_ssl_ca_cert is defined
-  tags:
-    - nova-config
-    - nova-post-install
-
 - name: Generate nova config
   config_template:
     src: "{{ item.src }}"
