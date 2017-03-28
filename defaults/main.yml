@@ -266,23 +266,17 @@ nova_placement_service_publicuri_proto: "{{ openstack_service_publicuri_proto | 
 nova_placement_service_adminuri_proto: "{{ openstack_service_adminuri_proto | default(nova_placement_service_proto) }}"
 nova_placement_service_internaluri_proto: "{{ openstack_service_internaluri_proto | default(nova_placement_service_proto) }}"
 nova_placement_service_publicuri: "{{ nova_placement_service_publicuri_proto }}://{{ external_lb_vip_address }}:{{ nova_placement_service_port }}"
-nova_placement_service_publicurl: "{{ nova_placement_service_publicuri }}/placement"
+nova_placement_service_publicurl: "{{ nova_placement_service_publicuri }}"
 nova_placement_service_adminuri: "{{ nova_placement_service_adminuri_proto }}://{{ internal_lb_vip_address }}:{{ nova_placement_service_port }}"
-nova_placement_service_adminurl: "{{ nova_placement_service_adminuri }}/placement"
+nova_placement_service_adminurl: "{{ nova_placement_service_adminuri }}"
 nova_placement_service_internaluri: "{{ nova_placement_service_internaluri_proto }}://{{ internal_lb_vip_address }}:{{ nova_placement_service_port }}"
-nova_placement_service_internalurl: "{{ nova_placement_service_internaluri }}/placement"
+nova_placement_service_internalurl: "{{ nova_placement_service_internaluri }}"
 
-## Nova placement nginx & uwsgi settings
-nova_placement_nginx_access_log_format_combined: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'
-nova_placement_nginx_access_log_format_extras: '$request_time $upstream_response_time'
-nova_placement_nginx_extra_conf:
-  - keepalive_timeout   70;
-nova_placement_uwsgi_socket_port: 8781
-nova_wsgi_threads: 1
-## Cap the maximum number of processes when a user value is unspecified.
+# Uwsgi settings
 nova_wsgi_processes_max: 16
 nova_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, nova_wsgi_processes_max] | min }}"
 nova_wsgi_buffer_size: 65535
+nova_wsgi_threads: 1
 
 ## Nova libvirt
 # Warning: If nova_libvirt_inject_key or nova_libvirt_inject_password are enabled for Ubuntu compute hosts
@@ -434,11 +428,23 @@ nova_services:
     service_name: nova-api-metadata
     init_config_overrides: "{{ nova_api_metadata_init_overrides }}"
     start_order: 4
+    log_string: "--logto "
+    program_override: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-api-metadata.ini"
+    wsgi_app: True
+    wsgi_overrides: "{{ nova_api_metadata_uwsgi_ini_overrides }}"
+    uwsgi_port: "{{ nova_metadata_port }}"
+    wsgi_name: nova-metadata-wsgi
   nova-api-os-compute:
     group: nova_api_os_compute
     service_name: nova-api-os-compute
     init_config_overrides: "{{ nova_api_os_compute_init_overrides }}"
     start_order: 3
+    log_string: "--logto "
+    program_override: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-api-os-compute.ini"
+    wsgi_app: True
+    wsgi_overrides: "{{ nova_api_os_compute_uwsgi_ini_overrides }}"
+    uwsgi_port: "{{ nova_service_port }}"
+    wsgi_name: nova-api-wsgi
   nova-compute:
     group: nova_compute
     service_name: nova-compute
@@ -477,8 +483,12 @@ nova_services:
     init_config_overrides: "{{ nova_placement_api_init_overrides }}"
     condition: "{{ nova_placement_service_enabled | bool }}"
     log_string: "--logto "
-    program_override: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-placement-uwsgi.ini"
     start_order: 3
+    program_override: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-placement-api.ini"
+    wsgi_app: True
+    uwsgi_port: "{{ nova_placement_service_port }}"
+    wsgi_name: nova-placement-api
+    wsgi_overrides: "{{ nova_placement_uwsgi_ini_overrides }}"
 
 
 nova_novnc_pip_packages:
@@ -507,8 +517,6 @@ nova_pip_packages:
   - python-keystoneclient
   - python-memcached
   - python-novaclient
-
-nova_placement_pip_packages:
   - uWSGI
 
 nova_compute_lxd_pip_packages:
@@ -535,6 +543,8 @@ nova_rootwrap_conf_overrides: {}
 nova_api_paste_ini_overrides: {}
 nova_policy_overrides: {}
 nova_placement_uwsgi_ini_overrides: {}
+nova_api_metadata_uwsgi_ini_overrides: {}
+nova_api_os_compute_uwsgi_ini_overrides: {}
 
 nova_compute_powervm_pip_packages:
   - nova-powervm

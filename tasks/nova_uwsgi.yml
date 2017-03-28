@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Uwsgi Configuration
+
 - name: Ensure uWSGI directory exists
   file:
     path: "/etc/uwsgi/"
@@ -22,10 +22,34 @@
 
 - name: Apply uWSGI configuration
   config_template:
-    src: "nova-placement-uwsgi.ini.j2"
-    dest: "/etc/uwsgi/nova-placement-uwsgi.ini"
+    src: "nova-uwsgi.ini.j2"
+    dest: "/etc/uwsgi/{{ item.service_name }}.ini"
     mode: "0744"
-    config_overrides: "{{ nova_placement_uwsgi_ini_overrides }}"
+    config_overrides: "{{ item.wsgi_overrides }}"
     config_type: ini
+  with_items: "{{ filtered_nova_services }}"
+  when: item.wsgi_app | default(False)
   notify:
     - Restart nova services
+
+# Cleanup and restart nginx configuration
+# For O->P upgrades, can remove in Q.
+- name: Clean up nginx configuration
+  file:
+    path: "/etc/nginx/{{ nova_nginx_conf_path }}/nova_placement_api.conf"
+    state: absent
+  register: nginx_conf_removed
+
+- name: Cleanup sites-enabled for Debian based deploys
+  file:
+    path: "/etc/nginx/sites-enabled/nova_placement_api.conf"
+    state: absent
+  when:
+    - ansible_os_family == "Debian"
+
+- name: Restart nginx if conf removed
+  service:
+    name: nginx
+    state: restarted
+  when: nginx_conf_removed | changed
+  failed_when: false

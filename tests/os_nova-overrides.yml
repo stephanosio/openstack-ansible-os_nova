@@ -13,10 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-tempest_run: yes
-tempest_venv_tag: "{{ tempest_git_install_branch }}"
-tempest_venv_bin: "/opt/tempest_{{ tempest_venv_tag }}/bin"
-tempest_log_dir: "/var/log/"
 tempest_test_whitelist:
   - tempest.scenario.test_server_basic_ops.TestServerBasicOps.test_server_basic_ops
 

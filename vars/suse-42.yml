@@ -60,8 +60,5 @@ nova_compute_powervm_distro_packages: []
 
 novalink_gpg_keys: []
 
-nova_nginx_distro_packages:
-  - nginx
-
+# Needed for nginx cleanup for O -> P upgrades. Remove in Q
 nova_nginx_conf_path: "conf.d"
-nova_nginx_user_name: "nginx"

@@ -73,9 +73,6 @@ nova_compute_lxd_distro_packages:
   - vlan
   - thin-provisioning-tools
 
-nova_nginx_distro_packages:
-  - nginx-full
-
 # nova powervm virt driver
 nova_compute_powervm_distro_packages:
   - bridge-utils
@@ -100,5 +97,5 @@ novalink_gpg_keys:
   - url: "http://public.dhe.ibm.com/systems/virtualization/Novalink/debian/novalink-gpg-pub.key"
     state: "present"
 
+# Needed for nginx cleanup for O -> P upgrades. Remove in Q
 nova_nginx_conf_path: "sites-available"
-nova_nginx_user_name: "www-data"
