@@ -12,4 +12,7 @@
 {% if lxd_storage_pool is defined %}
   --storage-pool={{ lxd_storage_pool }} \
 {% endif %}
+{% if lxd_storage_create_device is defined %}
+  --storage-create-device={{ lxd_storage_create_device }} \
+{% endif %}
   --trust-password={{ lxd_trust_password }}
