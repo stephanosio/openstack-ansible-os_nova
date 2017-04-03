@@ -13,31 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Add novalink keys
-  apt_key:
-    url: "{{ item.url }}"
-    state: "{{ item.state }}"
-  register: add_nv_keys
-  until: add_nv_keys|success
-  retries: 5
-  delay: 2
-  with_items: "{{ novalink_gpg_keys }}"
-  tags:
-    - novalink-apt-keys
-
-- name: Add novalink repo
-  apt_repository:
-    repo: "{{ novalink_repo.repo }}"
-    state: "{{ novalink_repo.state }}"
-    filename:  "{{ novalink_repo.filename | default(omit) }}"
-    update_cache: yes
-  register: add_nv_repos
-  until: add_nv_repos|success
-  retries: 5
-  delay: 2
-  tags:
-    - novalink-repo
-
 - name: Register pypowervm module path (venv)
   command: python -c 'import pypowervm; print pypowervm.__file__'
   changed_when: false
