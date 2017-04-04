@@ -70,6 +70,7 @@ nova_compute_lxd_distro_packages:
   - python-libguestfs
   - sysfsutils
   - vlan
+  - thin-provisioning-tools
 
 nova_nginx_distro_packages:
   - nginx-full
