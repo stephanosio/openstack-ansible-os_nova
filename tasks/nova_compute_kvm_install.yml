@@ -24,12 +24,16 @@
   until: _qemu_save_dir.stat.exists | bool
   retries: 5
   delay: 10
+  failed_when: false
   register: _qemu_save_dir
 
 - name: Check if the qemu save directory is empty
   command: 'ls -1A /var/lib/libvirt/qemu/save'
   changed_when: false
   register: _qemu_save_dir_contents
+  when:
+    - _qemu_save_dir.stat.isdir is defined
+    - _qemu_save_dir.stat.isdir | bool
 
 - name: Move the existing save directory to nova_libvirt_save_path
   command: "mv /var/lib/libvirt/qemu/save {{ nova_libvirt_save_path }}"
