@@ -13,22 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Register pypowervm module path (venv)
-  command: python -c 'import pypowervm; print pypowervm.__file__'
-  changed_when: false
-  register: pypowervm_module_path
-  tags:
-    - nova-powervm-libs
-
-- name: Link pypowervm module into the venv
-  file:
-    src: "{{ pypowervm_module_path.stdout | dirname }}"
-    dest: "{{ nova_bin | dirname }}/lib/python2.7/site-packages/pypowervm"
-    state: link
-    force: "yes"
-  tags:
-    - nova-powervm-libs
-
 - name: Install pip packages
   pip:
     name: "{{ nova_compute_powervm_pip_packages }}"
