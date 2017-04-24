@@ -36,6 +36,3 @@ neutron_provider_networks:
 tempest_tempest_conf_overrides:
   'compute-feature-enabled':
     'config_drive': 'false'
-
-# Required until https://review.openstack.org/#/c/455710/ merges
-nova_git_install_branch: de0a8440c86e180f39e2eed421e1a413844e4dac
