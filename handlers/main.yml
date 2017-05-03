@@ -32,9 +32,7 @@
     state: "restarted"
     daemon_reload: yes
   register: nova_conductor_restart
-  when:
-    - "{{ nova_services['nova-conductor']['group'] in group_names }}"
-    - "{{ nova_services['nova-conductor']['condition'] | default(true) }}"
+  when: '"nova-conductor" in filtered_nova_services'
 
 - name: Restart nova API
   systemd:
@@ -42,9 +40,7 @@
     state: "restarted"
     daemon_reload: yes
   register: nova_api_restart
-  when:
-    - "{{ nova_services['nova-api-os-compute']['group'] in group_names }}"
-    - "{{ nova_services['nova-api-os-compute']['condition'] | default(true) }}"
+  when: '"nova-api-os-compute" in filtered_nova_services'
 
 # Used for services where restart ordering does not matter
 - name: Restart nova misc services
@@ -60,9 +56,7 @@
     - nova-scheduler
     - nova-spicehtml5proxy
     - nova-placement-api
-  when:
-    - "{{ nova_services[item]['group'] in group_names }}"
-    - "{{ nova_services[item]['condition'] | default(true) }}"
+  when: 'item in filtered_nova_services'
 
 - name: Restart nova compute
   systemd:
@@ -70,9 +64,7 @@
     state: "restarted"
     daemon_reload: yes
   register: nova_compute_restart
-  when:
-    - "{{ nova_services['nova-compute']['group'] in group_names }}"
-    - "{{ nova_services['nova-compute']['condition'] | default(true) }}"
+  when: '"nova-compute" in filtered_nova_services'
 
 - name: Reload Nginx
   systemd:
