@@ -17,7 +17,6 @@
   with_first_found:
     - files:
         - "nova_compute_{{ nova_virt_type }}.yml"
-      skip: true
       paths:
         - "drivers/{{ nova_virt_type }}/"
   tags:

@@ -25,7 +25,8 @@
     - always
 
 - name: Fail when virt type is unsupported
-  fail: msg="Unsupported Virt Type Provided {{ nova_supported_virt_types }}"
+  fail:
+    msg: "Unsupported Virt Type Provided {{ nova_supported_virt_types }}"
   when:
     - nova_virt_type is defined
     - nova_virt_type not in nova_supported_virt_types

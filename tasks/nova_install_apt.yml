@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Only PowerVM needs to load a separate file. Skip for the others.
 - include: "{{ item }}"
   with_first_found:
     - files:

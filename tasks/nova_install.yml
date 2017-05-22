@@ -153,13 +153,7 @@
   with_items:
     - "{{ install_nova_role_packages.results }}"
 
-- include: "{{ item }}"
-  with_first_found:
-    - files:
-        - "nova_console_{{ nova_console_type }}_install.yml"
-      skip: true
-      paths:
-        - "consoles/"
+- include: "consoles/nova_console_{{ nova_console_type }}_install.yml"
   when:
     - "'nova_console' in group_names"
   tags:
