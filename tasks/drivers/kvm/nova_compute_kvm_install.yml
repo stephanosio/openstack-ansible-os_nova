@@ -80,13 +80,15 @@
 #  link on bug about libguestfs on pypi https://bugzilla.redhat.com/show_bug.cgi?id=1075594
 - name: Link guestfs into the venv
   file:
-    src: "{{ item.name }}"
-    dest: "{{ nova_bin | dirname }}/lib/python2.7/{{ item.name | basename }}"
-    state: "{{ item.state }}"
+    src: "{{ linkfiles.name }}"
+    dest: "{{ nova_bin | dirname }}/lib/python2.7/{{ linkfiles.name | basename }}"
+    state: "{{ linkfiles.state }}"
     force: "yes"
   with_items:
     - { state: link, name: "/usr/lib/python2.7/dist-packages/libguestfsmod.so" }
     - { state: link, name: "/usr/lib/python2.7/dist-packages/guestfs.py" }
+  loop_control:
+    loop_var: linkfiles
   tags:
     - nova-install
     - nova-pip-packages
