@@ -30,7 +30,7 @@
   shell: "{{ nova_bin }}/nova-manage --config-file /etc/nova/nova.conf cell_v2 list_cells | awk '/{{ nova_cell1_name }}/ {print $4}'"
   become: yes
   become_user: "{{ nova_system_user_name }}"
-  when: "{{ nova_cell1_create.rc == 0 }}"
+  when: "nova_cell1_create.rc == 0"
   register: cell1_uuid
   tags:
     - nova-db-setup
@@ -41,7 +41,7 @@
   command: "{{ nova_bin }}/nova-manage --config-file /etc/nova/nova.conf cell_v2 map_instances --cell_uuid {{ cell1_uuid.stdout }}"
   become: yes
   become_user: "{{ nova_system_user_name }}"
-  when: "{{ nova_cell1_create.rc == 0 }}"
+  when: "nova_cell1_create.rc == 0"
   tags:
     - nova-db-setup
     - nova-setup

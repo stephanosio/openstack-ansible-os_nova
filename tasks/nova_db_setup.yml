@@ -51,8 +51,8 @@
   become: yes
   become_user: "{{ nova_system_user_name }}"
   register: nova_cell1_create
-  failed_when: "{{ nova_cell1_create.rc not in [0, 2] }}"
-  changed_when: "{{ nova_cell1_create.rc == 0 }}"
+  failed_when: "nova_cell1_create.rc not in [0, 2]"
+  changed_when: "nova_cell1_create.rc == 0"
   tags:
     - nova-db-setup
     - nova-setup
