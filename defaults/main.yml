@@ -312,7 +312,6 @@ nova_external_ssl: false
 nova_secure_proxy_ssl_header: HTTP_X_FORWARDED_PROTO
 
 ## Nova global config
-nova_cpu_mode: host-model
 nova_linuxnet_interface_driver: nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
 
 
