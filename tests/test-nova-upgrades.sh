@@ -85,14 +85,14 @@ export ANSIBLE_LOG_PATH="${ANSIBLE_LOG_DIR}/ansible-execute-nova-install.log"
 # Execute the setup of previous Nova
 execute_ansible_playbook
 
-# Prepare environment for the upgrade of Neutron
-export TEST_PLAYBOOK="${COMMON_TESTS_PATH}/test-install-nova.yml"
+# Prepare environment for the upgrade of Nova
+export TEST_PLAYBOOK="${WORKING_DIR}/tests/benchmark-upgrade.yml"
 export ANSIBLE_LOG_PATH="${ANSIBLE_LOG_DIR}/ansible-execute-nova-upgrade.log"
 
 # Excute the upgrade of Nova
 execute_ansible_playbook
 
-# Prepare the environment for the testing of upgraded Neutron
+# Prepare the environment for the testing of upgraded Nova
 export TEST_PLAYBOOK="${COMMON_TESTS_PATH}/test-install-tempest.yml"
 export ANSIBLE_LOG_PATH="${ANSIBLE_LOG_DIR}/ansible-execute-nova-upgrade-test.log"
 
