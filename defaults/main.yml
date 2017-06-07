@@ -489,13 +489,13 @@ nova_compute_ironic_pip_packages:
 
 # Common pip packages
 nova_pip_packages:
-  - PyMySQL
-  - python-memcached
-  - pycrypto
-  - python-keystoneclient
-  - python-novaclient
+  - cryptography
   - keystonemiddleware
   - nova
+  - PyMySQL
+  - python-keystoneclient
+  - python-memcached
+  - python-novaclient
 
 nova_placement_pip_packages:
   - uWSGI
