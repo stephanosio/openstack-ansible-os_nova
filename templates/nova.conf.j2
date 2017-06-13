@@ -54,8 +54,6 @@ dhcpbridge_flagfile = /etc/nova/nova.conf
 firewall_driver = {{ nova_firewall_driver }}
 my_ip = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
 
-default_floating_pool = public
-
 ## Vif
 linuxnet_interface_driver = {{ nova_linuxnet_interface_driver }}
 {% if nova_virt_type in ['kvm', 'lxd', 'qemu', 'xen'] %}
@@ -147,6 +145,7 @@ api_servers = {{ nova_glance_api_servers }}
 url = {{ neutron_service_adminurl }}
 region_name = {{ neutron_service_region }}
 auth_type = password
+default_floating_pool = public
 # Keystone client plugin password option
 password = {{ neutron_service_password }}
 # Keystone client plugin username option
