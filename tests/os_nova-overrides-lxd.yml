@@ -36,5 +36,3 @@ neutron_provider_networks:
 tempest_tempest_conf_overrides:
   'compute-feature-enabled':
     'config_drive': 'false'
-
-neutron_git_install_branch: bf5df0256b0e01c53555a7777b5416d3c1caa7df
