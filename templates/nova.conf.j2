@@ -259,6 +259,9 @@ inject_key = {{ nova_libvirt_inject_key }}
 use_virtio_for_bridges = True
 virt_type = {{ nova_virt_type }}
 remove_unused_resized_minimum_age_seconds = {{ nova_remove_unused_resized_minimum_age_seconds }}
+{% if nova_cpu_mode is defined %}
+cpu_mode = {{ nova_cpu_mode }}
+{% endif %}
 
 {% if nova_libvirt_images_rbd_pool is defined %}
 # ceph rbd support

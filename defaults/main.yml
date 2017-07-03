@@ -163,6 +163,7 @@ nova_virt_types:
     nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
     nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
+    nova_cpu_mode: "none"
   powervm:
     nova_compute_driver: powervm.driver.PowerVMDriver
     nova_scheduler_host_manager: host_manager
