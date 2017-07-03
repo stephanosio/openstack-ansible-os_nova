@@ -237,6 +237,15 @@ nova_novncproxy_agent_enabled: True
 nova_novncproxy_git_repo: https://github.com/novnc/noVNC
 nova_novncproxy_git_install_branch: master
 
+## Nova serialconsole
+nova_serialconsoleproxy_proto: "ws"
+nova_serialconsoleproxy_port: 6083
+nova_serialconsoleproxy_port_range: 10000:20000
+nova_serialconsoleproxy_base_uri: "{{ nova_serialconsoleproxy_proto }}://{{ external_lb_vip_address }}:{{ nova_serialconsoleproxy_port }}"
+nova_serialconsoleproxy_base_url: "{{ nova_serialconsoleproxy_base_uri }}"
+nova_serialconsoleproxy_serialconsole_proxyserver_proxyclient_address: "{{ ansible_host }}"
+nova_serialconsoleproxy_enabled: True
+
 ## Nova metadata
 nova_metadata_proxy_enabled: "{{ nova_network_services[nova_network_type]['metadata_proxy_enabled'] | bool }}"
 nova_metadata_host: "{{ internal_lb_vip_address }}"
@@ -292,7 +301,7 @@ nova_libvirt_hw_disk_discard: '{{ nova_libvirt_images_rbd_pool is defined | tern
 
 ## Nova console
 nova_console_agent_enabled: True
-# Set the console type. Presently the only options are ["spice", "novnc"].
+# Set the console type. Presently the only options are ["spice", "novnc", "serialconsole"].
 nova_console_type: spice
 
 # Nova console ssl info, presently only used by novnc console type
@@ -420,6 +429,7 @@ nova_novncproxy_init_overrides: {}
 nova_scheduler_init_overrides: {}
 nova_spicehtml5proxy_init_overrides: {}
 nova_placement_api_init_overrides: {}
+nova_serialproxy_init_overrides: {}
 
 ## Service Name-Group Mapping
 nova_services:
@@ -489,7 +499,12 @@ nova_services:
     uwsgi_port: "{{ nova_placement_service_port }}"
     wsgi_name: nova-placement-api
     wsgi_overrides: "{{ nova_placement_uwsgi_ini_overrides }}"
-
+  nova-serialconsole-proxy:
+    group: nova_console
+    service_name: nova-serialproxy
+    init_config_overrides: "{{ nova_serialproxy_init_overrides }}"
+    condition: "{{ nova_console_type == 'serialconsole' }}"
+    start_order: 4
 
 nova_novnc_pip_packages:
   - websockify

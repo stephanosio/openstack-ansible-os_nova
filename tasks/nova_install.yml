@@ -161,6 +161,7 @@
 - include: "consoles/nova_console_{{ nova_console_type }}_install.yml"
   when:
     - "'nova_console' in group_names"
+    - "nova_console_type != 'serialconsole'"
   tags:
     - nova-install
     - nova-novnc-console

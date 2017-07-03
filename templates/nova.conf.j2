@@ -111,7 +111,6 @@ catalog_info = volumev3:cinderv3:internalURL
 cross_az_attach = {{ nova_cross_az_attach }}
 os_region_name = {{ nova_service_region }}
 
-
 {% if nova_console_type == 'spice' %}
 [spice]
 agent_enabled = {{ nova_console_agent_enabled }}
@@ -132,6 +131,21 @@ enabled = {{ nova_novncproxy_agent_enabled }}
 novncproxy_base_url = {{ nova_novncproxy_base_url }}
 vncserver_listen = {{ nova_novncproxy_vncserver_listen }}
 vncserver_proxyclient_address = {{ nova_novncproxy_vncserver_proxyclient_address }}
+
+{% elif nova_console_type == 'serialconsole' %}
+[serial_console]
+enabled = {{ nova_serialconsoleproxy_enabled }}
+# Console Url and binds
+base_url= {{ nova_serialconsoleproxy_base_url }}
+proxyclient_address = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
+port_range = {{ nova_serialconsoleproxy_port_range }}
+{% if 'nova_console' in group_names %}
+serialproxy_host= {{ nova_serialconsoleproxy_serialconsole_proxyserver_proxyclient_address }}
+serialproxy_port= {{ nova_serialconsoleproxy_port }}
+{% endif %}
+
+[vnc]
+enabled = False
 
 {% endif %}
 
