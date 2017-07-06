@@ -64,7 +64,7 @@
   static: no
   when:
     - "'nova_conductor' in group_names"
-    - "inventory_hostname == ansible_play_hosts[0]"
+    - "inventory_hostname == (groups['nova_conductor'] | intersect(ansible_play_hosts))[0]"
   tags:
     - nova-config
 
@@ -76,7 +76,7 @@
   static: no
   when:
     - "'nova_conductor' in group_names"
-    - "inventory_hostname == ansible_play_hosts[0]"
+    - "inventory_hostname == (groups['nova_conductor'] | intersect(ansible_play_hosts))[0]"
   tags:
     - nova-config
 
