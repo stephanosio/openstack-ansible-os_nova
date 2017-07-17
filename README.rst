@@ -22,6 +22,6 @@ This role will install the following:
     * nova-compute
 
 Documentation for the project can be found at:
-`<http://docs.openstack.org/developer/openstack-ansible-os_nova/>`_
+`<https://docs.openstack.org/openstack-ansible-os_nova/latest/>`_
 
 The project home is at: `<http://launchpad.net/openstack-ansible>`_
