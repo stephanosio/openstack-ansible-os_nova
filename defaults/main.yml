@@ -313,9 +313,6 @@ nova_external_ssl: false
 nova_secure_proxy_ssl_header: HTTP_X_FORWARDED_PROTO
 
 ## Nova global config
-nova_linuxnet_interface_driver: nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
-
-
 nova_max_age: 0
 nova_remove_unused_resized_minimum_age_seconds: 3600
 nova_image_cache_manager_interval: 0
