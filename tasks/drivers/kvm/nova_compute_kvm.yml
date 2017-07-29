@@ -83,7 +83,7 @@
     - nova-kvm
     - nova-libvirt
 
-- name: Set libvirt runtime options (CentOS)
+- name: Set libvirt runtime options (RPM)
   lineinfile:
     dest: "/etc/sysconfig/libvirtd"
     line: 'LIBVIRTD_ARGS="-l"'
@@ -91,14 +91,14 @@
     backup: "yes"
   when:
     - nova_libvirtd_listen_tcp == 1
-    - ansible_pkg_mgr == 'yum'
+    - ansible_pkg_mgr in ['yum', 'zypper']
   notify: Restart libvirt-bin
   tags:
     - nova-config
     - nova-kvm
     - nova-libvirt
 
-- name: Set libvirt runtime options (CentOS)
+- name: Set libvirt runtime options (RPM)
   lineinfile:
     dest: "/etc/sysconfig/libvirtd"
     line: 'LIBVIRTD_ARGS=""'
@@ -106,7 +106,7 @@
     backup: "yes"
   when:
     - nova_libvirtd_listen_tcp == 0
-    - ansible_pkg_mgr == 'yum'
+    - ansible_pkg_mgr in ['yum', 'zypper']
   notify: Restart libvirt-bin
   tags:
     - nova-config
