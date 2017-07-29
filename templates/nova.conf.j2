@@ -55,7 +55,6 @@ firewall_driver = {{ nova_firewall_driver }}
 my_ip = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
 
 ## Vif
-linuxnet_interface_driver = {{ nova_linuxnet_interface_driver }}
 {% if nova_virt_type in ['kvm', 'lxd', 'qemu', 'xen'] %}
 libvirt_vif_type = ethernet
 {% endif %}
