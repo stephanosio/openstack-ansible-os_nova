@@ -91,7 +91,7 @@
     backup: "yes"
   when:
     - nova_libvirtd_listen_tcp == 1
-    - ansible_pkg_mgr in ['yum', 'zypper']
+    - ansible_pkg_mgr in ['yum', 'dnf', 'zypper']
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -106,7 +106,7 @@
     backup: "yes"
   when:
     - nova_libvirtd_listen_tcp == 0
-    - ansible_pkg_mgr in ['yum', 'zypper']
+    - ansible_pkg_mgr in ['yum', 'dnf', 'zypper']
   notify: Restart libvirt-bin
   tags:
     - nova-config
