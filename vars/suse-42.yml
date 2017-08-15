@@ -26,6 +26,7 @@ nova_distro_packages:
   - iptables
   - postgresql-devel
   - which
+  - libxml2-devel
 
 # Spice console zypper packages
 nova_spice_distro_packages:
