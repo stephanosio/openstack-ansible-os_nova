@@ -15,7 +15,7 @@
 
 - include: nova_compute_kvm_install.yml
   tags:
-    - nova-config
+    - nova-install
 
 - name: Add nova user to libvirtd group
   user:
