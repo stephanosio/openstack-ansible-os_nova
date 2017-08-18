@@ -72,7 +72,6 @@
   when:
     - nova_get_venv | failed or nova_get_venv | skipped
   tags:
-    - nova-install
     - nova-pip-packages
 
 # TODO(cloudnull): use a package from pypi when its made available
@@ -93,5 +92,4 @@
   loop_control:
     loop_var: linkfiles
   tags:
-    - nova-install
     - nova-pip-packages
