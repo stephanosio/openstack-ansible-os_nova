@@ -51,7 +51,9 @@
       dest: "/etc/nova/policy.json-{{ nova_venv_tag }}"
       config_overrides: "{{ nova_policy_overrides }}"
       config_type: "json"
-  notify: Restart nova services
+  notify:
+    - Manage LB
+    - Restart nova services
   tags:
     - nova-config
     - nova-post-install
@@ -64,7 +66,9 @@
     group: "root"
   with_fileglob:
     - rootwrap.d/*
-  notify: Restart nova services
+  notify:
+    - Manage LB
+    - Restart nova services
   tags:
     - nova-config
     - nova-post-install

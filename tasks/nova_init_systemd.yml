@@ -49,6 +49,7 @@
     group: "root"
   with_items: "{{ filtered_nova_services }}"
   notify:
+    - Manage LB
     - Restart nova services
 
 - name: Place the systemd init script
@@ -62,4 +63,5 @@
     config_type: "ini"
   with_items: "{{ filtered_nova_services }}"
   notify:
+    - Manage LB
     - Restart nova services

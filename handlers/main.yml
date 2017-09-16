@@ -74,3 +74,7 @@
     - "'nova_compute' in group_names"
     - "nova_discover_hosts_in_cells_interval | int < 1"
   listen: "Restart nova services"
+
+- meta: noop
+  listen: Manage LB
+  when: false

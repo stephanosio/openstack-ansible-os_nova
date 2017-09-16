@@ -118,7 +118,9 @@
     copy: "no"
   when:
     - nova_get_venv | changed
-  notify: Restart nova services
+  notify:
+    - Manage LB
+    - Restart nova services
   tags:
     - nova-pip-packages
 
@@ -138,7 +140,9 @@
   delay: 2
   when:
     - nova_get_venv | failed or nova_get_venv | skipped
-  notify: Restart nova services
+  notify:
+    - Manage LB
+    - Restart nova services
   tags:
     - nova-pip-packages
 

@@ -30,6 +30,7 @@
   with_items: "{{ filtered_nova_services }}"
   when: item.wsgi_app | default(False)
   notify:
+    - Manage LB
     - Restart nova services
 
 # Cleanup and restart nginx configuration
