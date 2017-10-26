@@ -113,6 +113,20 @@
     - nova-kvm
     - nova-libvirt
 
+- name: Set qemu-kvm KSM config (Ubuntu)
+  lineinfile:
+    dest: "/etc/default/qemu-kvm"
+    line: "KSM_ENABLED={{ nova_compute_ksm_enabled | ternary('1','0') }}"
+    regexp: "^KSM_ENABLED=*"
+    backup: yes
+  when:
+    - ansible_pkg_mgr == 'apt'
+  notify: Restart libvirt-bin
+  tags:
+    - nova-config
+    - nova-kvm
+    - nova-libvirt
+
 - include: nova_disable_smt.yml
   when:
     - ansible_architecture == 'ppc64le'
