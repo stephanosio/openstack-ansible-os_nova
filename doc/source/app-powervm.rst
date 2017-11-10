@@ -18,8 +18,8 @@ following pre-requisites must be fulfilled:
 
  - The NovaLink Management VM needs at least one direct attach I/O card.
    OpenStack Ansible is currently able to deploy the PowerVM drivers when
-   paired with the Linux Bridge or Open vSwitch agent. The traditional PowerVM
-   Shared Ethernet Adapter networking agent is not yet supported.
+   paired with the Open vSwitch agent. The traditional PowerVM Shared Ethernet
+   Adapter networking agent is not yet supported.
 
  - The network topology on the NovaLink must match a supported OpenStack
    Ansible network configuration.
