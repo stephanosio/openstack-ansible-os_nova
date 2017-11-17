@@ -17,7 +17,7 @@
   include: nova_install_apt_powervm.yml
   static: no
   when:
-    - "'nova_compute' in group_names"
+    - "nova_services['nova-compute']['group'] in group_names"
     - "nova_virt_type == 'powervm'"
     - "ansible_pkg_mgr == 'apt'"
 
@@ -38,7 +38,7 @@
   delay: 2
   with_items: "{{ nova_spice_distro_packages }}"
   when:
-    - inventory_hostname in groups['nova_console']
+    - "nova_services['nova-spicehtml5proxy']['group'] in group_names"
     - nova_console_type == "spice"
   tags:
     - nova-apt-packages
@@ -166,7 +166,9 @@
 
 - include: "consoles/nova_console_{{ nova_console_type }}_install.yml"
   when:
-    - "'nova_console' in group_names"
+    - "nova_services['nova-novncproxy']['group'] in group_names or
+        nova_services['nova-spicehtml5proxy']['group'] in group_names or
+        nova_services['nova-serialconsole-proxy']['group'] in group_names"
     - "nova_console_type != 'serialconsole'"
   tags:
     - nova-install

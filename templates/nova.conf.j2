@@ -27,7 +27,9 @@ allow_resize_to_same_host = True
 image_cache_manager_interval = {{ nova_image_cache_manager_interval }}
 resume_guests_state_on_host_boot = {{ nova_resume_guests_state_on_host_boot }}
 
-{% if nova_console_user_ssl_cert is defined and nova_console_user_ssl_key is defined and inventory_hostname in groups['nova_console'] %}
+{% if nova_console_user_ssl_cert is defined and nova_console_user_ssl_key is defined and nova_services['nova-novncproxy']['group'] in group_names or
+nova_services['nova-spicehtml5proxy']['group'] in group_names or
+nova_services['nova-serialconsole-proxy']['group'] in group_names %}
 # Console SSL keys
 ssl_only = true
 cert = {{ nova_console_ssl_cert }}
@@ -139,7 +141,7 @@ enabled = {{ nova_serialconsoleproxy_enabled }}
 base_url= {{ nova_serialconsoleproxy_base_url }}
 proxyclient_address = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
 port_range = {{ nova_serialconsoleproxy_port_range }}
-{% if 'nova_console' in group_names %}
+{% if nova_services['nova-serialconsole-proxy']['group'] %}
 serialproxy_host= {{ nova_serialconsoleproxy_serialconsole_proxyserver_proxyclient_address }}
 serialproxy_port= {{ nova_serialconsoleproxy_port }}
 {% endif %}

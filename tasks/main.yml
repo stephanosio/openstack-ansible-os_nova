@@ -81,7 +81,7 @@
 - include: nova_db_setup.yml
   static: no
   when:
-    - "'nova_conductor' in group_names"
+    - "nova_services['nova-conductor']['group'] in group_names"
     - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
   tags:
     - nova-config
@@ -97,7 +97,7 @@
 - include: nova_service_setup.yml
   static: no
   when:
-    - "'nova_conductor' in group_names"
+    - "nova_services['nova-conductor']['group'] in group_names"
     - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
   tags:
     - nova-config
@@ -105,7 +105,7 @@
 - include: nova_compute.yml
   static: no
   when:
-    - "'nova_compute' in group_names"
+    - "nova_services['nova-compute']['group'] in group_names"
   tags:
     - nova-compute
 
@@ -116,7 +116,7 @@
     openstack_service_system_user: "{{ nova_system_user_name }}"
     openstack_service_venv_bin: "{{ nova_bin }}"
   when:
-    - "'nova_compute' in group_names"
+    - "nova_services['nova-compute']['group'] in group_names"
     - "(nova_libvirt_images_rbd_pool is defined) or
        (nova_cinder_rbd_inuse | bool)"
   tags:
@@ -138,6 +138,6 @@
   loop_control:
     loop_var: conductor_host
   when:
-    - "'nova_compute' in group_names"
+    - "nova_services['nova-compute']['group'] in group_names"
   tags:
     - nova-config
