@@ -138,38 +138,28 @@ nova_virt_types:
     nova_compute_driver: ironic.IronicDriver
     nova_scheduler_host_manager: ironic_host_manager
     nova_reserved_host_memory_mb: 0
-    nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
-    nova_scheduler_use_baremetal_filters: True
     nova_scheduler_tracks_instance_changes: False
   kvm:
     nova_compute_driver: libvirt.LibvirtDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
-    nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
-    nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
   lxd:
     nova_compute_driver: lxd.LXDDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
     nova_compute_manager: nova.compute.manager.ComputeManager
-    nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
-    nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
   qemu:
     nova_compute_driver: libvirt.LibvirtDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
-    nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
-    nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
     nova_cpu_mode: "none"
   powervm:
     nova_compute_driver: powervm.driver.PowerVMDriver
     nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 8192
-    nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
-    nova_scheduler_use_baremetal_filters: False
     nova_scheduler_tracks_instance_changes: True
 
 
@@ -251,7 +241,6 @@ nova_serialconsoleproxy_enabled: True
 
 ## Nova metadata
 nova_metadata_proxy_enabled: "{{ nova_network_services[nova_network_type]['metadata_proxy_enabled'] | bool }}"
-nova_metadata_host: "{{ internal_lb_vip_address }}"
 nova_metadata_port: 8775
 
 ## Nova compute
