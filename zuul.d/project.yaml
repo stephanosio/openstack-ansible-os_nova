@@ -23,6 +23,7 @@
         - openstack-ansible-functional-ubuntu-xenial
         - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
+        - openstack-ansible-nova-ssl-nv
     experimental:
       jobs:
         - openstack-ansible-integrated-deploy-aio
@@ -34,3 +35,4 @@
         - openstack-ansible-functional-ubuntu-xenial
         - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
+        - openstack-ansible-nova-ssl-nv
