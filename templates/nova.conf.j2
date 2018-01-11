@@ -125,8 +125,8 @@ enabled = False
 [vnc]
 enabled = {{ nova_novncproxy_agent_enabled }}
 novncproxy_base_url = {{ nova_novncproxy_base_url }}
-vncserver_listen = {{ nova_novncproxy_vncserver_listen }}
-vncserver_proxyclient_address = {{ nova_novncproxy_vncserver_proxyclient_address }}
+server_listen = {{ nova_novncproxy_vncserver_listen }}
+server_proxyclient_address = {{ nova_novncproxy_vncserver_proxyclient_address }}
 
 {% elif nova_console_type == 'serialconsole' %}
 [serial_console]
