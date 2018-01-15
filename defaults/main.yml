@@ -530,7 +530,6 @@ nova_novnc_pip_packages:
 # nova packages that must be installed before anything else
 nova_requires_pip_packages:
   - virtualenv
-  - virtualenv-tools
   - python-keystoneclient # Keystoneclient needed to OSA keystone lib
   - httplib2
   - python-openstackclient

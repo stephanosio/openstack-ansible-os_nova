@@ -157,11 +157,13 @@
     - nova_get_venv | changed
 
 - name: Update virtualenv path
-  command: >
-    virtualenv-tools --update-path=auto --reinitialize {{ nova_bin | dirname }}
+  shell: |
+    find {{ nova_bin }} -name \*.pyc -delete
+    sed -si '1s/^.*python.*$/#!{{ nova_bin | replace ('/','\/') }}\/python/' {{ nova_bin }}/*
   when:
     - nova_get_venv | changed
   tags:
+    - skip_ansible_lint
     - nova-pip-packages
 
 - include: "consoles/nova_console_{{ nova_console_type }}_install.yml"
