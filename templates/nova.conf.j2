@@ -210,7 +210,7 @@ token_cache_time = 300
 memcache_security_strategy = ENCRYPT
 memcache_secret_key = {{ memcached_encryption_key }}
 
-{% if inventory_hostname in (groups['nova_conductor'] + groups['nova_scheduler'] + groups['nova_api_os_compute'] + groups['nova_api_metadata'] + groups['nova_console'] + groups['nova_api_placement'])%}
+{% if group_names | intersect(nova_services.keys() | difference('nova-compute') | map('extract', nova_services, 'group') | list) | count > 0 %}
 [database]
 connection = mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_password }}@{{ nova_galera_address }}/{{ nova_galera_database }}?charset=utf8{% if nova_galera_use_ssl | bool %}&ssl_ca={{ nova_galera_ssl_ca_cert }}{% endif %}
 
