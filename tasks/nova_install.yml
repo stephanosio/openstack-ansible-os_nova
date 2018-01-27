@@ -160,6 +160,7 @@
   shell: |
     find {{ nova_bin }} -name \*.pyc -delete
     sed -si '1s/^.*python.*$/#!{{ nova_bin | replace ('/','\/') }}\/python/' {{ nova_bin }}/*
+    virtualenv {{ nova_bin | dirname }}
   when:
     - nova_get_venv | changed
   tags:
