@@ -13,29 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Check if /var/lib/nova exists
-  stat:
-    path: /var/lib/nova
-  register: openstack_nova_dir
-
+# TODO(mhayden): Remove this task during the Rocky development cycle.
 - name: Check for SELinux equivalence for /var/lib/nova
   shell: "semanage fcontext -l /var/lib/nova | grep '^/var/lib/nova = /var/log/libvirt$' || true"
   register: fcontext_check
   tags:
     - skip_ansible_lint
 
-- name: Create SELinux fcontext equivalence for nova instance dir
-  command: semanage fcontext --add --equal /var/log/libvirt /var/lib/nova
+# NOTE(mhayden): The old equivalence added in Pike is removed here since it
+# is superseded by the task right after this one.
+# TODO(mhayden): Remove this task during the Rocky development cycle.
+- name: Remove SELinux fcontext equivalence for nova instance directory
+  command: semanage fcontext --delete --equal /var/log/libvirt /var/lib/nova
   failed_when: selinux_equivalence.rc not in [0,1]
   changed_when: selinux_equivalence.rc == 0
   register: selinux_equivalence
   when:
-    - openstack_nova_dir.stat.exists
     - '"/var/lib/nova" not in fcontext_check.stdout'
+
+- name: Set SELinux file contexts for nova's ssh keys
+  sefcontext:
+    target: "/var/lib/nova/\\.ssh(/.*)?"
+    setype: "ssh_home_t"
+    state: present
+  register: selinux_file_context_ssh_keys
 
 - name: Apply updated SELinux contexts on /var/lib/nova
   command: restorecon -R /var/lib/nova
   when:
-    - openstack_nova_dir.stat.exists
-    - '"/var/lib/nova" not in fcontext_check.stdout'
-    - selinux_equivalence | changed
+    - selinux_equivalence | changed or selinux_file_context_ssh_keys | changed
