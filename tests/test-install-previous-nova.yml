@@ -15,6 +15,9 @@
 
 - include: common/previous/setting-nodepool-variables.yml
 
+# Ensure the repo is setup for previous version
+- include: common/previous/test-repo-setup.yml
+
 - name: Prepare for nova services
   hosts: nova_all
   user: root
