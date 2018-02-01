@@ -27,9 +27,3 @@
 
 # Install Neutron
 - include: common/test-install-neutron.yml
-
-# Ensure the repo is setup for previous version
-- include: common/previous/test-repo-setup.yml
-
-# Install previous Nova
-- include: test-install-previous-nova.yml
