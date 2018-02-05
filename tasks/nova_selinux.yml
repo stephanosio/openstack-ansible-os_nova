@@ -42,3 +42,23 @@
   command: restorecon -R /var/lib/nova
   when:
     - selinux_equivalence | changed or selinux_file_context_ssh_keys | changed
+
+- name: Copy OSA SELinux policy
+  copy:
+    src: osa-nova.te
+    dest: /tmp/osa-nova.te
+
+# NOTE(mhayden): Linting checks are skipped here because there isn't a
+# reliable way to determine if this SELinux module is newer than the one that
+# is currently in use on the system. The linter expects there to be a
+# "creates" argument below.
+- name: Compile new SELinux policy
+  command: "{{ item }}"
+  args:
+    chdir: "/tmp/"
+  with_items:
+    - checkmodule -M -m -o osa-nova.mod osa-nova.te
+    - semodule_package -o osa-nova.pp -m osa-nova.mod
+    - semodule -i osa-nova.pp
+  tags:
+    - skip_ansible_lint
