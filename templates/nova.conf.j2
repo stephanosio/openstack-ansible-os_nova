@@ -226,14 +226,6 @@ max_overflow = {{ nova_api_db_max_overflow }}
 max_pool_size = {{ nova_api_db_max_pool_size }}
 pool_timeout = {{ nova_api_db_pool_timeout }}
 
-{% if nova_placement_service_enabled | bool %}
-[placement_database]
-connection = mysql+pymysql://{{ nova_placement_galera_user }}:{{ nova_placement_container_mysql_password }}@{{ nova_placement_galera_address }}/{{ nova_placement_galera_database }}?charset=utf8{% if nova_galera_use_ssl | bool %}&ssl_ca={{ nova_galera_ssl_ca_cert }}{% endif %}
-
-max_overflow = {{ nova_placement_db_max_overflow }}
-max_pool_size = {{ nova_placement_db_max_pool_size }}
-pool_timeout = {{ nova_placement_db_pool_timeout }}
-{% endif %}
 {% endif %}
 
 [oslo_concurrency]

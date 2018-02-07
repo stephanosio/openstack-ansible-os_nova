@@ -93,13 +93,6 @@ nova_api_db_max_overflow: 10
 nova_api_db_max_pool_size: 120
 nova_api_db_pool_timeout: 30
 
-## DB Placement
-nova_placement_galera_user: nova_placement
-nova_placement_galera_database: nova_placement
-nova_placement_db_max_overflow: 10
-nova_placement_db_max_pool_size: 120
-nova_placement_db_pool_timeout: 30
-
 ## DB Cells
 nova_cell0_database: "nova_cell0"
 nova_cell1_name: "cell1"
