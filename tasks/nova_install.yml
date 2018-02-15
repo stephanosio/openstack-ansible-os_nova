@@ -14,8 +14,7 @@
 # limitations under the License.
 
 - name: Setup powervm repository
-  include: nova_install_apt_powervm.yml
-  static: no
+  include_tasks: nova_install_apt_powervm.yml
   when:
     - "nova_services['nova-compute']['group'] in group_names"
     - "nova_virt_type == 'powervm'"
@@ -167,7 +166,7 @@
     - skip_ansible_lint
     - nova-pip-packages
 
-- include: "consoles/nova_console_{{ nova_console_type }}_install.yml"
+- include_tasks: "consoles/nova_console_{{ nova_console_type }}_install.yml"
   when:
     - "nova_services['nova-novncproxy']['group'] in group_names or
         nova_services['nova-spicehtml5proxy']['group'] in group_names or
