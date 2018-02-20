@@ -53,17 +53,16 @@
   tags:
     - always
 
-- include: nova_virt_detect.yml
-  static: no
+- include_tasks: nova_virt_detect.yml
   tags:
     - always
     - nova-config
 
-- include: nova_pre_install.yml
+- include_tasks: nova_pre_install.yml
   tags:
     - nova-install
 
-- include: nova_install.yml
+- include_tasks: nova_install.yml
   tags:
     - nova-install
 
@@ -74,36 +73,33 @@
   tags:
     - nova-config
 
-- include: nova_post_install.yml
+- include_tasks: nova_post_install.yml
   tags:
     - nova-config
 
-- include: nova_db_setup.yml
-  static: no
+- include_tasks: nova_db_setup.yml
   when:
     - "nova_services['nova-conductor']['group'] in group_names"
     - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
   tags:
     - nova-config
 
-- include: nova_uwsgi.yml
+- include_tasks: nova_uwsgi.yml
   tags:
     - nova-config
 
-- include: "nova_init_{{ ansible_service_mgr}}.yml"
+- include_tasks: "nova_init_{{ ansible_service_mgr}}.yml"
   tags:
     - nova-config
 
-- include: nova_service_setup.yml
-  static: no
+- include_tasks: nova_service_setup.yml
   when:
     - "nova_services['nova-conductor']['group'] in group_names"
     - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
   tags:
     - nova-config
 
-- include: nova_compute.yml
-  static: no
+- include_tasks: nova_compute.yml
   when:
     - "nova_services['nova-compute']['group'] in group_names"
   tags:
@@ -132,7 +128,7 @@
 # Also, we delegate this to a random host in the
 # conductor group in order to spread the load of
 # multiple forks across the group members.
-- include: nova_db_post_setup.yml
+- include_tasks: nova_db_post_setup.yml
   delegate_to: "{{ conductor_host }}"
   with_random_choice: "{{ groups['nova_conductor'] }}"
   loop_control:
