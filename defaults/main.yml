@@ -309,7 +309,7 @@ nova_resume_guests_state_on_host_boot: False
 # nova_default_schedule_zone: nova
 
 # Comma separated list of Glance API servers
-# nova_glance_api_servers:
+nova_glance_api_servers: "{{ glance_service_internalurl | netorigin }}"
 
 nova_network_type: linuxbridge
 
