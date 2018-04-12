@@ -16,6 +16,7 @@
 - job:
     name: openstack-ansible-lxd-ubuntu-xenial
     parent: openstack-ansible-functional-ubuntu-xenial
+    voting: false
     vars:
       tox_env: func_lxd
 

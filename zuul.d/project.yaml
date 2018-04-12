@@ -38,4 +38,4 @@
         # Restore this once the blocking issue has
         # been resolved.
         #- openstack-ansible-upgrade-ubuntu-xenial
-        - openstack-ansible-lxd-ubuntu-xenial
+        #- openstack-ansible-lxd-ubuntu-xenial
