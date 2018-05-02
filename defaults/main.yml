@@ -130,29 +130,24 @@ nova_rabbitmq_telemetry_use_ssl: "{{ nova_rabbitmq_use_ssl }}"
 nova_virt_types:
   ironic:
     nova_compute_driver: ironic.IronicDriver
-    nova_scheduler_host_manager: ironic_host_manager
     nova_reserved_host_memory_mb: 0
     nova_scheduler_tracks_instance_changes: False
   kvm:
     nova_compute_driver: libvirt.LibvirtDriver
-    nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
     nova_scheduler_tracks_instance_changes: True
   lxd:
     nova_compute_driver: lxd.LXDDriver
-    nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
     nova_compute_manager: nova.compute.manager.ComputeManager
     nova_scheduler_tracks_instance_changes: True
   qemu:
     nova_compute_driver: libvirt.LibvirtDriver
-    nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 2048
     nova_scheduler_tracks_instance_changes: True
     nova_cpu_mode: "none"
   powervm:
     nova_compute_driver: powervm.driver.PowerVMDriver
-    nova_scheduler_host_manager: host_manager
     nova_reserved_host_memory_mb: 8192
     nova_scheduler_tracks_instance_changes: True
 
