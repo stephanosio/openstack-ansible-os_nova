@@ -150,6 +150,7 @@ enabled = False
 # Glance
 [glance]
 api_servers = {{ nova_glance_api_servers }}
+insecure = {{ keystone_service_internaluri_insecure | bool }}
 
 # Neutron
 [neutron]
