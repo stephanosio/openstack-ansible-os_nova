@@ -24,9 +24,42 @@ nova_distro_packages:
   - genisoimage
   - git-core
   - iptables
-  - postgresql-devel
-  - which
+  - python-keystoneclient
+  - python-openstackclient
+
+nova_devel_distro_packages:
   - libxml2-devel
+  - postgresql-devel
+  - python-httplib2
+  - which
+
+nova_service_distro_packages:
+  - openstack-nova
+  - openstack-nova-api
+  - openstack-nova-cells
+  - openstack-nova-compute
+  - openstack-nova-conductor
+  - openstack-nova-console
+  - openstack-nova-consoleauth
+  - openstack-nova-network
+  - openstack-nova-novncproxy
+  - openstack-nova-placement-api
+  - openstack-nova-scheduler
+  - openstack-nova-serialproxy
+  - openstack-nova-vncproxy
+  - python-keystonemiddleware
+  - python-memcached
+  - python-novaclient
+  - python-PyMySQL
+  - uwsgi
+  - uwsgi-python
+
+nova_service_extra_distro_packages:
+  kvm: []
+  lxd: []
+  novnc:
+    - openstack-nova-novncproxy
+  spice: []
 
 nova_novnc_distro_packages:
   - python-websockify
@@ -77,3 +110,5 @@ novalink_gpg_keys: []
 
 # Needed for nginx cleanup for O -> P upgrades. Remove in Q
 nova_nginx_conf_path: "conf.d"
+
+nova_uwsgi_bin: '/usr/sbin'

@@ -55,51 +55,6 @@
     owner: "{{ nova_qemu_user }}"
     group: "{{ nova_qemu_group }}"
 
-# Note (odyssey4me):
-# These python libraries have C bindings which tend to be very
-# particular about the version of their companion packages.
-# To ensure things run smoothly for stable releases, we opt to
-# use the distro packages for these and symlink the appropriate
-# library files and binding into the venv.
-
-- name: Link guestfs into the venv
-  file:
-    src: "{{ linkfiles.name }}"
-    dest: "{{ nova_bin | dirname }}/lib/python2.7/{{ linkfiles.name | basename }}"
-    state: "{{ linkfiles.state }}"
-    force: "yes"
-  with_items:
-    - { state: link, name: "/usr/lib/python2.7/dist-packages/libguestfsmod.so" }
-    - { state: link, name: "/usr/lib/python2.7/dist-packages/guestfs.py" }
-  loop_control:
-    loop_var: linkfiles
-  tags:
-    - nova-pip-packages
-
-- name: Register libvirt module path
-  command: python -c 'import libvirt; print libvirt.__file__'
-  changed_when: false
-  register: _libvirt_module_path
-  tags:
-    - nova-pip-packages
-
-- name: Register libvirt-python files
-  shell: >-
-    {{ (ansible_pkg_mgr == 'apt') | ternary('dpkg -L python-libvirt', 'rpm -ql libvirt-python') }}
-    | grep '^{{ _libvirt_module_path.stdout | dirname }}/'
-  args:
-    warn: no
-  changed_when: false
-  register: _libvirt_python_files
-  tags:
-    - nova-pip-packages
-
-- name: Link the libvirt files into venv
-  file:
-    src: "{{ item }}"
-    dest: "{{ nova_bin | dirname }}/lib/python2.7/site-packages/{{ item | basename }}"
-    state: link
-    force: yes
-  with_items: "{{ _libvirt_python_files.stdout_lines }}"
-  tags:
-    - nova-pip-packages
+- name: Install nova kvm packages from PIP
+  include_tasks: nova_compute_kvm_install_source.yml
+  when: nova_install_method == 'source'

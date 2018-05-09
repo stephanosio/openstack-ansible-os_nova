@@ -13,22 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install pip packages (venv)
-  pip:
-    name: "{{ nova_compute_lxd_pip_packages }}"
-    state: "{{ nova_pip_package_state }}"
-    virtualenv: "{{ nova_bin | dirname }}"
-    virtualenv_site_packages: "no"
-    extra_args: >-
-      {{ nova_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
-      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
-      {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages|success
-  retries: 5
-  delay: 2
-  tags:
-    - nova-pip-packages
+- name: Install nova lxd packages from PIP
+  include_tasks: nova_compute_lxd_source.yml
+  when: nova_install_method == 'source'
 
 - name: Add nova user to lxd group
   user:

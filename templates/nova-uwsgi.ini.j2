@@ -3,7 +3,9 @@
 uid = {{ nova_system_user_name }}
 gid = {{ nova_system_group_name }}
 
+{% if nova_install_method == 'source' %}
 virtualenv = /openstack/venvs/nova-{{ nova_venv_tag }}
+{% endif %}
 wsgi-file = {{ nova_bin }}/{{ item.wsgi_name }}
 http = 0.0.0.0:{{ item.uwsgi_port }}
 

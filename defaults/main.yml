@@ -31,6 +31,9 @@ debug: False
 nova_package_state: "latest"
 nova_pip_package_state: "latest"
 
+# Set installation method.
+nova_install_method: "source"
+
 nova_git_repo: https://git.openstack.org/openstack/nova
 nova_git_install_branch: master
 
@@ -44,7 +47,7 @@ nova_developer_constraints:
 
 # Name of the virtual env to deploy into
 nova_venv_tag: untagged
-nova_bin: "/openstack/venvs/nova-{{ nova_venv_tag }}/bin"
+nova_bin: "{{ _nova_bin }}"
 
 # venv_download, even when true, will use the fallback method of building the
 # venv from scratch if the venv download fails.
@@ -440,8 +443,8 @@ nova_services:
     service_name: nova-api-metadata
     init_config_overrides: "{{ nova_api_metadata_init_overrides }}"
     start_order: 5
-    execstarts: "{{ nova_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-api-metadata.ini"
-    execreloads: "{{ nova_bin }}/uwsgi --reload /var/run/nova-api-metadata/nova-api-metadata.pid"
+    execstarts: "{{ nova_uwsgi_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-api-metadata.ini"
+    execreloads: "{{ nova_uwsgi_bin }}/uwsgi --reload /var/run/nova-api-metadata/nova-api-metadata.pid"
     wsgi_app: True
     wsgi_overrides: "{{ nova_api_metadata_uwsgi_ini_overrides }}"
     uwsgi_port: "{{ nova_metadata_port }}"
@@ -451,8 +454,8 @@ nova_services:
     service_name: nova-api-os-compute
     init_config_overrides: "{{ nova_api_os_compute_init_overrides }}"
     start_order: 4
-    execstarts: "{{ nova_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-api-os-compute.ini"
-    execreloads: "{{ nova_bin }}/uwsgi --reload /var/run/nova-api-os-compute/nova-api-os-compute.pid"
+    execstarts: "{{ nova_uwsgi_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-api-os-compute.ini"
+    execreloads: "{{ nova_uwsgi_bin }}/uwsgi --reload /var/run/nova-api-os-compute/nova-api-os-compute.pid"
     wsgi_app: True
     wsgi_overrides: "{{ nova_api_os_compute_uwsgi_ini_overrides }}"
     uwsgi_port: "{{ nova_service_port }}"
@@ -504,8 +507,8 @@ nova_services:
     init_config_overrides: "{{ nova_placement_api_init_overrides }}"
     condition: "{{ nova_placement_service_enabled | bool }}"
     start_order: 1
-    execstarts: "{{ nova_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-placement-api.ini"
-    execreloads: "{{ nova_bin }}/uwsgi --reload /var/run/nova-placement-api/nova-placement-api.pid"
+    execstarts: "{{ nova_uwsgi_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-placement-api.ini"
+    execreloads: "{{ nova_uwsgi_bin }}/uwsgi --reload /var/run/nova-placement-api/nova-placement-api.pid"
     wsgi_app: True
     uwsgi_port: "{{ nova_placement_service_port }}"
     wsgi_name: nova-placement-api
@@ -524,9 +527,6 @@ nova_novnc_pip_packages:
 # nova packages that must be installed before anything else
 nova_requires_pip_packages:
   - virtualenv
-  - python-keystoneclient # Keystoneclient needed to OSA keystone lib
-  - httplib2
-  - python-openstackclient
 
 nova_compute_ironic_pip_packages:
   - python-ironicclient

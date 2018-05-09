@@ -23,9 +23,43 @@ libvirt_service_name: libvirtd
 nova_distro_packages:
   - genisoimage
   - git
-  - libpq-dev
   - iptables
+  - python-keystoneclient
+  - python-openstackclient
+
+nova_devel_distro_packages:
+  - libpq-dev
   - libxml2-dev
+  - python-httplib2
+
+nova_service_distro_packages:
+  - nova-api
+  - nova-cells
+  - nova-conductor
+  - nova-console
+  - nova-consoleauth
+  - nova-network
+  - nova-novncproxy
+  - nova-placement-api
+  - nova-scheduler
+  - nova-serialproxy
+  - nova-volume
+  - python-memcache
+  - python-novaclient
+  - python-pymysql
+  - python-sqlalchemy
+  - uwsgi
+  - uwsgi-plugin-python
+
+nova_service_extra_distro_packages:
+  kvm:
+    - nova-compute-kvm
+  lxd:
+    - nova-compute-lxd
+  novnc:
+    - nova-novncproxy
+  spice:
+    - nova-spiceproxy
 
 nova_novnc_distro_packages:
   - libjs-jquery
@@ -112,3 +146,5 @@ novalink_gpg_keys:
 
 # Needed for nginx cleanup for O -> P upgrades. Remove in Q
 nova_nginx_conf_path: "sites-available"
+
+nova_uwsgi_bin: '/usr/bin'

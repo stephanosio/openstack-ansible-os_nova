@@ -26,6 +26,11 @@
         - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
         - openstack-ansible-nova-ssl-nv
+        - openstack-ansible-functional-distro_install-centos-7
+        - openstack-ansible-functional-distro_install-opensuse-423
+        # NOTE(hwoarang) xenial does not currently work. It needs investigation
+        - openstack-ansible-functional-distro_install-ubuntu-xenial:
+            voting: false
     experimental:
       jobs:
         - openstack-ansible-integrated-deploy-aio
@@ -40,3 +45,5 @@
         - openstack-ansible-functional-ubuntu-xenial
         - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
+        - openstack-ansible-functional-distro_install-centos-7
+        - openstack-ansible-functional-distro_install-opensuse-423

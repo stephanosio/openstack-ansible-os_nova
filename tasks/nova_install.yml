@@ -20,145 +20,29 @@
     - "nova_virt_type == 'powervm'"
     - "ansible_pkg_mgr == 'apt'"
 
+- name: Record the installation method
+  ini_file:
+    dest: "/etc/ansible/facts.d/openstack_ansible.fact"
+    section: "nova"
+    option: "install_method"
+    value: "{{ nova_install_method }}"
+
+- name: Refresh local facts to ensure the nova section is present
+  setup:
+    filter: ansible_local
+    gather_subset: "!all"
+
 - name: Install distro packages
   package:
     name: "{{ nova_package_list }}"
     state: "{{ nova_package_state }}"
     update_cache: "{{ (ansible_pkg_mgr in ['apt', 'zypper']) | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
-
-- name: Create developer mode constraint file
-  copy:
-    dest: "/opt/developer-pip-constraints.txt"
-    content: |
-      {% for item in nova_developer_constraints %}
-      {{ item }}
-      {% endfor %}
-  when:
-    - nova_developer_mode | bool
-  tags:
-    - nova-pip-packages
-
-- name: Install required pip packages
-  pip:
-    name: "{{ nova_requires_pip_packages }}"
-    state: "{{ nova_pip_package_state }}"
-    extra_args: >-
-      {{ nova_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
-      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
-      {{ pip_install_options | default('') }}
   register: install_packages
   until: install_packages|success
   retries: 5
   delay: 2
   tags:
-    - nova-pip-packages
-
-- name: Retrieve checksum for venv download
-  uri:
-    url: "{{ nova_venv_download_url | replace('tgz', 'checksum') }}"
-    return_content: yes
-  register: nova_venv_checksum
-  when:
-    - nova_venv_download | bool
-  tags:
-    - nova-pip-packages
-    - always
-
-- name: Attempt venv download
-  get_url:
-    url: "{{ nova_venv_download_url }}"
-    dest: "/var/cache/{{ nova_venv_download_url | basename }}"
-    checksum: "sha1:{{ nova_venv_checksum.content | trim }}"
-  register: nova_get_venv
-  when:
-    - nova_venv_download | bool
-  tags:
-    - nova-pip-packages
-    - always
-
-- name: Remove existing venv
-  file:
-    path: "{{ nova_bin | dirname }}"
-    state: absent
-  when:
-    - nova_get_venv | changed
-  tags:
-    - nova-pip-packages
-
-- name: Create nova venv dir
-  file:
-    path: "{{ nova_bin | dirname }}"
-    state: directory
-  register: nova_venv_dir
-  when:
-    - nova_get_venv | changed
-  tags:
-    - nova-pip-packages
-
-- name: Unarchive pre-built venv
-  unarchive:
-    src: "/var/cache/{{ nova_venv_download_url | basename }}"
-    dest: "{{ nova_bin | dirname }}"
-    copy: "no"
-  when:
-    - nova_get_venv | changed
-  notify:
-    - Manage LB
-    - Restart nova services
-  tags:
-    - nova-pip-packages
-
-- name: Install pip packages
-  pip:
-    name: "{{ nova_pip_packages }}"
-    state: "{{ nova_pip_package_state }}"
-    virtualenv: "{{ nova_bin | dirname }}"
-    virtualenv_site_packages: "no"
-    extra_args: >-
-      {{ nova_developer_mode | ternary(pip_install_developer_constraints | default('--constraint /opt/developer-pip-constraints.txt'), '') }}
-      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
-      {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages|success
-  retries: 5
-  delay: 2
-  when:
-    - nova_get_venv | failed or nova_get_venv | skipped
-  notify:
-    - Manage LB
-    - Restart nova services
-  tags:
-    - nova-pip-packages
-
-- name: Remove python from path first (CentOS, openSUSE)
-  file:
-    path:  "{{ nova_bin | dirname }}/bin/python2.7"
-    state: "absent"
-  when:
-    - ansible_pkg_mgr in ['yum', 'dnf', 'zypper']
-    - nova_get_venv | changed
-
-# NOTE(odyssey4me):
-# We reinitialize the venv to ensure that the right
-# version of python is in the venv, but we do not
-# want virtualenv to also replace pip, setuptools
-# and wheel so we tell it not to.
-# We do not use --always-copy for CentOS/SuSE due
-# to https://github.com/pypa/virtualenv/issues/565
-- name: Update virtualenv path
-  shell: |
-    find {{ nova_bin }} -name \*.pyc -delete
-    sed -si '1s/^.*python.*$/#!{{ nova_bin | replace ('/','\/') }}\/python/' {{ nova_bin }}/*
-    virtualenv {{ nova_bin | dirname }} \
-        {{ (ansible_pkg_mgr == 'apt') | ternary('--always-copy', '') }} \
-        --no-pip \
-        --no-setuptools \
-        --no-wheel
-  when:
-    - nova_get_venv | changed
-  tags:
-    - skip_ansible_lint
     - nova-pip-packages
 
 - include_tasks: "consoles/nova_console_{{ nova_console_type }}_install.yml"
@@ -172,28 +56,28 @@
     - nova-novnc-console
     - nova-spice-console
 
+- name: Install nova packages from PIP
+  include_tasks: nova_install_source.yml
+  when: nova_install_method == 'source'
+
 - name: Initialise the upgrade facts
   ini_file:
     dest: "/etc/ansible/facts.d/openstack_ansible.fact"
     section: nova
-    option: "{{ item }}"
-    value: True
+    option: "{{ item.name }}"
+    value: "{{ item.state }}"
   with_items:
-    - "need_service_restart"
-    - "need_online_data_migrations"
+    - name: "need_service_restart"
+      state: "True"
+    - name: "need_online_data_migrations"
+      state: "True"
   when:
-    - (nova_get_venv | changed) or
-      (nova_venv_dir | changed) or
+    - (nova_install_method == 'source' and
+       ((nova_get_venv | changed) or
+        (nova_venv_dir | changed))) or
       (install_packages | changed) or
       (ansible_local is not defined) or
       ('openstack_ansible' not in ansible_local) or
       ('nova' not in ansible_local['openstack_ansible']) or
       ('need_online_data_migrations' not in ansible_local['openstack_ansible']['nova']) or
       ('need_service_restart' not in ansible_local['openstack_ansible']['nova'])
-
-- name: Record the venv tag deployed
-  ini_file:
-    dest: "/etc/ansible/facts.d/openstack_ansible.fact"
-    section: nova
-    option: venv_tag
-    value: "{{ nova_venv_tag }}"

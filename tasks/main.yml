@@ -53,6 +53,21 @@
   tags:
     - always
 
+- name: Fail if service was deployed using a different installation method
+  fail:
+    msg: "Switching installation methods for OpenStack services is not supported"
+  when:
+    - ansible_local is defined
+    - ansible_local.openstack_ansible is defined
+    - ansible_local.openstack_ansible.nova is defined
+    - ansible_local.openstack_ansible.nova.install_method is defined
+    - ansible_local.openstack_ansible.nova.install_method != nova_install_method
+
+- name: Gather variables for installation method
+  include_vars: "{{ nova_install_method }}_install.yml"
+  tags:
+    - always
+
 - include_tasks: nova_virt_detect.yml
   tags:
     - always
