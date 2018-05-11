@@ -19,10 +19,7 @@
         - openstack-ansible-functional-centos-7
         - openstack-ansible-functional-opensuse-423
         - openstack-ansible-functional-ubuntu-xenial
-        # TODO(odyssey4me):
-        # Restore this to voting once the blocking
-        # issue has been resolved.
-        - openstack-ansible-upgrade-ubuntu-xenial-nv
+        - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
         - openstack-ansible-nova-ssl-nv
     experimental:
@@ -34,8 +31,5 @@
         - openstack-ansible-functional-centos-7
         - openstack-ansible-functional-opensuse-423
         - openstack-ansible-functional-ubuntu-xenial
-        # TODO(odyssey4me):
-        # Restore this once the blocking issue has
-        # been resolved.
-        #- openstack-ansible-upgrade-ubuntu-xenial
-        #- openstack-ansible-lxd-ubuntu-xenial
+        - openstack-ansible-upgrade-ubuntu-xenial
+        - openstack-ansible-lxd-ubuntu-xenial
