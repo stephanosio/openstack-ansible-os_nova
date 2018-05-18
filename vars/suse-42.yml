@@ -47,6 +47,7 @@ nova_compute_kvm_distro_packages:
   - kpartx
   - libvirt-daemon-config-nwfilter
   - libvirt-daemon-driver-qemu
+  - libvirt-daemon-driver-secret
   - qemu-kvm
   - libvirt-devel
   - libvirt-python
