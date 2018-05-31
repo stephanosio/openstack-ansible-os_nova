@@ -79,7 +79,7 @@
   tags:
     - nova-pip-packages
 
-- include_tasks: consoles/nova_console_novnc_ssl.yml
+- include_tasks: nova_console_novnc_ssl.yml
   when:
     - nova_console_user_ssl_cert is defined
     - nova_console_user_ssl_key is defined
