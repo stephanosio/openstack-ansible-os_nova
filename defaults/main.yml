@@ -434,8 +434,8 @@ nova_services:
     service_name: nova-api-metadata
     init_config_overrides: "{{ nova_api_metadata_init_overrides }}"
     start_order: 4
-    log_string: "--logto "
-    program_override: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-api-metadata.ini"
+    execstarts: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-api-metadata.ini"
+    execreloads: "{{ nova_bin }}/uwsgi --reload /var/run/nova-api-metadata/nova-api-metadata.pid"
     wsgi_app: True
     wsgi_overrides: "{{ nova_api_metadata_uwsgi_ini_overrides }}"
     uwsgi_port: "{{ nova_metadata_port }}"
@@ -445,8 +445,8 @@ nova_services:
     service_name: nova-api-os-compute
     init_config_overrides: "{{ nova_api_os_compute_init_overrides }}"
     start_order: 3
-    log_string: "--logto "
-    program_override: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-api-os-compute.ini"
+    execstarts: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-api-os-compute.ini"
+    execreloads: "{{ nova_bin }}/uwsgi --reload /var/run/nova-api-os-compute/nova-api-os-compute.pid"
     wsgi_app: True
     wsgi_overrides: "{{ nova_api_os_compute_uwsgi_ini_overrides }}"
     uwsgi_port: "{{ nova_service_port }}"
@@ -456,41 +456,49 @@ nova_services:
     service_name: nova-compute
     init_config_overrides: "{{ nova_compute_init_overrides }}"
     start_order: 5
+    execstarts: "{{ nova_bin }}/nova-compute"
+    execreloads: "/bin/kill -HUP $MAINPID"
   nova-conductor:
     group: nova_conductor
     service_name: nova-conductor
     init_config_overrides: "{{ nova_conductor_init_overrides }}"
     start_order: 1
+    execstarts: "{{ nova_bin }}/nova-conductor"
+    execreloads: "/bin/kill -HUP $MAINPID"
   nova-consoleauth:
     group: nova_console
     service_name: nova-consoleauth
     init_config_overrides: "{{ nova_consoleauth_init_overrides }}"
     start_order: 2
+    execstarts: "{{ nova_bin }}/nova-consoleauth"
   nova-novncproxy:
     group: nova_console
     service_name: nova-novncproxy
     init_config_overrides: "{{ nova_novncproxy_init_overrides }}"
     condition: "{{ nova_console_type == 'novnc' }}"
     start_order: 4
+    execstarts: "{{ nova_bin }}/nova-novncproxy"
   nova-scheduler:
     group: nova_scheduler
     service_name: nova-scheduler
     init_config_overrides: "{{ nova_scheduler_init_overrides }}"
     start_order: 2
+    execstarts: "{{ nova_bin }}/nova-scheduler"
+    execreloads: "/bin/kill -HUP $MAINPID"
   nova-spicehtml5proxy:
     group: nova_console
     service_name: nova-spicehtml5proxy
     init_config_overrides: "{{ nova_spicehtml5proxy_init_overrides }}"
     condition: "{{ nova_console_type == 'spice' }}"
     start_order: 4
+    execstarts: "{{ nova_bin }}/nova-spicehtml5proxy"
   nova-placement-api:
     group: nova_api_placement
     service_name: nova-placement-api
     init_config_overrides: "{{ nova_placement_api_init_overrides }}"
     condition: "{{ nova_placement_service_enabled | bool }}"
-    log_string: "--logto "
     start_order: 3
-    program_override: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-placement-api.ini"
+    execstarts: "{{ nova_bin }}/uwsgi --ini /etc/uwsgi/nova-placement-api.ini"
     wsgi_app: True
     uwsgi_port: "{{ nova_placement_service_port }}"
     wsgi_name: nova-placement-api
@@ -501,6 +509,7 @@ nova_services:
     init_config_overrides: "{{ nova_serialproxy_init_overrides }}"
     condition: "{{ nova_console_type == 'serialconsole' }}"
     start_order: 4
+    execstarts: "{{ nova_bin }}/nova-serialproxy"
 
 nova_novnc_pip_packages:
   - websockify
