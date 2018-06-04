@@ -236,6 +236,7 @@ lock_path = {{ nova_lock_path }}
 
 
 [oslo_messaging_rabbit]
+ssl = {{ nova_oslomsg_rpc_use_ssl }}
 rpc_conn_pool_size = {{ nova_rpc_conn_pool_size }}
 
 
