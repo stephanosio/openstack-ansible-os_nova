@@ -98,27 +98,30 @@ nova_api_db_pool_timeout: 30
 nova_cell0_database: "nova_cell0"
 nova_cell1_name: "cell1"
 
+## Oslo Messaging
+
+# RPC
+nova_oslomsg_rpc_transport: rabbit
+nova_oslomsg_rpc_servers: 127.0.0.1
+nova_oslomsg_rpc_port: 5672
+nova_oslomsg_rpc_use_ssl: False
+nova_oslomsg_rpc_userid: nova
+nova_oslomsg_rpc_vhost: /nova
+
+# Notify
+nova_oslomsg_notify_transport: rabbit
+nova_oslomsg_notify_servers: 127.0.0.1
+nova_oslomsg_notify_port: 5672
+nova_oslomsg_notify_use_ssl: False
+nova_oslomsg_notify_userid: nova
+nova_oslomsg_notify_vhost: /nova
+
 ## RabbitMQ info
 
 ## Configuration for RPC communications
 nova_rpc_thread_pool_size: 64
 nova_rpc_conn_pool_size: 30
 nova_rpc_response_timeout: 60
-
-nova_rabbitmq_servers: 127.0.0.1
-nova_rabbitmq_port: 5672
-nova_rabbitmq_userid: nova
-nova_rabbitmq_vhost: /nova
-nova_rabbitmq_use_ssl: False
-
-## Configuration for notifications communication, i.e. [oslo_messaging_notifications]
-nova_rabbitmq_telemetry_userid: "{{ nova_rabbitmq_userid }}"
-nova_rabbitmq_telemetry_password: "{{ nova_rabbitmq_password }}"
-nova_rabbitmq_telemetry_vhost: "{{ nova_rabbitmq_vhost }}"
-nova_rabbitmq_telemetry_port: "{{ nova_rabbitmq_port }}"
-nova_rabbitmq_telemetry_servers: "{{ nova_rabbitmq_servers }}"
-nova_rabbitmq_telemetry_use_ssl: "{{ nova_rabbitmq_use_ssl }}"
-
 
 ## Nova virtualization Types
 # The nova_virt_types dictionary contains global overrides used for
