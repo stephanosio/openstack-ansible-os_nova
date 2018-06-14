@@ -505,6 +505,7 @@ nova_services:
     condition: "{{ nova_placement_service_enabled | bool }}"
     start_order: 1
     execstarts: "{{ nova_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-placement-api.ini"
+    execreloads: "{{ nova_bin }}/uwsgi --reload /var/run/nova-placement-api/nova-placement-api.pid"
     wsgi_app: True
     uwsgi_port: "{{ nova_placement_service_port }}"
     wsgi_name: nova-placement-api
