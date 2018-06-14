@@ -19,7 +19,8 @@
         # TODO(odyssey4me):
         # Restore this to voting once the blocking
         # issue has been resolved.
-        - openstack-ansible-functional-centos-7-nv
+        - openstack-ansible-functional-centos-7:
+            voting: false
         - openstack-ansible-functional-opensuse-423
         - openstack-ansible-functional-ubuntu-xenial
         # TODO(evrardjp): Restore upgrade checks
