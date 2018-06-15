@@ -27,22 +27,6 @@
     update_cache: "{{ (ansible_pkg_mgr in ['apt', 'zypper']) | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
 
-- name: Remove known problem packages for the Spice console
-  package:
-    name: "{{ item }}"
-    state: absent
-  register: remove_packages
-  until: remove_packages|success
-  retries: 5
-  delay: 2
-  with_items: "{{ nova_spice_distro_packages }}"
-  when:
-    - "nova_services['nova-spicehtml5proxy']['group'] in group_names"
-    - nova_console_type == "spice"
-  tags:
-    - nova-apt-packages
-    - nova-spice-apt-packages
-
 - name: Create developer mode constraint file
   copy:
     dest: "/opt/developer-pip-constraints.txt"

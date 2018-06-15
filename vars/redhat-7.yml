@@ -27,10 +27,6 @@ nova_distro_packages:
   - which
   - libxml2-devel
 
-# Spice console yum packages
-nova_spice_distro_packages:
-  - spice-html5
-
 nova_novnc_distro_packages:
   - js-jquery
   - js-underscore

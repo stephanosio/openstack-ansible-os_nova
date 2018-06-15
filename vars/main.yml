@@ -26,9 +26,6 @@ nova_package_list: |-
   {%   if nova_console_type == 'novnc' %}
   {%     set _ = packages.extend(nova_novnc_distro_packages) %}
   {%   endif %}
-  {%   if nova_console_type == 'spice' %}
-  {%     set _ = packages.extend(nova_spice_distro_packages) %}
-  {%   endif %}
   {% endif %}
   {% if nova_services['nova-compute']['group'] in group_names %}
   {%   if nova_virt_type in ['kvm', 'qemu'] %}
