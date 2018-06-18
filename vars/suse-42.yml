@@ -28,10 +28,6 @@ nova_distro_packages:
   - which
   - libxml2-devel
 
-# Spice console zypper packages
-nova_spice_distro_packages:
-  - libspice-controller0
-
 nova_novnc_distro_packages:
   - python-websockify
 
