@@ -77,6 +77,13 @@
   tags:
     - nova-config
 
+- include_tasks: nova_service_setup.yml
+  when:
+    - "nova_services['nova-conductor']['group'] in group_names"
+    - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
+  tags:
+    - nova-config
+
 - include_tasks: nova_db_setup.yml
   when:
     - "nova_services['nova-conductor']['group'] in group_names"
@@ -112,13 +119,6 @@
   with_items: "{{ filtered_nova_services }}"
   loop_control:
     loop_var: service_var
-  tags:
-    - nova-config
-
-- include_tasks: nova_service_setup.yml
-  when:
-    - "nova_services['nova-conductor']['group'] in group_names"
-    - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
   tags:
     - nova-config
 
