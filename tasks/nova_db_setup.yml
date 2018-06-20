@@ -25,6 +25,7 @@
   with_items:
     - "{{ nova_galera_database }}"
     - "{{ nova_api_galera_database }}"
+    - "{{ nova_cell0_database }}"
 
 - name: Grant access to DBs for the services
   mysql_user:
