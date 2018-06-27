@@ -104,7 +104,7 @@
     systemd_group_name: "{{ nova_system_group_name }}"
     systemd_tempd_prefix: openstack
     systemd_slice_name: nova
-    system_lock_path: /var/lock/nova
+    systemd_lock_path: /var/lock/nova
     systemd_CPUAccounting: true
     systemd_BlockIOAccounting: true
     systemd_MemoryAccounting: true
