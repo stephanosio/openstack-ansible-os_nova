@@ -121,6 +121,7 @@
     loop_var: service_var
   tags:
     - nova-config
+    - systemd-service
 
 - include_tasks: nova_compute.yml
   when:
