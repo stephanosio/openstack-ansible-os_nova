@@ -107,7 +107,7 @@ memcache_servers = {{ memcached_servers }}
 [cinder]
 catalog_info = volumev3:cinderv3:internalURL
 cross_az_attach = {{ nova_cross_az_attach }}
-os_region_name = {{ nova_service_region }}
+region_name = {{ nova_service_region }}
 
 {% if nova_console_type == 'spice' %}
 [spice]
@@ -154,7 +154,6 @@ insecure = {{ keystone_service_internaluri_insecure | bool }}
 
 # Neutron
 [neutron]
-url = {{ neutron_service_adminurl }}
 region_name = {{ neutron_service_region }}
 auth_type = password
 default_floating_pool = public
@@ -177,8 +176,8 @@ ovs_bridge = {{ nova_network_services[nova_network_type]['ovs_bridge'] }}
 {% if nova_placement_service_enabled | bool %}
 # Placement
 [placement]
-os_region_name = {{ nova_placement_service_region }}
-os_interface = {{ nova_placement_service_interface }}
+region_name = {{ nova_placement_service_region }}
+valid_interfaces = {{ nova_placement_service_interface }}
 auth_type = "password"
 password = {{ nova_placement_service_password }}
 username = {{ nova_placement_service_username }}
@@ -194,6 +193,7 @@ workers = {{ nova_conductor_workers | default(nova_api_threads) }}
 
 
 [keystone_authtoken]
+service_token_roles_required = True
 insecure = {{ keystone_service_internaluri_insecure | bool }}
 auth_type = {{ nova_keystone_auth_plugin }}
 auth_url = {{ keystone_service_adminuri }}
@@ -290,7 +290,16 @@ pool= {{ lxd_storage_pool }}
 auth_endpoint = {{ keystone_service_internaluri }}/v3
 
 [key_manager]
-api_class = castellan.key_manager.barbican_key_manager.BarbicanKeyManager
+backend = barbican
+region_name = {{ nova_placement_service_region }}
+auth_type = "password"
+password = {{ nova_placement_service_password }}
+username = {{ nova_placement_service_username }}
+project_name = {{ nova_placement_service_project_name }}
+user_domain_name = {{ nova_placement_service_user_domain_id }}
+project_domain_name = {{ nova_placement_service_project_domain_id }}
+auth_url = {{ keystone_service_adminurl }}
+insecure = {{ keystone_service_adminuri_insecure | bool }}
 {% endif %}
 
 [wsgi]
