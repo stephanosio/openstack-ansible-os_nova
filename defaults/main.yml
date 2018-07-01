@@ -536,6 +536,7 @@ nova_pip_packages:
   - cryptography
   - keystonemiddleware
   - nova
+  - osprofiler
   - PyMySQL
   - python-keystoneclient
   - python-memcached
