@@ -45,6 +45,10 @@
   tags:
     - nova-pip-packages
 
+- name: Install nova packages from PIP
+  include_tasks: nova_install_source.yml
+  when: nova_install_method == 'source'
+
 - include_tasks: "consoles/nova_console_{{ nova_console_type }}_install.yml"
   when:
     - "nova_services['nova-novncproxy']['group'] in group_names or
@@ -55,10 +59,6 @@
     - nova-install
     - nova-novnc-console
     - nova-spice-console
-
-- name: Install nova packages from PIP
-  include_tasks: nova_install_source.yml
-  when: nova_install_method == 'source'
 
 - name: Initialise the upgrade facts
   ini_file:
