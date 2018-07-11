@@ -81,7 +81,9 @@ nova_compute_kvm_distro_packages:
   - libvirt-bin
   - open-iscsi
   - python-guestfs
+  - python3-guestfs
   - python-libvirt
+  - python3-libvirt
   - qemu
   - qemu-utils
   - sysfsutils
@@ -101,6 +103,12 @@ nova_compute_kvm_distro_packages:
   - qemu-utils
   - qemu-user
   - qemu-kvm
+
+nova_compute_kvm_packages_to_symlink:
+  - python-libvirt
+  - python3-libvirt
+  - python-guestfs
+  - python3-guestfs
 
 nova_compute_lxd_distro_packages:
   - bridge-utils

@@ -20,44 +20,37 @@
 # use the distro packages for these and symlink the appropriate
 # library files and binding into the venv.
 
-- name: Link guestfs into the venv
-  file:
-    src: "{{ linkfiles.name }}"
-    dest: "{{ nova_bin | dirname }}/lib/python2.7/{{ linkfiles.name | basename }}"
-    state: "{{ linkfiles.state }}"
-    force: "yes"
-  with_items:
-    - { state: link, name: "/usr/lib/python2.7/dist-packages/libguestfsmod.so" }
-    - { state: link, name: "/usr/lib/python2.7/dist-packages/guestfs.py" }
-  loop_control:
-    loop_var: linkfiles
-  tags:
-    - nova-pip-packages
+- name: Find the venv's python version
+  find:
+    paths: "{{ nova_bin | dirname }}/lib/"
+    patterns: "python*"
+    file_type: directory
+    recurse: no
+  register: python_venv_details
 
-- name: Register libvirt module path
-  command: python -c 'import libvirt; print libvirt.__file__'
-  changed_when: false
-  register: _libvirt_module_path
-  tags:
-    - nova-pip-packages
+- name: Set python venvs details
+  set_fact:
+    venv_python_version: "{{ (python_venv_details.files[0].path | basename) }}"
+    venv_python_major_version: "{{ (python_venv_details.files[0].path | basename)[:-2] }}"
+    venv_python_lib_folder: "{{ python_venv_details.files[0].path }}"
 
-- name: Register libvirt-python files
+- name: Search for lib files to link
   shell: >-
-    {{ (ansible_pkg_mgr == 'apt') | ternary('dpkg -L python-libvirt', 'rpm -ql libvirt-python') }}
-    | grep '^{{ _libvirt_module_path.stdout | dirname }}/'
+    {{ (ansible_pkg_mgr == 'apt') | ternary('dpkg -L ' ~ (nova_compute_kvm_packages_to_symlink | join(' ')), 'rpm -ql ' ~ (nova_compute_kvm_packages_to_symlink | join(' ')) ) }}
+    | egrep '^.*{{ venv_python_major_version }}.*/(site|dist)-packages/.*'
   args:
     warn: no
   changed_when: false
-  register: _libvirt_python_files
+  register: _python_files
   tags:
     - nova-pip-packages
 
-- name: Link the libvirt files into venv
+- name: Link the python host package files into venv
   file:
     src: "{{ item }}"
-    dest: "{{ nova_bin | dirname }}/lib/python2.7/site-packages/{{ item | basename }}"
+    dest: "{{ venv_python_lib_folder }}/site-packages/{{ item | basename }}"
     state: link
     force: yes
-  with_items: "{{ _libvirt_python_files.stdout_lines }}"
+  with_items: "{{ _python_files.stdout_lines }}"
   tags:
     - nova-pip-packages

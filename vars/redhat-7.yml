@@ -87,6 +87,10 @@ nova_compute_kvm_distro_packages:
   - qemu-img-ev
   - sysfsutils
 
+nova_compute_kvm_packages_to_symlink:
+  - libvirt-python
+  - python-libguestfs
+
 nova_compute_ksm_packages:
   - ksmtuned
 
