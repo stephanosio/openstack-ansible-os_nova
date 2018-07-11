@@ -193,7 +193,6 @@ workers = {{ nova_conductor_workers | default(nova_api_threads) }}
 
 
 [keystone_authtoken]
-service_token_roles_required = True
 insecure = {{ keystone_service_internaluri_insecure | bool }}
 auth_type = {{ nova_keystone_auth_plugin }}
 auth_url = {{ keystone_service_adminuri }}
