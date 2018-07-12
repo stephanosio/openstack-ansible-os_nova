@@ -41,7 +41,7 @@
 - name: Apply updated SELinux contexts on /var/lib/nova
   command: restorecon -R /var/lib/nova
   when:
-    - selinux_equivalence | changed or selinux_file_context_ssh_keys | changed
+    - selinux_equivalence | changed or selinux_file_context_ssh_keys  is changed
 
 - name: Stat nova's log directory
   stat:
@@ -58,7 +58,7 @@
 - name: Apply updated SELinux contexts on nova log directory
   command: "restorecon -Rv {{ (nova_log_dir_check.stat.islnk) | ternary(nova_log_dir_check.stat.lnk_target, nova_log_dir) }}"
   when:
-    - selinux_file_context_log_files | changed
+    - selinux_file_context_log_files  is changed
 
 - name: Copy OSA SELinux policy
   copy:

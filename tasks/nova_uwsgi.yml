@@ -52,5 +52,5 @@
   service:
     name: nginx
     state: restarted
-  when: nginx_conf_removed | changed
+  when: nginx_conf_removed  is changed
   failed_when: false

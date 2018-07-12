@@ -38,6 +38,6 @@
 
 - name: Configure lxd init
   command: "{{ nova_system_home_folder }}/lxd-init.sh"
-  when: lxd_init_script | changed
+  when: lxd_init_script  is changed
   tags:
     - nova-lxd

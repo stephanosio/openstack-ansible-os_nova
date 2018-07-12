@@ -112,7 +112,7 @@
     value: False
   when:
     - not data_migrations | skipped
-    - data_migrations | succeeded
+    - data_migrations  is succeeded
 
 - name: Create the cell1 mapping entry in the nova API DB
   command: >-

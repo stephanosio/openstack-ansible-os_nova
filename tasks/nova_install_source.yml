@@ -34,7 +34,7 @@
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
       {{ pip_install_options | default('') }}
   register: install_packages
-  until: install_packages|success
+  until: install_packages is success
   retries: 5
   delay: 2
   tags:
@@ -68,7 +68,7 @@
     path: "{{ nova_bin | dirname }}"
     state: absent
   when:
-    - nova_get_venv | changed
+    - nova_get_venv  is changed
   tags:
     - nova-pip-packages
 
@@ -78,7 +78,7 @@
     state: directory
   register: nova_venv_dir
   when:
-    - nova_get_venv | changed
+    - nova_get_venv  is changed
   tags:
     - nova-pip-packages
 
@@ -88,7 +88,7 @@
     dest: "{{ nova_bin | dirname }}"
     copy: "no"
   when:
-    - nova_get_venv | changed
+    - nova_get_venv  is changed
   notify:
     - Manage LB
     - Restart nova services
@@ -106,7 +106,7 @@
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
       {{ pip_install_options | default('') }}
   register: install_packages
-  until: install_packages|success
+  until: install_packages is success
   retries: 5
   delay: 2
   when:
@@ -123,7 +123,7 @@
     state: "absent"
   when:
     - ansible_pkg_mgr in ['yum', 'dnf', 'zypper']
-    - nova_get_venv | changed
+    - nova_get_venv  is changed
 
 # NOTE(odyssey4me):
 # We reinitialize the venv to ensure that the right
@@ -142,7 +142,7 @@
         --no-setuptools \
         --no-wheel
   when:
-    - nova_get_venv | changed
+    - nova_get_venv  is changed
   tags:
     - skip_ansible_lint
     - nova-pip-packages
