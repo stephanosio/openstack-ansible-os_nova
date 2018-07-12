@@ -179,11 +179,14 @@
 # install to verify everything is setup correctly. This must run after cell
 # mapping setup and online data migrations have run.
 # https://docs.openstack.org/nova/latest/cli/nova-status.html
-- name: Run nova-status
+- name: Run nova-status upgrade check to validate a healthy configuration
   command: "{{ nova_bin }}/nova-status upgrade check"
   become: yes
   become_user: "{{ nova_system_user_name }}"
   register: nova_status_upgrade_check
+  until: nova_status_upgrade_check is success
+  retries: 3
+  delay: 15
   # The nova-status upgrade check command has three standard return codes:
   # 0: all checks were successful
   # 1: warning: there might be some checks that require investigation, but
@@ -194,5 +197,8 @@
   failed_when: "nova_status_upgrade_check.rc not in [0, 1]"
   changed_when: false
   when:
-    # Only run nova-status on controller nodes.
+    # Only run nova-status on the first controller node in the play,
+    # so that a failure here stops changes to other controllers in
+    # the hope that it leaves the system running.
     - "nova_services['nova-conductor']['group'] in group_names"
+    - "inventory_hostname == ((groups[nova_services['nova-conductor']['group']] | intersect(ansible_play_hosts)) | list)[0]"
