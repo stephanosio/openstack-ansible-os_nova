@@ -107,18 +107,22 @@ nova_cell1_name: "cell1"
 ## Oslo Messaging
 
 # RPC
-nova_oslomsg_rpc_transport: rabbit
-nova_oslomsg_rpc_servers: 127.0.0.1
-nova_oslomsg_rpc_port: 5672
-nova_oslomsg_rpc_use_ssl: False
+nova_oslomsg_rpc_host_group: "{{ oslomsg_rpc_host_group | default('rabbitmq_all') }}"
+nova_oslomsg_rpc_setup_host: "{{ (nova_oslomsg_rpc_host_group in groups) | ternary(groups[nova_oslomsg_rpc_host_group][0], 'localhost') }}"
+nova_oslomsg_rpc_transport: "{{ oslomsg_rpc_transport | default('rabbit') }}"
+nova_oslomsg_rpc_servers: "{{ oslomsg_rpc_servers | default('127.0.0.1') }}"
+nova_oslomsg_rpc_port: "{{ oslomsg_rpc_port | default('5672') }}"
+nova_oslomsg_rpc_use_ssl: "{{ oslomsg_rpc_use_ssl | default(False) }}"
 nova_oslomsg_rpc_userid: nova
 nova_oslomsg_rpc_vhost: /nova
 
 # Notify
-nova_oslomsg_notify_transport: rabbit
-nova_oslomsg_notify_servers: 127.0.0.1
-nova_oslomsg_notify_port: 5672
-nova_oslomsg_notify_use_ssl: False
+nova_oslomsg_notify_host_group: "{{ oslomsg_notify_host_group | default('rabbitmq_all') }}"
+nova_oslomsg_notify_setup_host: "{{ (nova_oslomsg_notify_host_group in groups) | ternary(groups[nova_oslomsg_notify_host_group][0], 'localhost') }}"
+nova_oslomsg_notify_transport: "{{ oslomsg_notify_transport | default('rabbit') }}"
+nova_oslomsg_notify_servers: "{{ oslomsg_notify_servers | default('127.0.0.1') }}"
+nova_oslomsg_notify_port: "{{ oslomsg_notify_port | default('5672') }}"
+nova_oslomsg_notify_use_ssl: "{{ oslomsg_notify_use_ssl | default(False) }}"
 nova_oslomsg_notify_userid: nova
 nova_oslomsg_notify_vhost: /nova
 

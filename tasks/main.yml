@@ -99,6 +99,25 @@
   tags:
     - nova-config
 
+- include_tasks: mq_setup.yml
+  when:
+    - "nova_services['nova-api']['group'] in group_names"
+    - "inventory_hostname == ((groups[nova_services['nova-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+  with_items:
+    - oslomsg_setup_host: "{{ nova_oslomsg_rpc_setup_host }}"
+      oslomsg_userid: "{{ nova_oslomsg_rpc_userid }}"
+      oslomsg_password: "{{ nova_oslomsg_rpc_password }}"
+      oslomsg_vhost: "{{ nova_oslomsg_rpc_vhost }}"
+      oslomsg_transport: "{{ nova_oslomsg_rpc_transport }}"
+    - oslomsg_setup_host: "{{ nova_oslomsg_notify_setup_host }}"
+      oslomsg_userid: "{{ nova_oslomsg_notify_userid }}"
+      oslomsg_password: "{{ nova_oslomsg_notify_password }}"
+      oslomsg_vhost: "{{ nova_oslomsg_notify_vhost }}"
+      oslomsg_transport: "{{ nova_oslomsg_notify_transport }}"
+  no_log: true
+  tags:
+    - nova-config
+
 - include_tasks: nova_db_setup.yml
   when:
     - "nova_services['nova-conductor']['group'] in group_names"
