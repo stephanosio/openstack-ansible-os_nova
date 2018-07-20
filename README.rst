@@ -27,4 +27,5 @@ Documentation for the project can be found at:
 Release notes for the project can be found at:
 `<https://docs.openstack.org/releasenotes/openstack-ansible-os_nova/>`_
 
-The project home is at: `<https://launchpad.net/openstack-ansible>`_
+The project home is at:
+`<https://launchpad.net/openstack-ansible>`_
