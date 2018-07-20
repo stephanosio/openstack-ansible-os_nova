@@ -46,7 +46,8 @@
     venv_pip_install_args: "{{ nova_pip_install_args }}"
     venv_pip_packages: >-
       {{ nova_pip_packages +
-         ((nova_services['nova-novncproxy']['group'] in group_names) and (nova_console_type == 'novnc')) | ternary(nova_novnc_pip_packages, []) }}
+         ((nova_services['nova-novncproxy']['group'] in group_names) and (nova_console_type == 'novnc')) | ternary(nova_novnc_pip_packages, []) +
+         (nova_oslomsg_amqp1_enabled | bool) | ternary(nova_optional_oslomsg_amqp1_pip_packages, []) }}
     venv_facts_when_changed:
       - section: "nova"
         option: "need_service_restart"
