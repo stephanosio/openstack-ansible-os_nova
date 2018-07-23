@@ -179,6 +179,20 @@
 - name: Flush handlers
   meta: flush_handlers
 
+# We delegate this back to the conductor because that is
+# where we want to isolate the clouds.yaml configuration,
+# rather than have it implemented on all compute nodes.
+- import_tasks: nova_compute_wait.yml
+  delegate_to: "{{ first_conductor }}"
+  when:
+    - "nova_services['nova-compute']['group'] in group_names"
+    - "nova_discover_hosts_in_cells_interval | int < 1"
+  vars:
+    first_conductor: "{{ groups[nova_services['nova-conductor']['group']][0] }}"
+    compute_host_to_wait_for: "{{ ansible_nodename }}"
+  tags:
+    - nova-config
+
 # We have to delegate this back to the conductor
 # because the compute hosts do not have access to
 # the database connection string and therefore

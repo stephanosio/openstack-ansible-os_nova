@@ -13,194 +13,120 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Create a service
-- name: Ensure nova service
-  keystone:
-    command: "ensure_service"
-    endpoint: "{{ keystone_service_adminurl }}"
-    login_user: "{{ keystone_admin_user_name }}"
-    login_password: "{{ keystone_auth_admin_password }}"
-    login_project_name: "{{ keystone_admin_tenant_name }}"
-    service_name: "{{ nova_service_name }}"
-    service_type: "{{ nova_service_type }}"
-    description: "{{ nova_service_description }}"
-    insecure: "{{ keystone_service_adminuri_insecure }}"
-  register: add_service
-  until: add_service is success
-  retries: 5
-  delay: 2
-  no_log: True
-  tags:
-    - nova-api-setup
-    - nova-service-add
-    - nova-setup
+# We set the python interpreter to the ansible runtime venv if
+# the delegation is to localhost so that we get access to the
+# appropriate python libraries in that venv. If the delegation
+# is to another host, we assume that it is accessible by the
+# system python instead.
+- name: Setup the service
+  delegate_to: "{{ nova_service_setup_host }}"
+  vars:
+    ansible_python_interpreter: >-
+      {{ (nova_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable']) }}
+  block:
+    - name: Add services to the keystone service catalog
+      os_keystone_service:
+        cloud: default
+        state: present
+        name: "{{ item.name }}"
+        service_type: "{{ item.service_type }}"
+        description: "{{ item.description }}"
+        endpoint_type: admin
+        verify: "{{ not keystone_service_adminuri_insecure }}"
+      register: add_service
+      until: add_service is success
+      retries: 5
+      delay: 10
+      with_items:
+        - name: "{{ nova_service_name }}"
+          service_type: "{{ nova_service_type }}"
+          description: "{{ nova_service_description }}"
+        - name: "{{ nova_placement_service_name }}"
+          service_type: "{{ nova_placement_service_type }}"
+          description: "{{ nova_placement_service_description }}"
 
-# Create an admin user
-- name: Ensure nova user
-  keystone:
-    command: "ensure_user"
-    endpoint: "{{ keystone_service_adminurl }}"
-    login_user: "{{ keystone_admin_user_name }}"
-    login_password: "{{ keystone_auth_admin_password }}"
-    login_project_name: "{{ keystone_admin_tenant_name }}"
-    user_name: "{{ nova_service_user_name }}"
-    tenant_name: "{{ nova_service_project_name }}"
-    password: "{{ nova_service_password }}"
-    insecure: "{{ keystone_service_adminuri_insecure }}"
-  register: add_service
-  when:
-    - not nova_service_in_ldap | bool
-  until: add_service is success
-  retries: 5
-  delay: 10
-  no_log: True
-  tags:
-    - nova-api-setup
-    - nova-service-add
-    - nova-setup
+    - name: Add service users
+      os_user:
+        cloud: default
+        state: present
+        name: "{{ item.name }}"
+        password: "{{ item.password }}"
+        domain: default
+        default_project: "{{ item.default_project }}"
+        endpoint_type: admin
+        verify: "{{ not keystone_service_adminuri_insecure }}"
+      register: add_service
+      when: "{{ item.condition }}"
+      until: add_service is success
+      retries: 5
+      delay: 10
+      no_log: True
+      with_items:
+        - name: "{{ nova_service_user_name }}"
+          password: "{{ nova_service_password }}"
+          default_project: "{{ nova_service_project_name }}"
+          condition: "{{ not nova_service_in_ldap | bool }}"
+        - name: "{{ nova_placement_service_username }}"
+          password: "{{ nova_placement_service_password }}"
+          default_project: "{{ nova_placement_service_project_name }}"
+          condition: "{{ not nova_service_in_ldap | bool }}"
+      loop_control:
+        label: "{{ item.name }}"
 
-# Add a role to the user
-- name: Ensure nova user to admin role
-  keystone:
-    command: "ensure_user_role"
-    endpoint: "{{ keystone_service_adminurl }}"
-    login_user: "{{ keystone_admin_user_name }}"
-    login_password: "{{ keystone_auth_admin_password }}"
-    login_project_name: "{{ keystone_admin_tenant_name }}"
-    user_name: "{{ nova_service_user_name }}"
-    tenant_name: "{{ nova_service_project_name }}"
-    role_name: "{{ nova_service_role_name }}"
-    insecure: "{{ keystone_service_adminuri_insecure }}"
-  register: add_service
-  when:
-    - not nova_service_in_ldap | bool
-  until: add_service is success
-  retries: 5
-  delay: 10
-  no_log: True
-  tags:
-    - nova-api-setup
-    - nova-service-add
-    - nova-setup
+    - name: Add service users to admin roles
+      os_user_role:
+        cloud: default
+        state: present
+        user: "{{ item.user }}"
+        role: "{{ item.role }}"
+        project: "{{ item.project }}"
+        endpoint_type: admin
+        verify: "{{ not keystone_service_adminuri_insecure }}"
+      register: add_service
+      when: "{{ item.condition }}"
+      until: add_service is success
+      retries: 5
+      delay: 10
+      with_items:
+        - user: "{{ nova_service_user_name }}"
+          role: "{{ nova_service_role_name }}"
+          project: "{{ nova_service_project_name }}"
+          condition: "{{ not nova_service_in_ldap | bool }}"
+        - user: "{{ nova_placement_service_username }}"
+          role: "{{ nova_placement_service_role_name }}"
+          project: "{{ nova_placement_service_project_name }}"
+          condition: "{{ not nova_placement_service_in_ldap | bool }}"
 
-# Create an endpoint
-- name: Ensure nova endpoint
-  keystone:
-    command: "ensure_endpoint"
-    endpoint: "{{ keystone_service_adminurl }}"
-    login_user: "{{ keystone_admin_user_name }}"
-    login_password: "{{ keystone_auth_admin_password }}"
-    login_project_name: "{{ keystone_admin_tenant_name }}"
-    region_name: "{{ nova_service_region }}"
-    service_name: "{{ nova_service_name }}"
-    service_type: "{{ nova_service_type }}"
-    insecure: "{{ keystone_service_adminuri_insecure }}"
-    endpoint_list:
-      - url: "{{ nova_service_publicurl }}"
-        interface: "public"
-      - url: "{{ nova_service_internalurl }}"
-        interface: "internal"
-      - url: "{{ nova_service_adminurl }}"
-        interface: "admin"
-  register: add_service
-  until: add_service is success
-  retries: 5
-  delay: 10
-  no_log: True
-  tags:
-    - nova-api-setup
-    - nova-service-add
-    - nova-setup
-
-# Create a service
-- name: Ensure nova placement service
-  keystone:
-    command: "ensure_service"
-    endpoint: "{{ keystone_service_adminurl }}"
-    login_user: "{{ keystone_admin_user_name }}"
-    login_password: "{{ keystone_auth_admin_password }}"
-    login_project_name: "{{ keystone_admin_tenant_name }}"
-    service_name: "{{ nova_placement_service_name }}"
-    service_type: "{{ nova_placement_service_type }}"
-    description: "{{ nova_placement_service_description }}"
-    insecure: "{{ keystone_service_adminuri_insecure }}"
-  register: add_service
-  until: add_service is success
-  retries: 5
-  delay: 2
-  no_log: True
-  tags:
-    - nova-api-setup
-    - nova-service-add
-
-# Create an admin user
-- name: Ensure nova placement user
-  keystone:
-    command: "ensure_user"
-    endpoint: "{{ keystone_service_adminurl }}"
-    login_user: "{{ keystone_admin_user_name }}"
-    login_password: "{{ keystone_auth_admin_password }}"
-    login_project_name: "{{ keystone_admin_tenant_name }}"
-    user_name: "{{ nova_placement_service_username }}"
-    tenant_name: "{{ nova_placement_service_project_name }}"
-    password: "{{ nova_placement_service_password }}"
-    insecure: "{{ keystone_service_adminuri_insecure }}"
-  register: add_service
-  when: not nova_placement_service_in_ldap | bool
-  until: add_service is success
-  retries: 5
-  delay: 10
-  no_log: True
-  tags:
-    - nova-api-setup
-    - nova-service-add
-
-# Add a role to the user
-- name: Ensure nova user to admin role
-  keystone:
-    command: "ensure_user_role"
-    endpoint: "{{ keystone_service_adminurl }}"
-    login_user: "{{ keystone_admin_user_name }}"
-    login_password: "{{ keystone_auth_admin_password }}"
-    login_project_name: "{{ keystone_admin_tenant_name }}"
-    user_name: "{{ nova_placement_service_username }}"
-    tenant_name: "{{ nova_placement_service_project_name }}"
-    role_name: "{{ nova_placement_service_role_name }}"
-    insecure: "{{ keystone_service_adminuri_insecure }}"
-  register: add_service
-  when: not nova_placement_service_in_ldap | bool
-  until: add_service is success
-  retries: 5
-  delay: 10
-  no_log: True
-  tags:
-    - nova-api-setup
-    - nova-service-add
-
-# Create an endpoint
-- name: Ensure nova endpoint
-  keystone:
-    command: "ensure_endpoint"
-    endpoint: "{{ keystone_service_adminurl }}"
-    login_user: "{{ keystone_admin_user_name }}"
-    login_password: "{{ keystone_auth_admin_password }}"
-    login_project_name: "{{ keystone_admin_tenant_name }}"
-    region_name: "{{ nova_placement_service_region }}"
-    service_name: "{{ nova_placement_service_name }}"
-    service_type: "{{ nova_placement_service_type }}"
-    insecure: "{{ keystone_service_adminuri_insecure }}"
-    endpoint_list:
-      - url: "{{ nova_placement_service_publicurl }}"
-        interface: "public"
-      - url: "{{ nova_placement_service_internalurl }}"
-        interface: "internal"
-      - url: "{{ nova_placement_service_adminurl }}"
-        interface: "admin"
-  register: add_service
-  until: add_service is success
-  retries: 5
-  delay: 10
-  no_log: True
-  tags:
-    - nova-api-setup
-    - nova-service-add
+    - name: Add endpoints to keystone endpoint catalog
+      os_keystone_endpoint:
+        cloud: default
+        state: present
+        service: "{{ item.service }}"
+        endpoint_interface: "{{ item.interface }}"
+        url: "{{ item.url }}"
+        region: "{{ nova_service_region }}"
+        endpoint_type: admin
+        verify: "{{ not keystone_service_adminuri_insecure }}"
+      register: add_service
+      until: add_service is success
+      retries: 5
+      delay: 10
+      with_items:
+        - service: "{{ nova_service_name }}"
+          interface: "public"
+          url: "{{ nova_service_publicurl }}"
+        - service: "{{ nova_service_name }}"
+          interface: "internal"
+          url: "{{ nova_service_internalurl }}"
+        - service: "{{ nova_service_name }}"
+          interface: "admin"
+          url: "{{ nova_service_adminurl }}"
+        - service: "{{ nova_placement_service_name }}"
+          interface: "public"
+          url: "{{ nova_placement_service_publicurl }}"
+        - service: "{{ nova_placement_service_name }}"
+          interface: "internal"
+          url: "{{ nova_placement_service_internalurl }}"
+        - service: "{{ nova_placement_service_name }}"
+          interface: "admin"
+          url: "{{ nova_placement_service_adminurl }}"

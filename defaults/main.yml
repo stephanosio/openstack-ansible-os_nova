@@ -26,6 +26,11 @@ nova_ceilometer_enabled: False
 ## Verbosity Options
 debug: False
 
+# Set the host which will execute the shade modules
+# for the service setup. The host must already have
+# clouds.yaml properly configured.
+nova_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
+
 # Set the package install state for distribution and pip packages
 # Options are 'present' and 'latest'
 nova_package_state: "latest"
@@ -528,10 +533,6 @@ nova_services:
 nova_novnc_pip_packages:
   - websockify
 
-# nova packages that must be installed before anything else
-nova_requires_pip_packages:
-  - virtualenv
-
 nova_compute_ironic_pip_packages:
   - python-ironicclient
 
@@ -545,6 +546,7 @@ nova_pip_packages:
   - python-keystoneclient
   - python-memcached
   - python-novaclient
+  - python-openstackclient
   - uWSGI
 
 nova_compute_lxd_pip_packages:
