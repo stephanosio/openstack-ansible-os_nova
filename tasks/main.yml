@@ -101,8 +101,8 @@
 
 - include_tasks: mq_setup.yml
   when:
-    - "nova_services['nova-api']['group'] in group_names"
-    - "inventory_hostname == ((groups[nova_services['nova-api']['group']]| intersect(ansible_play_hosts)) | list)[0]"
+    - "nova_services['nova-conductor']['group'] in group_names"
+    - "inventory_hostname == ((groups[nova_services['nova-conductor']['group']] | intersect(ansible_play_hosts)) | list)[0]"
   with_items:
     - oslomsg_setup_host: "{{ nova_oslomsg_rpc_setup_host }}"
       oslomsg_userid: "{{ nova_oslomsg_rpc_userid }}"
