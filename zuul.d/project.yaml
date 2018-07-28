@@ -13,16 +13,10 @@
 # limitations under the License.
 
 - project:
+    templates:
+      - openstack-ansible-role-jobs
     check:
       jobs:
-        - openstack-ansible-linters
-        # TODO(odyssey4me):
-        # Restore this to voting once the blocking
-        # issue has been resolved.
-        - openstack-ansible-functional-centos-7:
-            voting: false
-        - openstack-ansible-functional-opensuse-423
-        - openstack-ansible-functional-ubuntu-xenial
         - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
         - openstack-ansible-nova-ssl-nv
@@ -31,18 +25,8 @@
         # NOTE(hwoarang) xenial does not currently work. It needs investigation
         - openstack-ansible-functional-distro_install-ubuntu-xenial:
             voting: false
-    experimental:
-      jobs:
-        - openstack-ansible-integrated-deploy-aio
     gate:
       jobs:
-        - openstack-ansible-linters
-        # TODO(odyssey4me):
-        # Restore this once the blocking issue has
-        # been resolved.
-        #- openstack-ansible-functional-centos-7
-        - openstack-ansible-functional-opensuse-423
-        - openstack-ansible-functional-ubuntu-xenial
         - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
         - openstack-ansible-functional-distro_install-centos-7
