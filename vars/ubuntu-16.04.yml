@@ -90,7 +90,6 @@ nova_compute_kvm_distro_packages:
   - vlan
   - nfs-common
   - dosfstools
-  - dosfstools-dbg
   - multipath-tools
   - qemu-system
   - qemu-system-arm
@@ -113,7 +112,6 @@ nova_compute_kvm_packages_to_symlink:
 nova_compute_lxd_distro_packages:
   - bridge-utils
   - dosfstools
-  - dosfstools-dbg
   - genisoimage
   - kpartx
   - lxd
@@ -136,7 +134,6 @@ nova_compute_powervm_distro_packages:
   - vlan
   - nfs-common
   - dosfstools
-  - dosfstools-dbg
   - multipath-tools
   - pvm-novalink
 
