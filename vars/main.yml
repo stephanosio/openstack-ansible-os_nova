@@ -38,3 +38,21 @@ nova_mount_points: |-
   {%   set _ = mps.append(mp.local_path) %}
   {% endfor %}
   {{ mps }}
+
+_nova_rootwrap_conf_overrides:
+  DEFAULT:
+    filters_path: "/etc/nova/rootwrap.d,/usr/share/nova/rootwrap"
+    exec_dirs: "{{ nova_bin }},/sbin,/usr/sbin,/bin,/usr/bin,/usr/local/bin,/usr/local/sbin"
+
+nova_core_files:
+  - tmp_f: "/tmp/api-paste.ini"
+    target_f: "/etc/nova/api-paste.ini"
+    config_overrides: "{{ nova_api_paste_ini_overrides }}"
+    config_type: "ini"
+  - tmp_f: "/tmp/rootwrap.conf"
+    target_f: "/etc/nova/rootwrap.conf"
+    config_overrides: "{{ _nova_rootwrap_conf_overrides | combine(nova_rootwrap_conf_overrides, recursive=True) }}"
+    config_type: "ini"
+    owner: "root"
+    group: "{{ nova_system_group_name }}"
+    mode: "0640"

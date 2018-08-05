@@ -61,28 +61,68 @@
   tags:
     - nova-dirs
 
+# NOTE(cloudnull): During an upgrade the local directory may exist on a source
+#                  install. If the directory does exist it will need to be
+#                  removed. This is required on source installs because the
+#                  config directory is a link.
+- name: Source config block
+  block:
+    - name: Stat config directory
+      stat:
+        path: "/etc/nova"
+      register: nova_conf_dir_stat
+
+    - name: Remove the config directory
+      file:
+        path: "/etc/nova"
+        state: absent
+      when:
+        - nova_conf_dir_stat.stat.isdir is defined and
+          nova_conf_dir_stat.stat.isdir
+  when:
+    - nova_install_method == 'source'
+
 - name: Create nova dir
   file:
-    path: "{{ item.path }}"
-    state: directory
+    path: "{{ item.path | default(omit) }}"
+    src: "{{ item.src | default(omit) }}"
+    dest: "{{ item.dest | default(omit) }}"
+    state: "{{ item.state | default('directory') }}"
     owner: "{{ item.owner|default(nova_system_user_name) }}"
     group: "{{ item.group|default(nova_system_group_name) }}"
-    mode: "{{ item.mode|default('0755') }}"
+    mode: "{{ item.mode | default('0755') }}"
+    force: "{{ item.force | default(omit) }}"
   when:
-    - "item.path not in nova_mount_points"
+    - (item.condition | default(true)) | bool
+    - item.path not in nova_mount_points
   with_items:
-    - { path: "/openstack", owner: "root", group: "root" }
-    - { path: "/etc/nova", mode: "0750" }
-    - { path: "/etc/nova/rootwrap.d", owner: "root", group: "root" }
-    - { path: "/etc/sudoers.d", mode: "0750", owner: "root", group: "root" }
-    - { path: "/var/cache/nova" }
-    - { path: "{{ nova_system_home_folder }}" }
-    - { path: "{{ nova_system_home_folder }}/.ssh", mode: "0700" }
-    - { path: "{{ nova_system_home_folder }}/cache/api" }
-    - { path: "{{ nova_system_home_folder }}/instances" }
-    - { path: "{{ nova_libvirt_save_path }}", mode: "0750" }
-    - { path: "{{ nova_lock_path }}" }
-    - { path: "/var/run/nova" }
+    - path: "/openstack"
+      owner: "root"
+      group: "root"
+    - path: "{{ (nova_install_method == 'distro') | ternary('/etc/nova', (nova_bin | dirname) + '/etc/nova') }}"
+      mode: "0755"
+    # NOTE(cloudnull): The "src" path is relative. This ensures all files remain
+    #                  within the host/container confines when connecting to
+    #                  them using the connection plugin or the root filesystem.
+    - dest: "/etc/nova"
+      src: "{{ nova_bin | dirname | regex_replace('^/', '../') }}/etc/nova"
+      state: link
+      force: true
+      condition: "{{ nova_install_method == 'source' }}"
+    - path: "/etc/sudoers.d"
+      mode: "0750"
+      owner: "root"
+      group: "root"
+    - path: "/var/cache/nova"
+    - path: "{{ nova_system_home_folder }}"
+    - path: "{{ nova_system_home_folder }}/.ssh"
+      mode: "0700"
+    - path: "{{ nova_system_home_folder }}/cache/api"
+    - path: "{{ nova_system_home_folder }}/instances"
+    - path: "{{ nova_libvirt_save_path }}"
+      mode: "0750"
+    - path: "{{ nova_lock_path }}"
+    - path: "/var/run/nova"
   tags:
     - nova-dirs
 
