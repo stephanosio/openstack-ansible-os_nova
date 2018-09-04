@@ -23,9 +23,6 @@
         - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
         - openstack-ansible-nova-ssl-nv
-        # TODO(jrosser) Revert this once bionic passes
-        - openstack-ansible-functional-ubuntu-bionic:
-            voting: false
         - openstack-ansible-functional-distro_install-centos-7
         - openstack-ansible-functional-distro_install-opensuse-423
         # NOTE(hwoarang) xenial does not currently work. It needs investigation
@@ -35,8 +32,5 @@
       jobs:
         - openstack-ansible-upgrade-ubuntu-xenial
         - openstack-ansible-lxd-ubuntu-xenial
-        # TODO(jrosser) Revert this once bionic passes
-        - openstack-ansible-functional-ubuntu-bionic:
-            voting: false
         - openstack-ansible-functional-distro_install-centos-7
         - openstack-ansible-functional-distro_install-opensuse-423
