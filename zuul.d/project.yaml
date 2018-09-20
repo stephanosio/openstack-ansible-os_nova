@@ -26,8 +26,10 @@
         # NOTE(hwoarang) xenial does not currently work. It needs investigation
         - openstack-ansible-functional-distro_install-ubuntu-xenial:
             voting: false
+        - openstack-ansible-functional-distro_install-opensuse-150
     gate:
       jobs:
         - openstack-ansible-lxd-ubuntu-xenial
         - openstack-ansible-functional-distro_install-centos-7
         - openstack-ansible-functional-distro_install-opensuse-423
+        - openstack-ansible-functional-distro_install-opensuse-150
