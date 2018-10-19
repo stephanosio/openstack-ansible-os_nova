@@ -46,7 +46,6 @@ nova_service_distro_packages:
   - openstack-nova-scheduler
   - openstack-nova-serialproxy
   - openstack-nova-vncproxy
-  - python-keystonemiddleware
   - python-memcached
   - python-novaclient
   - python-PyMySQL
@@ -97,8 +96,8 @@ nova_compute_kvm_distro_packages:
   - sysfsutils
 
 nova_compute_kvm_packages_to_symlink:
-  - libvirt-python
-  - python-libguestfs
+  - "{{ (ansible_distribution_version is version ('42', '>=')) | ternary('libvirt-python', 'python2-libvirt-python') }}"
+  - "{{ (ansible_distribution_version is version ('42', '>=')) | ternary('python-libguestfs', 'python2-libguestfs') }}"
 
 nova_compute_ksm_packages:
   - qemu-ksm
