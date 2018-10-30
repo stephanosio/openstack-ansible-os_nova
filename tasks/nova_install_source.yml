@@ -42,7 +42,6 @@
   vars:
     venv_build_distro_package_list: "{{ nova_devel_distro_packages }}"
     venv_install_destination_path: "{{ nova_bin | dirname }}"
-    venv_install_distro_package_list: "{{ nova_distro_packages }}"
     venv_pip_install_args: "{{ nova_pip_install_args }}"
     venv_pip_packages: >-
       {{ nova_pip_packages +
