@@ -17,14 +17,11 @@
   command: cat /proc/cpuinfo
   register: cpuinfo_contents
   changed_when: false
-  when:
-    - nova_virt_type is not defined
 
 - name: Register a fact for the nova kvm virt type
   set_fact:
     nova_virt_type: "kvm"
   when:
-    - nova_virt_type is not defined
     - cpuinfo_contents.stdout.find('vmx') != -1
       or cpuinfo_contents.stdout.find('svm') != -1
       or cpuinfo_contents.stdout.find('PowerNV') != -1

@@ -70,6 +70,8 @@
     - always
 
 - include_tasks: nova_virt_detect.yml
+  when:
+    - nova_virt_type is not defined
   tags:
     - always
     - nova-config
