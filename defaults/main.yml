@@ -173,7 +173,6 @@ nova_virt_types:
   lxd:
     nova_compute_driver: lxd.LXDDriver
     nova_reserved_host_memory_mb: 2048
-    nova_compute_manager: nova.compute.manager.ComputeManager
     nova_scheduler_tracks_instance_changes: True
   qemu:
     nova_compute_driver: libvirt.LibvirtDriver
