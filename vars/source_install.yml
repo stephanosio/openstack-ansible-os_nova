@@ -45,7 +45,6 @@ nova_package_list: |-
   {% if nova_oslomsg_amqp1_enabled | bool %}
   {%   set _ = packages.extend(nova_compute_oslomsg_amqp1_distro_packages) %}
   {% endif %}
-  {% set _ = packages.extend(nova_devel_distro_packages) %}
   {{ packages }}
 
 _nova_bin: "/openstack/venvs/nova-{{ nova_venv_tag }}/bin"
