@@ -77,6 +77,17 @@
     - nova-config
     - nova-post-install
 
+- name: Remove nova-compute config
+  file:
+    path: /etc/nova/nova-compute.conf
+    state: absent
+  notify:
+    - Manage LB
+    - Restart nova services
+  tags:
+    - nova-config
+    - nova-post-install
+
 - name: Drop sudoers file
   template:
     src: "sudoers.j2"
