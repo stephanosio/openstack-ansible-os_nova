@@ -280,7 +280,7 @@ hw_disk_discard = {{ nova_libvirt_hw_disk_discard }}
 disk_cachemodes = {{ nova_libvirt_disk_cachemodes }}
 {% endif %}
 
-{% if nova_virt_type == 'lxd' and lxd_storage_pool is defined %}
+{% if nova_virt_type == 'lxd' %}
 [lxd]
 pool= {{ lxd_storage_pool }}
 {% endif %}

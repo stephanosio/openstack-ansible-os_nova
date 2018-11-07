@@ -11,8 +11,8 @@
   --network-address={{ lxd_bind_address }} \
   --network-port={{ lxd_bind_port }} \
   --storage-backend={{ lxd_storage_backend }} \
-{% if lxd_storage_pool is defined %}
-  --storage-pool={{ lxd_storage_pool }} \
+{% if lxd_init_storage_pool is defined %}
+  --storage-pool={{ lxd_init_storage_pool }} \
 {% endif %}
 {% if lxd_storage_create_device is defined %}
   --storage-create-device={{ lxd_storage_create_device }} \
@@ -29,4 +29,3 @@ if [ $(findmnt /var/lib/lxd -o FSTYPE -n) == "btrfs" ]; then
 fi
 
 {% endif %}
-

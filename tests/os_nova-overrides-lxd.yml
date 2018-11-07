@@ -14,6 +14,8 @@
 # limitations under the License.
 
 nova_virt_type: lxd
+lxd_storage_backend: zfs
+lxd_init_storage_pool: default
 
 tempest_test_whitelist:
   - tempest.scenario.test_server_basic_ops.TestServerBasicOps.test_server_basic_ops

@@ -21,7 +21,7 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - openstack-ansible-lxd-ubuntu-xenial
+        - openstack-ansible-lxd-ubuntu-bionic
     gate:
       jobs:
-        - openstack-ansible-lxd-ubuntu-xenial
+        - openstack-ansible-lxd-ubuntu-bionic

@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - job:
-    name: openstack-ansible-lxd-ubuntu-xenial
-    parent: openstack-ansible-functional-ubuntu-xenial
+    name: openstack-ansible-lxd-ubuntu-bionic
+    parent: openstack-ansible-functional-ubuntu-bionic
     vars:
       tox_env: lxd

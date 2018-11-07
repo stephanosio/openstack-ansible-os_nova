@@ -632,9 +632,13 @@ lxd_storage_backend: dir
 # This needs to be set in the user_secrets.yml file.
 #lxd_trust_password:
 
-# This variable should be used with lxd when using a
-# storage backend that utilizes storage pools (zfs)
-#lxd_storage_pool:
+# The name of the underlying storage pool created by, or consumed by
+# lxd init. As an example this would be the name of a ZFS pool.
+#lxd_init_storage_pool: pool
+
+# Nova requires the LXD storage pool name to be specified
+lxd_storage_pool: default
+
 # This variable should be used with lxd when using a
 # storage backend that utilizes storage pool if you
 # want to use a specific bloc device instead of loop
