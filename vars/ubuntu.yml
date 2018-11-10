@@ -149,7 +149,4 @@ novalink_gpg_keys:
   - url: "http://public.dhe.ibm.com/systems/virtualization/Novalink/debian/novalink-gpg-pub.key"
     state: "present"
 
-# Needed for nginx cleanup for O -> P upgrades. Remove in Q
-nova_nginx_conf_path: "sites-available"
-
 nova_uwsgi_bin: '/usr/bin'
