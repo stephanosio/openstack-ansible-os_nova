@@ -21,8 +21,8 @@
 - name: Disable libvirt default network
   command: "virsh net-autostart default --disable"
   failed_when: false
-  when: default_net.stdout|search('default')
+  when: default_net.stdout.find('default') != -1
 
 - name: Destroy libvirt default network
   command: "virsh net-destroy default"
-  when: default_net.stdout|search('default')
+  when: default_net.stdout.find('default') != -1
