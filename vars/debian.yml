@@ -92,6 +92,7 @@ nova_compute_kvm_distro_packages:
   - qemu-utils
   - qemu-user
   - qemu-kvm
+  - qemu-efi
   - ovmf
 
 nova_compute_kvm_packages_to_symlink:
