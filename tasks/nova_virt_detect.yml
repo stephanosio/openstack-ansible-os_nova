@@ -18,6 +18,11 @@
   register: cpuinfo_contents
   changed_when: false
 
+- name: Check for existence of KVM node
+  stat:
+    path: "/dev/kvm"
+  register: dev_kvm
+
 - name: Register a fact for the nova kvm virt type
   set_fact:
     nova_virt_type: "kvm"
@@ -28,6 +33,8 @@
       or (cpuinfo_contents.stdout.find('pSeries') != -1
           and cpuinfo_contents.stdout.find('qemu') != -1
           and ansible_architecture == 'ppc64le')
+      or (dev_kvm.stat.ischr is defined and dev_kvm.stat.ischr
+          and ansible_architecture == 'aarch64')
 
 - name: Register a fact for the nova powervm virt type
   set_fact:
