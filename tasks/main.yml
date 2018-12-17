@@ -122,7 +122,6 @@
     _oslomsg_notify_password: "{{ nova_oslomsg_notify_password }}"
     _oslomsg_notify_vhost: "{{ nova_oslomsg_notify_vhost }}"
     _oslomsg_notify_transport: "{{ nova_oslomsg_notify_transport }}"
-    _oslomsg_configure_notify: "{{ (nova_ceilometer_enabled | bool) or (nova_designate_enabled | bool) }}"
   tags:
     - common-mq
     - nova-config
