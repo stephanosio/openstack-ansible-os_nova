@@ -32,6 +32,10 @@ debug: False
 nova_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
 nova_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((nova_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
 
+# Set the host which will run compute initialization tasks such as checking
+# for a compute node to be up and running cell discovery.
+nova_conductor_setup_host: "{{ groups[nova_services['nova-conductor']['group']][0] }}"
+
 # Set the package install state for distribution and pip packages
 # Options are 'present' and 'latest'
 nova_package_state: "latest"

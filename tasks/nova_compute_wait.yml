@@ -19,7 +19,7 @@
 
 - name: Set the delegated task facts
   set_fact:
-    _wait_nova_bin: "{{ hostvars[first_conductor]['nova_bin'] | default(nova_bin) }}"
+    _wait_nova_bin: "{{ hostvars[nova_conductor_setup_host]['nova_bin'] | default(nova_bin) }}"
 
 - block:
     - name: Wait for the nova-compute service to initialize
