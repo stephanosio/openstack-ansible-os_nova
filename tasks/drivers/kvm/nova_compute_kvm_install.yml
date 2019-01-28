@@ -54,7 +54,3 @@
     state: link
     owner: "{{ nova_qemu_user }}"
     group: "{{ nova_qemu_group }}"
-
-- name: Install nova kvm packages from PIP
-  include_tasks: nova_compute_kvm_install_source.yml
-  when: nova_install_method == 'source'
