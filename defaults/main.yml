@@ -588,6 +588,9 @@ nova_pip_packages:
   - python-openstackclient
   - uWSGI
 
+# Specific pip packages provided by the user
+nova_user_pip_packages: []
+
 nova_optional_oslomsg_amqp1_pip_packages:
   - oslo.messaging[amqp1]
 
