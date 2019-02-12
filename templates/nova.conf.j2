@@ -298,12 +298,6 @@ auth_url = {{ keystone_service_adminurl }}
 insecure = {{ keystone_service_adminuri_insecure | bool }}
 {% endif %}
 
-{% if nova_pci_passthrough_whitelist  %}
-# PCI Passthrough
-[pci]
-passthrough_whitelist = "{{ nova_pci_passthrough_whitelist }}"
-{% endif %}
-
 [wsgi]
 api_paste_config = /etc/nova/api-paste.ini
 {% if nova_external_ssl | bool %}
