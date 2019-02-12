@@ -25,42 +25,19 @@
     - nova-config
     - nova-post-install
 
-- name: Generate nova config
-  config_template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "root"
+# NOTE(cloudnull): This task is required to copy rootwrap filters that we need
+#                  and nova does not provide by default.
+- name: Create aux nova dir
+  file:
+    path: "{{ item.path | default(omit) }}"
+    state: "directory"
+    owner: "{{ item.owner|default(nova_system_user_name) }}"
     group: "{{ item.group|default(nova_system_group_name) }}"
-    mode: "0640"
-    config_overrides: "{{ item.config_overrides }}"
-    config_type: "{{ item.config_type }}"
+    mode: "{{ item.mode | default(omit) }}"
   with_items:
-    - src: "nova.conf.j2"
-      dest: "/etc/nova/nova.conf"
-      config_overrides: "{{ nova_nova_conf_overrides }}"
-      config_type: "ini"
-    - src: "rootwrap.conf.j2"
-      dest: "/etc/nova/rootwrap.conf"
-      config_overrides: "{{ nova_rootwrap_conf_overrides }}"
-      config_type: "ini"
-    - src: "api-paste.ini.j2"
-      dest: "/etc/nova/api-paste.ini"
-      config_overrides: "{{ nova_api_paste_ini_overrides }}"
-      config_type: "ini"
-    - src: "vendor_data.json.j2"
-      dest: "/etc/nova/vendor_data.json"
-      config_overrides: "{{ nova_vendor_data_overrides }}"
-      config_type: "json"
-    - src: "policy.json.j2"
-      dest: "/etc/nova/policy.json-{{ nova_venv_tag }}"
-      config_overrides: "{{ nova_policy_overrides }}"
-      config_type: "json"
-  notify:
-    - Manage LB
-    - Restart nova services
-  tags:
-    - nova-config
-    - nova-post-install
+    - path: "/etc/nova/rootwrap.d"
+      owner: "root"
+      group: "root"
 
 - name: Copy nova rootwrap filter config
   copy:
@@ -76,6 +53,78 @@
   tags:
     - nova-config
     - nova-post-install
+
+- name: Generate nova config
+  config_template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "root"
+    group: "{{ item.group|default(nova_system_group_name) }}"
+    mode: "0640"
+    config_overrides: "{{ item.config_overrides }}"
+    config_type: "{{ item.config_type }}"
+  with_items:
+    - src: "nova.conf.j2"
+      dest: "/etc/nova/nova.conf"
+      config_overrides: "{{ nova_nova_conf_overrides }}"
+      config_type: "ini"
+    - src: "vendor_data.json.j2"
+      dest: "/etc/nova/vendor_data.json"
+      config_overrides: "{{ nova_vendor_data_overrides }}"
+      config_type: "json"
+  notify:
+    - Manage LB
+    - Restart nova services
+  tags:
+    - nova-config
+    - nova-post-install
+
+- name: Implement policy.json if there are overrides configured
+  copy:
+    content: "{{ nova_policy_overrides | to_nice_json }}"
+    dest: "/etc/nova/policy.json"
+  when:
+    - nova_policy_overrides != {}
+
+# NOTE(cloudnull): This is using "cp" instead of copy with a remote_source
+#                  because we only want to copy the original files once. and we
+#                  don't want to need multiple tasks.
+- name: Preserve original configuration file(s)
+  command: "cp {{ item.target_f }} {{ item.target_f }}.original"
+  args:
+    creates: "{{ item.target_f }}.original"
+  with_items: "{{ nova_core_files }}"
+
+- name: Fetch override files
+  fetch:
+    src: "{{ item.target_f }}"
+    dest: "{{ item.tmp_f }}"
+    flat: yes
+  changed_when: false
+  run_once: true
+  with_items: "{{ nova_core_files }}"
+
+- name: Copy common config
+  config_template:
+    src: "{{ item.tmp_f }}"
+    dest: "{{ item.target_f }}"
+    owner: "root"
+    group: "{{ item.group | default(nova_system_group_name) }}"
+    mode: "0640"
+    config_overrides: "{{ item.config_overrides }}"
+    config_type: "{{ item.config_type }}"
+  with_items: "{{ nova_core_files }}"
+  notify:
+    - Restart nova services
+
+- name: Cleanup fetched temp files
+  file:
+    path: "{{ item.tmp_f }}"
+    state: absent
+  changed_when: false
+  delegate_to: localhost
+  run_once: true
+  with_items: "{{ nova_core_files }}"
 
 - name: Remove nova-compute config
   file:
