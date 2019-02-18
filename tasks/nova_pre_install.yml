@@ -119,8 +119,6 @@
       mode: "0700"
     - path: "{{ nova_system_home_folder }}/cache/api"
     - path: "{{ nova_system_home_folder }}/instances"
-    - path: "{{ nova_libvirt_save_path }}"
-      mode: "0750"
     - path: "{{ nova_lock_path }}"
     - path: "/var/run/nova"
   tags:
