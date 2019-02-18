@@ -45,7 +45,7 @@
     venv_pip_install_args: "{{ nova_pip_install_args }}"
     venv_packages_to_symlink: "{{ (nova_services['nova-compute']['group'] in group_names) | ternary(nova_compute_kvm_packages_to_symlink, []) }}"
     venv_pip_packages: >-
-      {{ nova_pip_packages +
+      {{ nova_pip_packages | union(nova_user_pip_packages) +
          ((nova_services['nova-novncproxy']['group'] in group_names) and (nova_console_type == 'novnc')) | ternary(nova_novnc_pip_packages, []) +
          (nova_oslomsg_amqp1_enabled | bool) | ternary(nova_optional_oslomsg_amqp1_pip_packages, []) }}
     venv_facts_when_changed:
