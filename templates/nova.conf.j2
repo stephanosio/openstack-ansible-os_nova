@@ -71,7 +71,6 @@ force_config_drive = {{ nova_force_config_drive }}
 {% if nova_ceilometer_enabled %}
 instance_usage_audit = True
 instance_usage_audit_period = hour
-notify_on_state_change = vm_and_task_state
 {% endif %}
 
 # Notifications
@@ -161,6 +160,13 @@ service_metadata_proxy = {{ nova_metadata_proxy_enabled }}
 {% if nova_network_services[nova_network_type]['ovs_bridge'] is defined %}
 ovs_bridge = {{ nova_network_services[nova_network_type]['ovs_bridge'] }}
 {% endif %}
+
+{% if nova_ceilometer_enabled %}
+[notifications]
+notify_on_state_change = vm_and_task_state
+notification_format = {% if nova_versioned_notification_enabled %}both{% else %}unversioned{% endif %}
+{% endif %}
+
 
 {% if nova_placement_service_enabled | bool %}
 # Placement

@@ -22,6 +22,8 @@ nova_designate_enabled: False
 nova_notifications_designate: notifications_designate
 # Enable/Disable ceilometer configurations
 nova_ceilometer_enabled: False
+# Enable/Disable nova versioned notification
+nova_versioned_notification_enabled: False
 
 ## Verbosity Options
 debug: False
