@@ -196,12 +196,11 @@
 # where we want to isolate the clouds.yaml configuration,
 # rather than have it implemented on all compute nodes.
 - import_tasks: nova_compute_wait.yml
-  delegate_to: "{{ first_conductor }}"
+  delegate_to: "{{ nova_conductor_setup_host }}"
   when:
     - "nova_services['nova-compute']['group'] in group_names"
     - "nova_discover_hosts_in_cells_interval | int < 1"
   vars:
-    first_conductor: "{{ groups[nova_services['nova-conductor']['group']][0] }}"
     compute_host_to_wait_for: "{{ ansible_nodename }}"
   tags:
     - nova-config
@@ -211,11 +210,9 @@
 # the database connection string and therefore
 # cannot run nova-manage.
 - import_tasks: nova_db_post_setup.yml
-  delegate_to: "{{ first_conductor }}"
+  delegate_to: "{{ nova_conductor_setup_host }}"
   run_once: true
   when:
     - "nova_services['nova-compute']['group'] in group_names"
-  vars:
-    first_conductor: "{{ groups[nova_services['nova-conductor']['group']][0] }}"
   tags:
     - nova-config
