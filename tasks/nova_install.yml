@@ -45,8 +45,26 @@
   tags:
     - nova-pip-packages
 
-- name: Install nova packages from PIP
-  include_tasks: nova_install_source.yml
+- name: Install the python venv
+  import_role:
+    name: "python_venv_build"
+  vars:
+    venv_build_constraints: "{{ nova_git_constraints }}"
+    venv_build_distro_package_list: "{{ nova_devel_distro_packages }}"
+    venv_install_destination_path: "{{ nova_bin | dirname }}"
+    venv_pip_install_args: "{{ nova_pip_install_args }}"
+    venv_packages_to_symlink: "{{ (nova_services['nova-compute']['group'] in group_names) | ternary(nova_compute_kvm_packages_to_symlink, []) }}"
+    venv_pip_packages: "{{ nova_venv_packages }}"
+    venv_facts_when_changed:
+      - section: "nova"
+        option: "need_service_restart"
+        value: "True"
+      - section: "nova"
+        option: "need_online_data_migrations"
+        value: "True"
+      - section: "nova"
+        option: "venv_tag"
+        value: "{{ nova_venv_tag }}"
   when: nova_install_method == 'source'
 
 - include_tasks: "consoles/nova_console_{{ nova_console_type }}_install.yml"

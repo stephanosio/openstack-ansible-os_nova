@@ -69,23 +69,23 @@
   tags:
     - always
 
-- include_tasks: nova_virt_detect.yml
+- import_tasks: nova_virt_detect.yml
   when:
     - nova_virt_type is not defined
   tags:
     - always
     - nova-config
 
-- include_tasks: nova_vgpu_detect.yml
+- import_tasks: nova_vgpu_detect.yml
   tags:
     - always
     - nova-config
 
-- include_tasks: nova_pre_install.yml
+- import_tasks: nova_pre_install.yml
   tags:
     - nova-install
 
-- include_tasks: nova_install.yml
+- import_tasks: nova_install.yml
   tags:
     - nova-install
 
@@ -96,11 +96,11 @@
   tags:
     - nova-config
 
-- include_tasks: nova_post_install.yml
+- import_tasks: nova_post_install.yml
   tags:
     - nova-config
 
-- include_tasks: nova_service_setup.yml
+- import_tasks: nova_service_setup.yml
   when:
     - "nova_services['nova-conductor']['group'] in group_names"
     - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
@@ -126,19 +126,19 @@
     - common-mq
     - nova-config
 
-- include_tasks: nova_db_setup.yml
+- import_tasks: nova_db_setup.yml
   when:
     - "nova_services['nova-conductor']['group'] in group_names"
     - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
   tags:
     - nova-config
 
-- include_tasks: nova_uwsgi.yml
+- import_tasks: nova_uwsgi.yml
   tags:
     - nova-config
 
 - name: Run the systemd service role
-  include_role:
+  import_role:
     name: systemd_service
   vars:
     systemd_user_name: "{{ nova_system_user_name }}"
@@ -170,14 +170,14 @@
     - nova-config
     - systemd-service
 
-- include_tasks: nova_compute.yml
+- import_tasks: nova_compute.yml
   when:
     - "nova_services['nova-compute']['group'] in group_names"
   tags:
     - nova-compute
 
 - name: Include ceph_client role
-  include_role:
+  import_role:
     name: ceph_client
   vars:
     openstack_service_system_user: "{{ nova_system_user_name }}"

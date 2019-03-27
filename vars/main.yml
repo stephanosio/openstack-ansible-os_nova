@@ -13,6 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+nova_venv_packages: |-
+  {%- set pkg_list = nova_pip_packages | union(nova_user_pip_packages) %}
+  {%- if nova_oslomsg_amqp1_enabled | bool %}
+  {%-   set _ = pkg_list.extend(nova_optional_oslomsg_amqp1_pip_packages) %}
+  {%- endif %}
+  {%- if (nova_services['nova-novncproxy']['group'] in group_names) and
+         (nova_console_type == 'novnc') %}
+  {%-   set _ = pkg_list.extend(nova_novnc_pip_packages) %}
+  {%- endif %}
+  {%- if (nova_services['nova-compute']['group'] in group_names) %}
+  {%-   if nova_virt_type == 'lxd' %}
+  {%-     set _ = pkg_list.extend(nova_compute_lxd_pip_packages) %}
+  {%-   elif nova_virt_type == 'ironic' %}
+  {%-     set _ = pkg_list.extend(nova_compute_ironic_pip_packages) %}
+  {%-   endif %}
+  {%- endif %}
+  {{- pkg_list | unique }}
+
 #
 # Compile a list of the services on a host based on whether
 # the host is in the host group and the service is enabled.
