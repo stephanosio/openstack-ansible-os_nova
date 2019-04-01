@@ -55,12 +55,6 @@ nova_service_extra_distro_packages:
   serialconsole:
     - openstack-nova-serialproxy
 
-nova_novnc_distro_packages:
-  - js-jquery
-  - js-underscore
-  - librabbitmq
-  - libyaml
-
 nova_compute_barbican_distro_packages:
   - cryptsetup
 

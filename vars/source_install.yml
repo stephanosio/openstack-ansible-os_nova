@@ -20,13 +20,6 @@
 #
 nova_package_list: |-
   {% set packages = nova_distro_packages %}
-  {% if nova_services['nova-novncproxy']['group'] in group_names or
-      nova_services['nova-spicehtml5proxy']['group'] in group_names or
-      nova_services['nova-serialconsole-proxy']['group'] in group_names %}
-  {%   if nova_console_type == 'novnc' %}
-  {%     set _ = packages.extend(nova_novnc_distro_packages) %}
-  {%   endif %}
-  {% endif %}
   {% if nova_services['nova-compute']['group'] in group_names %}
   {%   if nova_virt_type in ['kvm', 'qemu'] %}
   {%     set _ = packages.extend(nova_compute_kvm_distro_packages) %}

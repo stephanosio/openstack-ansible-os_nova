@@ -24,7 +24,6 @@ nova_package_list: |-
       nova_services['nova-spicehtml5proxy']['group'] in group_names or
       nova_services['nova-serialconsole-proxy']['group'] in group_names %}
   {%   if nova_console_type == 'novnc' %}
-  {%     set _ = packages.extend(nova_novnc_distro_packages) %}
   {%     set _ = packages.extend(nova_service_extra_distro_packages['novnc']) %}
   {%   endif %}
   {%   if nova_console_type == 'spice' %}
