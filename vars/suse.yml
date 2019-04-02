@@ -36,7 +36,6 @@ nova_devel_distro_packages:
 nova_service_distro_packages:
   - openstack-nova-api
   - openstack-nova-conductor
-  - openstack-nova-consoleauth
   - openstack-nova-placement-api
   - openstack-nova-scheduler
   - python-memcached

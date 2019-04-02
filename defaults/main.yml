@@ -465,7 +465,6 @@ nova_api_metadata_init_overrides: {}
 nova_api_os_compute_init_overrides: {}
 nova_compute_init_overrides: {}
 nova_conductor_init_overrides: {}
-nova_consoleauth_init_overrides: {}
 nova_novncproxy_init_overrides: {}
 nova_scheduler_init_overrides: {}
 nova_spicehtml5proxy_init_overrides: {}
@@ -514,12 +513,6 @@ nova_services:
     start_order: 2
     execstarts: "{{ nova_bin }}/nova-conductor"
     execreloads: "/bin/kill -HUP $MAINPID"
-  nova-consoleauth:
-    group: nova_console
-    service_name: nova-consoleauth
-    init_config_overrides: "{{ nova_consoleauth_init_overrides }}"
-    start_order: 3
-    execstarts: "{{ nova_bin }}/nova-consoleauth"
   nova-novncproxy:
     group: nova_console
     service_name: nova-novncproxy
