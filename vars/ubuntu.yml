@@ -35,7 +35,6 @@ nova_devel_distro_packages:
 nova_service_distro_packages:
   - nova-api
   - nova-conductor
-  - nova-consoleauth
   - nova-placement-api
   - nova-scheduler
   - python-memcache
