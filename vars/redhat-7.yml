@@ -70,7 +70,6 @@ nova_compute_kvm_distro_packages:
   - libvirt-daemon-driver-qemu
   - libvirt-client
   - qemu-kvm-ev
-  - libvirt-devel
   - libvirt-python
   - nfs-utils
   - python-libguestfs
