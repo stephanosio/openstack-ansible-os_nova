@@ -28,7 +28,7 @@ Release notes for the project can be found at:
 `<https://docs.openstack.org/releasenotes/openstack-ansible-os_nova/>`_
 
 The project source code repository is located at:
-`<https://git.openstack.org/cgit/openstack/openstack-ansible-os_nova/>`_
+`<https://opendev.org/openstack/openstack-ansible-os_nova/>`_
 
 The project home is at:
 `<https://launchpad.net/openstack-ansible>`_
