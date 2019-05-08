@@ -167,9 +167,6 @@ notify_on_state_change = vm_and_task_state
 notification_format = {% if nova_versioned_notification_enabled %}both{% else %}unversioned{% endif %}
 {% endif %}
 
-
-{% if nova_placement_service_enabled | bool %}
-# Placement
 [placement]
 region_name = {{ nova_placement_service_region }}
 valid_interfaces = {{ nova_placement_service_interface }}
@@ -181,7 +178,6 @@ user_domain_name = {{ nova_placement_service_user_domain_id }}
 project_domain_name = {{ nova_placement_service_project_domain_id }}
 auth_url = {{ keystone_service_adminurl }}
 insecure = {{ keystone_service_adminuri_insecure | bool }}
-{% endif %}
 
 [conductor]
 workers = {{ nova_conductor_workers | default(nova_api_threads) }}
