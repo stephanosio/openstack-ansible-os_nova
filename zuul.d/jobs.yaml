@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - job:
-    name: openstack-ansible-lxd-ubuntu-bionic
-    parent: openstack-ansible-functional-ubuntu-bionic
-    vars:
-      tox_env: lxd
+    name: openstack-ansible-deploy-aio_metal_lxd-ubuntu-bionic
+    parent: openstack-ansible-deploy-aio_metal-ubuntu-bionic
+    pre-run:
+      - zuul.d/playbooks/pre-lxd.yml

@@ -14,10 +14,8 @@
 # limitations under the License.
 
 - name: Configure ZFS backing storage
-  hosts: localhost
+  hosts: nova_compute
   user: root
-  become: true
-  connection: local
   tasks:
     - block:
       - name: Install ZFS packages

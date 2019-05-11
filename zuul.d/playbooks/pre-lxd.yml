@@ -1,5 +1,5 @@
 ---
-# Copyright 2017, Rackspace US, Inc.
+# Copyright 2019, Logan Vig <logan2211@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- project:
-    templates:
-      - check-requirements
-      - openstack-ansible-linters
-      - openstack-ansible-deploy-aio_metal-jobs
-      - openstack-ansible-deploy-aio_distro_metal-jobs
-      - publish-openstack-docs-pti
-      - release-notes-jobs-python3
-    check:
-      jobs:
-        - openstack-ansible-deploy-aio_metal_lxd-ubuntu-bionic
-    gate:
-      jobs:
-        - openstack-ansible-deploy-aio_metal_lxd-ubuntu-bionic
+- hosts: all[0]
+  become: yes
+  tasks:
+    - name: Run the LXD ZFS bootstrap
+      command: openstack-ansible tests/test-create-zfs-dev.yml
+      args:
+        chdir: "src/opendev.org/openstack/openstack-ansible-os_nova"
+
+    - name: Drop the LXD variable overrides
+      copy:
+        src: user_variables_lxd.yml
+        dest: /etc/openstack_deploy/user_variables_lxd.yml
