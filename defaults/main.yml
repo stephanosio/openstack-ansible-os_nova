@@ -374,11 +374,9 @@ nova_scheduler_max_attempts: 5
 nova_scheduler_default_filters: >-
   RetryFilter,
   AvailabilityZoneFilter,
-  RamFilter,
   AggregateRamFilter,
   ComputeFilter,
   AggregateCoreFilter,
-  DiskFilter,
   AggregateDiskFilter,
   AggregateNumInstancesFilter,
   AggregateIoOpsFilter,
