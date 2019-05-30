@@ -284,7 +284,7 @@ nova_libvirt_hw_disk_discard: '{{ nova_libvirt_images_rbd_pool is defined | tern
 ## Nova console
 nova_console_agent_enabled: True
 # Set the console type. Presently the only options are ["spice", "novnc", "serialconsole"].
-nova_console_type: "{{ (ansible_architecture == 'aarch64') | ternary('serialconsole', 'spice') }}"
+nova_console_type: "{{ (ansible_architecture == 'aarch64') | ternary('serialconsole', 'novnc') }}"
 
 # Nova console ssl info, presently only used by novnc console type
 nova_console_ssl_dir: "/etc/nova/ssl"
