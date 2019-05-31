@@ -73,6 +73,7 @@ nova_compute_kvm_distro_packages:
   - python-libguestfs
   - qemu-img-ev
   - sysfsutils
+  - "{{ (ansible_architecture == 'aarch64') | ternary('AAVMF', 'OVMF') }}"
 
 nova_compute_kvm_packages_to_symlink:
   - libvirt-python

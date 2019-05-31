@@ -79,6 +79,7 @@ nova_compute_kvm_distro_packages:
   - qemu-block-iscsi
   - qemu-block-rbd
   - qemu-block-ssh
+  - qemu-ovmf-x86_64
   - libvirt-python
   - nfs-utils
   - python-libguestfs

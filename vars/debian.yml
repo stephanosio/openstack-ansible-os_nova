@@ -93,6 +93,7 @@ nova_compute_kvm_distro_packages:
   - qemu-utils
   - qemu-user
   - qemu-kvm
+  - ovmf
 
 nova_compute_kvm_packages_to_symlink:
   - python-libvirt
