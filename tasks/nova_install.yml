@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Setup powervm repository
-  include_tasks: nova_install_apt_powervm.yml
-  when:
-    - "nova_services['nova-compute']['group'] in group_names"
-    - "nova_virt_type == 'powervm'"
-    - "ansible_pkg_mgr == 'apt'"
-
 - name: Record the installation method
   ini_file:
     dest: "/etc/ansible/facts.d/openstack_ansible.fact"

@@ -60,10 +60,6 @@ libvirt_vif_type = ethernet
 # Hypervisor
 default_ephemeral_format = ext4
 
-{% if nova_virt_type == 'powervm' %}
-injected_network_template = /etc/nova/nova-interfaces-template
-{% endif %}
-
 # Configdrive
 force_config_drive = {{ nova_force_config_drive }}
 
