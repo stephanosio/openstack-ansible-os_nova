@@ -466,15 +466,10 @@ nova_compute_ironic_pip_packages:
 
 # Common pip packages
 nova_pip_packages:
-  - cryptography
-  - keystonemiddleware
   - nova
   - osprofiler
   - PyMySQL
-  - python-keystoneclient
   - python-memcached
-  - python-novaclient
-  - python-openstackclient
   - systemd-python
 
 # Specific pip packages provided by the user

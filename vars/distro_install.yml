@@ -34,6 +34,7 @@ nova_package_list: |-
   {%   endif %}
   {% endif %}
   {% if nova_services['nova-compute']['group'] in group_names %}
+  {%   set _ = packages.extend(nova_compute_packages) %}
   {%   if nova_virt_type in ['kvm', 'qemu'] %}
   {%     set _ = packages.extend(nova_compute_kvm_distro_packages) %}
   {%     set _ = packages.extend(nova_service_extra_distro_packages['kvm']) %}

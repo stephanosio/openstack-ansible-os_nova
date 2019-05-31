@@ -21,17 +21,12 @@ libvirt_service_name: libvirtd
 
 # Common apt packages
 nova_distro_packages:
-  - genisoimage
-  - git
   - iptables
-  - libpython2.7
-  - python-openstackclient
 
 nova_devel_distro_packages:
-  - libpq-dev
+  - git
   - libsystemd-dev
   - libxml2-dev
-  - python-httplib2
 
 nova_service_distro_packages:
   - python3-nova
@@ -51,6 +46,16 @@ nova_service_extra_distro_packages:
   serialconsole:
     - openstack-nova-serialproxy
 
+nova_compute_packages:
+  - dosfstools
+  - genisoimage
+  - kpartx
+  - multipath-tools
+  - nfs-common
+  - open-iscsi
+  - python3-guestfs
+  - sysfsutils
+
 nova_compute_barbican_distro_packages:
   - cryptsetup
 
@@ -59,44 +64,15 @@ nova_compute_oslomsg_amqp1_distro_packages:
   - libsasl2-modules
   - sasl2-bin
 
-# the qemu-system-.*, qemu-block-extra, qemu-utils, qemu-user packages are explictly listed
-# for consistent upgrades (they will all be to the same version)
 nova_compute_kvm_distro_packages:
-  - bridge-utils
-  - genisoimage
-  - kpartx
-  - "{{ (ansible_distribution == 'Debian') | ternary('libvirt-daemon-system', 'libvirt-bin') }}"
-  - netcat-openbsd
-  - open-iscsi
-  - python-guestfs
-  - python3-guestfs
-  - python-libvirt
+  - libvirt-daemon
+  - libvirt-daemon-system
   - python3-libvirt
   - qemu
-  - qemu-utils
-  - sysfsutils
-  - vlan
-  - nfs-common
-  - dosfstools
-  - multipath-tools
-  - qemu-system
-  - qemu-system-arm
-  - qemu-system-mips
-  - qemu-system-ppc
-  - qemu-system-sparc
-  - qemu-system-x86
-  - qemu-system-misc
   - qemu-block-extra
-  - qemu-utils
-  - qemu-user
-  - qemu-kvm
-  - qemu-efi
-  - ovmf
 
 nova_compute_kvm_packages_to_symlink:
-  - python-libvirt
   - python3-libvirt
-  - python-guestfs
   - python3-guestfs
 
 nova_compute_ksm_packages:

@@ -21,15 +21,11 @@ libvirt_service_name: libvirtd
 
 # Common yum packages
 nova_distro_packages:
-  - genisoimage
-  - git-core
   - iptables
-  - python3-openstackclient
 
 nova_devel_distro_packages:
+  - git-core
   - libxml2-devel
-  - postgresql-devel
-  - python-httplib2
   - systemd-devel
 
 nova_service_distro_packages:
@@ -37,7 +33,6 @@ nova_service_distro_packages:
   - openstack-nova-conductor
   - openstack-nova-scheduler
   - python-memcached
-  - python-novaclient
   - python-PyMySQL
   - python-systemd
 
@@ -49,6 +44,13 @@ nova_service_extra_distro_packages:
   spice: []
   serialconsole:
     - openstack-nova-serialproxy
+
+nova_compute_packages:
+  - dosfstools
+  - genisoimage
+  - kpartx
+  - python3-libguestfs
+  - sysfsutils
 
 nova_compute_barbican_distro_packages:
   - cryptsetup
@@ -72,8 +74,6 @@ nova_compute_kvm_distro_packages:
   - libvirt-daemon-driver-storage-scsi
   - netcat-openbsd
   - qemu-kvm
-  - qemu-block-curl
-  - qemu-block-dmg
   - qemu-block-iscsi
   - qemu-block-rbd
   - qemu-block-ssh
@@ -96,6 +96,5 @@ nova_compute_ksm_packages:
   - qemu-ksm
 
 nova_compute_oslomsg_amqp1_distro_packages:
-  - cyrus-sasl
   - cyrus-sasl-plain
   - cyrus-sasl-digestmd5

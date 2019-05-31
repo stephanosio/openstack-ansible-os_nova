@@ -20,25 +20,20 @@ libvirt_service_name: libvirtd
 
 # Common yum packages
 nova_distro_packages:
-  - genisoimage
-  - git
   - iptables
+  - systemd-python
 
 nova_devel_distro_packages:
+  - git
   - libxml2-devel
-  - postgresql-devel
-  - systemd-devel
-  - which
 
 nova_service_distro_packages:
   - openstack-nova-api
   - openstack-nova-conductor
-  - openstack-nova-console
   - openstack-nova-scheduler
   - python-memcached
-  - python-novaclient
   - python2-PyMySQL
-  - systemd-python
+  - systemd-devel
 
 nova_service_extra_distro_packages:
   kvm:
@@ -51,27 +46,23 @@ nova_service_extra_distro_packages:
   serialconsole:
     - openstack-nova-serialproxy
 
+nova_compute_packages:
+  - dosfstools
+  - genisoimage
+  - kpartx
+  - python-libguestfs
+  - sysfsutils
+
 nova_compute_barbican_distro_packages:
   - cryptsetup
 
 nova_compute_kvm_distro_packages:
-  - bridge-utils
-  - device-mapper-multipath
-  - dosfstools
-  - genisoimage
-  - iscsi-initiator-utils
-  - kpartx
-  - libvirt-daemon-config-nwfilter
   - libvirt-daemon-kvm
-  - libvirt-daemon-driver-qemu
-  - libvirt-client
-  - nc
   - "qemu-kvm{% if ansible_distribution_major_version|int <= 7 %}-ev{% endif %}"
   - libvirt-python
   - nfs-utils
   - python-libguestfs
   - "qemu-img{% if ansible_distribution_major_version|int <= 7 %}-ev{% endif %}"
-  - sysfsutils
   - "{{ (ansible_architecture == 'aarch64') | ternary('AAVMF', 'OVMF') }}"
 
 nova_compute_kvm_packages_to_symlink:
@@ -82,6 +73,5 @@ nova_compute_ksm_packages:
   - ksmtuned
 
 nova_compute_oslomsg_amqp1_distro_packages:
-  - cyrus-sasl-lib
   - cyrus-sasl-plain
   - cyrus-sasl-md5
