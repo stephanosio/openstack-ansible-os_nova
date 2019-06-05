@@ -226,7 +226,6 @@ rpc_conn_pool_size = {{ nova_rpc_conn_pool_size }}
 
 {% if nova_virt_type == 'ironic' %}
 [ironic]
-valid_interfaces = internal
 username = {{ nova_service_user_name }}
 password = {{ nova_service_password }}
 project_name = {{ nova_service_project_name }}
