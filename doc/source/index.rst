@@ -6,7 +6,6 @@ Nova role for OpenStack-Ansible
    :maxdepth: 2
 
    configure-nova.rst
-   app-powervm.rst
 
 :tags: openstack, nova, cloud, ansible
 :category: \*nix
@@ -81,13 +80,11 @@ compute drivers are supported:
 - libvirt (default)
 - ironic
 - lxd (via nova-lxd)
-- powervm (via nova-powervm)
 
 The driver type is automatically detected by the OpenStack Ansible Nova role
 for the following compute driver types:
 
 - libvirt (kvm / qemu)
-- powervm
 
 Any mix and match of compute node types can be used for those platforms,
 except for ironic.

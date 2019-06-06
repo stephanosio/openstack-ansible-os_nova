@@ -90,9 +90,4 @@ nova_compute_oslomsg_amqp1_distro_packages:
 # TODO: add support for LXD on CentOS at some point.
 nova_compute_lxd_distro_packages: []
 
-# TODO: add support for PowerVM/NovaLink on CentOS at some point.
-nova_compute_powervm_distro_packages: []
-
-novalink_gpg_keys: []
-
 nova_uwsgi_bin: '/usr/sbin'
