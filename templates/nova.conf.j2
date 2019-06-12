@@ -138,17 +138,13 @@ insecure = {{ keystone_service_internaluri_insecure | bool }}
 
 # Neutron
 [neutron]
-region_name = {{ neutron_service_region }}
 auth_type = password
 default_floating_pool = public
-# Keystone client plugin password option
-password = {{ neutron_service_password }}
-# Keystone client plugin username option
-username = {{ neutron_service_user_name }}
-project_name = {{ neutron_service_project_name }}
-user_domain_name = {{ neutron_service_domain_name |default("Default") }}
-project_domain_name = {{ neutron_service_domain_name |default("Default") }}
-# Keystone client plugin authentication URL option
+username = {{ nova_service_user_name }}
+password = {{ nova_service_password }}
+project_name = {{ nova_service_project_name }}
+user_domain_id = {{ nova_service_user_domain_id }}
+project_domain_id = {{ nova_service_project_domain_id }}
 auth_url = {{ keystone_service_adminurl }}
 insecure = {{ keystone_service_adminuri_insecure | bool }}
 metadata_proxy_shared_secret = {{ nova_metadata_proxy_secret }}
@@ -165,11 +161,11 @@ notification_format = {% if nova_versioned_notification_enabled %}both{% else %}
 
 [placement]
 auth_type = password
-username = {{ placement_service_user_name }}
-password = {{ placement_service_password }}
-project_name = {{ placement_service_project_name }}
-user_domain_id = {{ placement_service_user_domain_id }}
-project_domain_id = {{ placement_service_project_domain_id }}
+username = {{ nova_service_user_name }}
+password = {{ nova_service_password }}
+project_name = {{ nova_service_project_name }}
+user_domain_id = {{ nova_service_user_domain_id }}
+project_domain_id = {{ nova_service_project_domain_id }}
 auth_url = {{ keystone_service_adminurl }}
 insecure = {{ keystone_service_adminuri_insecure | bool }}
 
@@ -226,15 +222,14 @@ rpc_conn_pool_size = {{ nova_rpc_conn_pool_size }}
 
 {% if nova_virt_type == 'ironic' %}
 [ironic]
-username = {{ ironic_service_user_name }}
-password = {{ ironic_service_password }}
-project_name = {{ ironic_service_project_name }}
-user_domain_name = {{ ironic_service_domain_name | default("Default") }}
-project_domain_name = {{ ironic_service_domain_name | default("Default") }}
+valid_interfaces = internal
+username = {{ nova_service_user_name }}
+password = {{ nova_service_password }}
+project_name = {{ nova_service_project_name }}
+user_domain_id = {{ nova_service_user_domain_id }}
+project_domain_id = {{ nova_service_project_domain_id }}
 auth_url = {{ keystone_service_adminurl }}
 insecure = {{ keystone_service_adminuri_insecure | bool }}
-api_endpoint = {{ ironic_service_adminurl }}
-auth_type = {{ ironic_keystone_auth_plugin }}
 
 {% endif %}
 
@@ -282,11 +277,11 @@ auth_endpoint = {{ keystone_service_internaluri }}/v3
 [key_manager]
 backend = barbican
 auth_type = "password"
-username = {{ placement_service_user_name }}
-password = {{ placement_service_password }}
-project_name = {{ placement_service_project_name }}
-user_domain_id = {{ placement_service_user_domain_id }}
-project_domain_id = {{ placement_service_project_domain_id }}
+username = {{ nova_service_user_name }}
+password = {{ nova_service_password }}
+project_name = {{ nova_service_project_name }}
+user_domain_id = {{ nova_service_user_domain_id }}
+project_domain_id = {{ nova_service_project_domain_id }}
 auth_url = {{ keystone_service_adminurl }}
 insecure = {{ keystone_service_adminuri_insecure | bool }}
 {% endif %}
