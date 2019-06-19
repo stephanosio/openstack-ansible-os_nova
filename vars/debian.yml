@@ -42,9 +42,12 @@ nova_service_extra_distro_packages:
   kvm:
     - nova-compute-kvm
   novnc:
-    - nova-novncproxy
+    - novnc
+  nova_api:
+    - uwsgi
+    - uwsgi-plugin-python3
   spice:
-    - nova-spiceproxy
+    - spice-html5
   serialconsole:
     - openstack-nova-serialproxy
 
