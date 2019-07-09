@@ -142,7 +142,30 @@
   tags:
     - nova-config
 
-- import_tasks: nova_service_setup.yml
+- import_tasks: service_setup.yml
+  vars:
+    _service_adminuri_insecure: "{{ keystone_service_adminuri_insecure }}"
+    _service_in_ldap: "{{ nova_service_in_ldap }}"
+    _service_setup_host: "{{ nova_service_setup_host }}"
+    _service_setup_host_python_interpreter: "{{ nova_service_setup_host_python_interpreter }}"
+    _service_user_name: "{{ nova_service_user_name }}"
+    _service_user_password: "{{ nova_service_password }}"
+    _service_project_name: "{{ nova_service_project_name }}"
+    _service_role_name: "{{ nova_service_role_name }}"
+    _service_endpoints:
+      - service: "{{ nova_service_name }}"
+        interface: "public"
+        url: "{{ nova_service_publicurl }}"
+      - service: "{{ nova_service_name }}"
+        interface: "internal"
+        url: "{{ nova_service_internalurl }}"
+      - service: "{{ nova_service_name }}"
+        interface: "admin"
+        url: "{{ nova_service_adminurl }}"
+    _service_catalog:
+      - name: "{{ nova_service_name }}"
+        type: "{{ nova_service_type }}"
+        description: "{{ nova_service_description }}"
   when:
     - "nova_services['nova-conductor']['group'] in group_names"
     - "inventory_hostname == ((groups['nova_conductor'] | intersect(ansible_play_hosts)) | list)[0]"
