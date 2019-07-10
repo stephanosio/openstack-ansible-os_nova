@@ -208,6 +208,7 @@ nova_service_proto: http
 nova_service_publicuri_proto: "{{ openstack_service_publicuri_proto | default(nova_service_proto) }}"
 nova_service_adminuri_proto: "{{ openstack_service_adminuri_proto | default(nova_service_proto) }}"
 nova_service_internaluri_proto: "{{ openstack_service_internaluri_proto | default(nova_service_proto) }}"
+nova_service_bind_address: 0.0.0.0
 nova_service_port: 8774
 nova_service_description: "Nova Compute Service"
 nova_service_publicuri: "{{ nova_service_publicuri_proto }}://{{ external_lb_vip_address }}:{{ nova_service_port }}"
@@ -251,6 +252,7 @@ nova_serialconsoleproxy_enabled: True
 
 ## Nova metadata
 nova_metadata_proxy_enabled: "{{ nova_network_services[nova_network_type]['metadata_proxy_enabled'] | bool }}"
+nova_metadata_bind_address: 0.0.0.0
 nova_metadata_port: 8775
 
 ## Nova compute
@@ -448,6 +450,7 @@ nova_services:
     execreloads: "{{ nova_uwsgi_bin }}/uwsgi --reload /var/run/nova-api-metadata/nova-api-metadata.pid"
     wsgi_app: True
     wsgi_overrides: "{{ nova_api_metadata_uwsgi_ini_overrides }}"
+    uwsgi_bind_address: "{{ nova_metadata_bind_address }}"
     uwsgi_port: "{{ nova_metadata_port }}"
     wsgi_name: nova-metadata-wsgi
   nova-api-os-compute:
@@ -459,6 +462,7 @@ nova_services:
     execreloads: "{{ nova_uwsgi_bin }}/uwsgi --reload /var/run/nova-api-os-compute/nova-api-os-compute.pid"
     wsgi_app: True
     wsgi_overrides: "{{ nova_api_os_compute_uwsgi_ini_overrides }}"
+    uwsgi_bind_address: "{{ nova_service_bind_address }}"
     uwsgi_port: "{{ nova_service_port }}"
     wsgi_name: nova-api-wsgi
   nova-compute:
