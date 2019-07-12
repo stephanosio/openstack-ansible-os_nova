@@ -10,7 +10,7 @@ virtualenv = /openstack/venvs/nova-{{ nova_venv_tag }}
 plugin = python3
 {% endif %}
 wsgi-file = {{ nova_bin }}/{{ item.wsgi_name }}
-http = 0.0.0.0:{{ item.uwsgi_port }}
+http = {{ item.uwsgi_bind_address}}:{{ item.uwsgi_port }}
 
 master = true
 enable-threads = true
