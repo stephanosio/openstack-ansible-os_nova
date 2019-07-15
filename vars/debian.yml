@@ -24,17 +24,19 @@ nova_distro_packages:
   - genisoimage
   - git
   - iptables
-  - python-openstackclient
   - libpython2.7
+  - python-openstackclient
 
 nova_devel_distro_packages:
   - libpq-dev
+  - libsystemd-dev
   - libxml2-dev
   - python-httplib2
 
 nova_service_distro_packages:
   - python3-nova
   - python3-memcache
+  - python3-systemd
 
 nova_service_extra_distro_packages:
   kvm:

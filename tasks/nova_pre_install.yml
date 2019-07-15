@@ -124,34 +124,6 @@
   tags:
     - nova-dirs
 
-- name: Test for log directory or link
-  shell: |
-    if [ -h "{{ nova_log_dir }}"  ]; then
-      chown -h {{ nova_system_user_name }}:{{ nova_system_group_name }} "{{ nova_log_dir }}"
-      chown -R {{ nova_system_user_name }}:{{ nova_system_group_name }} "$(readlink {{ nova_log_dir }})"
-    else
-      exit 1
-    fi
-  register: log_dir
-  failed_when: false
-  changed_when: log_dir.rc != 0
-  tags:
-    - nova-dirs
-    - nova-logs
-
-- name: Create nova log dir
-  file:
-    path: "{{ nova_log_dir }}"
-    state: directory
-    owner: "{{ nova_system_user_name }}"
-    group: "{{ nova_system_group_name }}"
-    mode: "0755"
-  when:
-    - log_dir.rc != 0
-  tags:
-    - nova-dirs
-    - nova-logs
-
 - name: Drop sudoers file
   template:
     src: "sudoers.j2"
