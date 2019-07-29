@@ -148,10 +148,11 @@
     _service_in_ldap: "{{ nova_service_in_ldap }}"
     _service_setup_host: "{{ nova_service_setup_host }}"
     _service_setup_host_python_interpreter: "{{ nova_service_setup_host_python_interpreter }}"
-    _service_user_name: "{{ nova_service_user_name }}"
-    _service_user_password: "{{ nova_service_password }}"
     _service_project_name: "{{ nova_service_project_name }}"
-    _service_role_name: "{{ nova_service_role_name }}"
+    _service_users:
+      - name: "{{ nova_service_user_name }}"
+        password: "{{ nova_service_password }}"
+        role: "{{ nova_service_role_name }}"
     _service_endpoints:
       - service: "{{ nova_service_name }}"
         interface: "public"
