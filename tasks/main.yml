@@ -218,6 +218,7 @@
 
 - import_tasks: nova_compute.yml
   when:
+    - nova_virt_type != 'ironic'
     - "nova_services['nova-compute']['group'] in group_names"
   tags:
     - nova-compute
@@ -229,6 +230,7 @@
     openstack_service_system_user: "{{ nova_system_user_name }}"
     openstack_service_venv_bin: "{{ nova_bin }}"
   when:
+    - nova_virt_type != 'ironic'
     - "nova_services['nova-compute']['group'] in group_names"
     - "(nova_libvirt_images_rbd_pool is defined) or
        (nova_cinder_rbd_inuse | bool)"
