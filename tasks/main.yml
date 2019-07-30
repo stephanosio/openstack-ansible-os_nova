@@ -232,9 +232,8 @@
     openstack_service_venv_bin: "{{ nova_bin }}"
   when:
     - nova_virt_type != 'ironic'
-    - "nova_services['nova-compute']['group'] in group_names"
-    - "(nova_libvirt_images_rbd_pool is defined) or
-       (nova_cinder_rbd_inuse | bool)"
+    - nova_services['nova-compute']['group'] in group_names
+    - nova_rbd_inuse | bool
   tags:
     - ceph
 

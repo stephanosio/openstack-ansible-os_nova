@@ -393,6 +393,9 @@ nova_ceph_client_uuid: 517a4663-3927-44bc-9ea7-4a90e1cd4c66
 # ceph be deployed on the nova compute hosts to enable volume backed instances.
 nova_cinder_rbd_inuse: False
 
+# Used to determine if we need a Ceph client
+nova_rbd_inuse: "(nova_libvirt_images_rbd_pool is defined) or (nova_cinder_rbd_inuse | bool)"
+
 ## General Nova configuration
 # If ``nova_osapi_compute_workers`` is unset the system will use half the number of available VCPUS to
 # compute the number of api workers to use.

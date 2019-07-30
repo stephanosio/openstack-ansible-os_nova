@@ -250,10 +250,12 @@ cpu_model_extra_flags = {{ nova_cpu_model_extra_flags | join(',') }}
 {% endif %}
 {% endif %}
 
-{% if nova_libvirt_images_rbd_pool is defined %}
+{% if nova_rbd_inuse %}
 # ceph rbd support
 rbd_user = {{ nova_ceph_client }}
 rbd_secret_uuid = {{ nova_ceph_client_uuid }}
+{% endif %}
+{% if nova_libvirt_images_rbd_pool is defined %}
 images_type = rbd
 images_rbd_pool = {{ nova_libvirt_images_rbd_pool }}
 images_rbd_ceph_conf = /etc/ceph/ceph.conf
