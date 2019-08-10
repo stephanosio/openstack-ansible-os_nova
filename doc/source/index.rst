@@ -79,7 +79,6 @@ compute drivers are supported:
 
 - libvirt (default)
 - ironic
-- lxd (via nova-lxd)
 
 The driver type is automatically detected by the OpenStack Ansible Nova role
 for the following compute driver types:
@@ -89,15 +88,12 @@ for the following compute driver types:
 Any mix and match of compute node types can be used for those platforms,
 except for ironic.
 
-If using the lxd driver, the compute type must be specified using the
-``nova_virt_type`` variable.
-
 The ``nova_virt_type`` may be set in
 ``/etc/openstack_deploy/user_variables.yml``, for example:
 
 .. code-block:: shell-session
 
-   nova_virt_type: lxd
+   nova_virt_type: ironic
 
 You can set ``nova_virt_type`` per host by using ``host_vars`` in
 ``/etc/openstack_deploy/openstack_user_config.yml``. For example:
@@ -108,7 +104,7 @@ You can set ``nova_virt_type`` per host by using ``host_vars`` in
     aio1:
       ip: 172.29.236.100
       host_vars:
-        nova_virt_type: lxd
+        nova_virt_type: ironic
 
 If ``nova_virt_type`` is set in ``/etc/openstack_deploy/user_variables.yml``,
 all nodes in the deployment are set to that hypervisor type.  Setting

@@ -13,11 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Setup ZFS pool for nova-lxd tests
-- import_playbook: test-create-zfs-dev.yml
-  when:
-    - nova_virt_type is defined and nova_virt_type == "lxd"
-
 # Setup the host
 - import_playbook: common/test-setup-host.yml
 

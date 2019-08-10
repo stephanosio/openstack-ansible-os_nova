@@ -44,7 +44,6 @@ nova_service_distro_packages:
 nova_service_extra_distro_packages:
   kvm:
     - openstack-nova-compute
-  lxd: []
   novnc:
     - openstack-nova-novncproxy
   nova_api:
@@ -99,8 +98,5 @@ nova_compute_oslomsg_amqp1_distro_packages:
   - cyrus-sasl
   - cyrus-sasl-plain
   - cyrus-sasl-digestmd5
-
-# TODO: add support for LXD on openSUSE at some point.
-nova_compute_lxd_distro_packages: []
 
 nova_uwsgi_bin: '/usr/sbin'

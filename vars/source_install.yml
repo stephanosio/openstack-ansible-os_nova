@@ -26,8 +26,6 @@ nova_package_list: |-
   {%     if nova_compute_ksm_enabled %}
   {%       set _ = packages.extend(nova_compute_ksm_packages) %}
   {%     endif %}
-  {%   elif nova_virt_type == 'lxd' %}
-  {%     set _ = packages.extend(nova_compute_lxd_distro_packages) %}
   {%   endif %}
   {%   if nova_barbican_enabled | bool %}
   {%     set _ = packages.extend(nova_compute_barbican_distro_packages) %}

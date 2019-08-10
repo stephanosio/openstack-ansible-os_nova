@@ -49,13 +49,9 @@ nova_install_method: "source"
 nova_git_repo: https://git.openstack.org/openstack/nova
 nova_git_install_branch: master
 
-nova_lxd_git_repo: https://git.openstack.org/openstack/nova-lxd
-nova_lxd_git_install_branch: master
-
 nova_upper_constraints_url: "{{ requirements_git_url | default('https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=' ~ requirements_git_install_branch | default('master')) }}"
 nova_git_constraints:
   - "git+{{ nova_git_repo }}@{{ nova_git_install_branch }}#egg=nova"
-  - "git+{{ nova_lxd_git_repo }}@{{ nova_lxd_git_install_branch }}#egg=nova-lxd"
   - "--constraint {{ nova_upper_constraints_url }}"
 nova_pip_install_args: "{{ pip_install_options | default('') }}"
 
@@ -162,10 +158,6 @@ nova_virt_types:
     nova_compute_driver: libvirt.LibvirtDriver
     nova_reserved_host_memory_mb: 2048
     nova_scheduler_tracks_instance_changes: True
-  lxd:
-    nova_compute_driver: lxd.LXDDriver
-    nova_reserved_host_memory_mb: 2048
-    nova_scheduler_tracks_instance_changes: True
   qemu:
     nova_compute_driver: libvirt.LibvirtDriver
     nova_reserved_host_memory_mb: 2048
@@ -183,7 +175,6 @@ nova_compute_ksm_enabled: False
 nova_supported_virt_types:
   - qemu
   - kvm
-  - lxd
   - ironic
 
 ## Nova Auth
@@ -540,11 +531,6 @@ nova_user_pip_packages: []
 nova_optional_oslomsg_amqp1_pip_packages:
   - oslo.messaging[amqp1]
 
-nova_compute_lxd_pip_packages:
-  - pylxd
-  - nova-lxd
-  - pyOpenSSL
-
 nova_qemu_user: libvirt-qemu
 nova_qemu_group: kvm
 
@@ -566,28 +552,6 @@ nova_policy_overrides: {}
 nova_vendor_data_overrides: {}
 nova_api_metadata_uwsgi_ini_overrides: {}
 nova_api_os_compute_uwsgi_ini_overrides: {}
-
-lxd_bind_address: 0.0.0.0
-lxd_bind_port: 8443
-
-# Supported backends are 'zfs', 'dir' and 'btrfs' for now.
-# To use btrfs, a btrfs filesystem must be mounted in /var/lib/lxd
-# during compute node configuration.
-lxd_storage_backend: dir
-# This needs to be set in the user_secrets.yml file.
-#lxd_trust_password:
-
-# The name of the underlying storage pool created by, or consumed by
-# lxd init. As an example this would be the name of a ZFS pool.
-#lxd_init_storage_pool: pool
-
-# Nova requires the LXD storage pool name to be specified
-lxd_storage_pool: default
-
-# This variable should be used with lxd when using a
-# storage backend that utilizes storage pool if you
-# want to use a specific bloc device instead of loop
-#lxd_storage_create_device: "/dev/sdb"
 
 # PCI devices passthrough to nova
 # For SR-IOV please use:

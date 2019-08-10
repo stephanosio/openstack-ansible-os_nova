@@ -45,7 +45,6 @@ nova_service_extra_distro_packages:
   kvm:
     - openstack-nova-compute
     - openstack-nova-migration
-  lxd: []
   novnc:
     - openstack-nova-novncproxy
   nova_api:
@@ -90,8 +89,5 @@ nova_compute_oslomsg_amqp1_distro_packages:
   - cyrus-sasl-lib
   - cyrus-sasl-plain
   - cyrus-sasl-md5
-
-# TODO: add support for LXD on CentOS at some point.
-nova_compute_lxd_distro_packages: []
 
 nova_uwsgi_bin: '/usr/sbin'

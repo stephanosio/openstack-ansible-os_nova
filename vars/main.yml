@@ -23,9 +23,7 @@ nova_venv_packages: |-
   {%-   set _ = pkg_list.extend(nova_novnc_pip_packages) %}
   {%- endif %}
   {%- if (nova_services['nova-compute']['group'] in group_names) %}
-  {%-   if nova_virt_type == 'lxd' %}
-  {%-     set _ = pkg_list.extend(nova_compute_lxd_pip_packages) %}
-  {%-   elif nova_virt_type == 'ironic' %}
+  {%-   if nova_virt_type == 'ironic' %}
   {%-     set _ = pkg_list.extend(nova_compute_ironic_pip_packages) %}
   {%-   endif %}
   {%- endif %}

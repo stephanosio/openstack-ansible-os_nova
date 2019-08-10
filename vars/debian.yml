@@ -41,8 +41,6 @@ nova_service_distro_packages:
 nova_service_extra_distro_packages:
   kvm:
     - nova-compute-kvm
-  lxd:
-    - nova-compute-lxd
   novnc:
     - nova-novncproxy
   nova_api:
@@ -100,20 +98,6 @@ nova_compute_kvm_packages_to_symlink:
   - python3-libvirt
   - python-guestfs
   - python3-guestfs
-
-nova_compute_lxd_distro_packages:
-  - bridge-utils
-  - dosfstools
-  - genisoimage
-  - kpartx
-  - lxd
-  - multipath-tools
-  - nfs-common
-  - open-iscsi
-  - python-guestfs
-  - sysfsutils
-  - vlan
-  - thin-provisioning-tools
 
 nova_compute_ksm_packages:
   - ksmtuned
