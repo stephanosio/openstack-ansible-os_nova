@@ -1,14 +1,11 @@
 # {{ ansible_managed }}
 
 [DEFAULT]
-# Disable stderr logging
-use_stderr = False
 # Logs / State
 debug = {{ debug }}
 fatal_deprecations = {{ nova_fatal_deprecations }}
 use_journal = True
 state_path = {{ nova_system_home_folder }}
-rootwrap_config = /etc/nova/rootwrap.conf
 service_down_time = 120
 {% if nova_default_schedule_zone is defined %}
 default_schedule_zone = {{ nova_default_schedule_zone }}
@@ -23,7 +20,6 @@ reserved_host_memory_mb = {{ nova_reserved_host_memory_mb }}
 
 # Compute
 compute_driver = {{ nova_compute_driver }}
-instance_name_template = instance-%08x
 instances_path = {{ nova_system_home_folder }}/instances
 allow_resize_to_same_host = True
 image_cache_manager_interval = {{ nova_image_cache_manager_interval }}
@@ -51,11 +47,6 @@ metadata_workers = {{ nova_metadata_workers | default(nova_api_threads) }}
 
 # Network
 my_ip = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
-
-## Vif
-{% if nova_virt_type in ['kvm', 'qemu', 'xen'] %}
-libvirt_vif_type = ethernet
-{% endif %}
 
 # Hypervisor
 default_ephemeral_format = ext4
@@ -237,7 +228,6 @@ insecure = {{ keystone_service_adminuri_insecure | bool }}
 inject_partition = {{ nova_libvirt_inject_partition }}
 inject_password = {{ nova_libvirt_inject_password }}
 inject_key = {{ nova_libvirt_inject_key }}
-use_virtio_for_bridges = True
 virt_type = {{ nova_virt_type }}
 remove_unused_resized_minimum_age_seconds = {{ nova_remove_unused_resized_minimum_age_seconds }}
 {% if nova_cpu_mode is defined %}
@@ -289,7 +279,6 @@ secure_proxy_ssl_header = {{ nova_secure_proxy_ssl_header }}
 {% endif %}
 
 [api]
-auth_strategy = keystone
 enable_instance_password = {{ nova_enable_instance_password }}
 use_forwarded_for = {{ nova_network_services[nova_network_type]['use_forwarded_for'] | bool }}
 vendordata_jsonfile_path = /etc/nova/vendor_data.json
