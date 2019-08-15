@@ -10,10 +10,10 @@ Availability zones
 ~~~~~~~~~~~~~~~~~~
 
 Deployers with multiple availability zones can set the
-``nova_default_schedule_zone`` Ansible variable to specify an availability zone
-for new requests. This is useful in environments with different types
-of hypervisors, where builds are sent to certain hardware types based on
-their resource requirements.
+``nova_nova_conf_overrides.DEFAULT.default_schedule_zone`` Ansible
+variable to specify an availability zone for new requests. This is useful
+in environments with different types of hypervisors, where builds are sent
+to certain hardware types based on their resource requirements.
 
 For example, if you have servers running on two racks without sharing the PDU.
 These two racks can be grouped into two availability zones.
@@ -93,7 +93,9 @@ with every virtual machine:
 
 .. code-block:: yaml
 
-    nova_force_config_drive: True
+    nova_nova_conf_overrides:
+      DEFAULT:
+        force_config_drive: True
 
 Certain formats of config drives can prevent instances from migrating properly
 between hypervisors. If you need forced config drives and the ability

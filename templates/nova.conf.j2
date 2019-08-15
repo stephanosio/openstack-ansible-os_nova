@@ -3,13 +3,9 @@
 [DEFAULT]
 # Logs / State
 debug = {{ debug }}
-fatal_deprecations = {{ nova_fatal_deprecations }}
 use_journal = True
 state_path = {{ nova_system_home_folder }}
 service_down_time = 120
-{% if nova_default_schedule_zone is defined %}
-default_schedule_zone = {{ nova_default_schedule_zone }}
-{% endif %}
 
 # Scheduler
 cpu_allocation_ratio = {{ nova_cpu_allocation_ratio }}
@@ -23,7 +19,6 @@ compute_driver = {{ nova_compute_driver }}
 instances_path = {{ nova_system_home_folder }}/instances
 allow_resize_to_same_host = True
 image_cache_manager_interval = {{ nova_image_cache_manager_interval }}
-resume_guests_state_on_host_boot = {{ nova_resume_guests_state_on_host_boot }}
 
 {% if nova_console_user_ssl_cert is defined and nova_console_user_ssl_key is defined and ( nova_services['nova-novncproxy']['group'] in group_names or nova_services['nova-spicehtml5proxy']['group'] in group_names or nova_services['nova-serialconsole-proxy']['group'] in group_names ) %}
 # Console SSL keys
@@ -34,25 +29,15 @@ key = {{ nova_console_ssl_key }}
 
 # Api's
 enabled_apis = {{ nova_enabled_apis }}
-osapi_compute_workers = {{ nova_osapi_compute_workers | default(nova_api_threads) }}
 
 # Rpc all
 transport_url = {{ nova_oslomsg_rpc_transport }}://{% for host in nova_oslomsg_rpc_servers.split(',') %}{{ nova_oslomsg_rpc_userid }}:{{ nova_oslomsg_rpc_password }}@{{ host }}:{{ nova_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ nova_oslomsg_rpc_vhost }}{% if nova_oslomsg_rpc_use_ssl | bool %}?ssl=1{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
-
-executor_thread_pool_size = {{ nova_rpc_thread_pool_size }}
-rpc_response_timeout = {{ nova_rpc_response_timeout }}
-
-# Metadata
-metadata_workers = {{ nova_metadata_workers | default(nova_api_threads) }}
 
 # Network
 my_ip = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
 
 # Hypervisor
 default_ephemeral_format = ext4
-
-# Configdrive
-force_config_drive = {{ nova_force_config_drive }}
 
 # Ceilometer notification configurations
 {% if nova_ceilometer_enabled %}
@@ -81,7 +66,6 @@ memcache_servers = {{ memcached_servers }}
 # Cinder
 [cinder]
 catalog_info = volumev3:cinderv3:internalURL
-cross_az_attach = {{ nova_cross_az_attach }}
 os_region_name = {{ nova_service_region }}
 
 {% if nova_console_type == 'spice' %}
@@ -208,7 +192,6 @@ lock_path = {{ nova_lock_path }}
 
 [oslo_messaging_rabbit]
 ssl = {{ nova_oslomsg_rpc_use_ssl }}
-rpc_conn_pool_size = {{ nova_rpc_conn_pool_size }}
 
 
 {% if nova_virt_type == 'ironic' %}
@@ -229,15 +212,8 @@ inject_partition = {{ nova_libvirt_inject_partition }}
 inject_password = {{ nova_libvirt_inject_password }}
 inject_key = {{ nova_libvirt_inject_key }}
 virt_type = {{ nova_virt_type }}
-remove_unused_resized_minimum_age_seconds = {{ nova_remove_unused_resized_minimum_age_seconds }}
 {% if nova_cpu_mode is defined %}
 cpu_mode = {{ nova_cpu_mode }}
-{% if nova_cpu_mode == 'custom' %}
-cpu_model = {{ nova_cpu_model }}
-{% endif %}
-{% if nova_cpu_model_extra_flags is defined %}
-cpu_model_extra_flags = {{ nova_cpu_model_extra_flags | join(',') }}
-{% endif %}
 {% endif %}
 
 {% if nova_rbd_inuse %}
@@ -279,39 +255,20 @@ secure_proxy_ssl_header = {{ nova_secure_proxy_ssl_header }}
 {% endif %}
 
 [api]
-enable_instance_password = {{ nova_enable_instance_password }}
 use_forwarded_for = {{ nova_network_services[nova_network_type]['use_forwarded_for'] | bool }}
 vendordata_jsonfile_path = /etc/nova/vendor_data.json
 
 [scheduler]
 workers = {{ nova_scheduler_workers | default(nova_api_threads) }}
 max_attempts = {{ nova_scheduler_max_attempts }}
-scheduler_driver = {{ nova_scheduler_driver }}
-periodic_task_interval = {{ nova_scheduler_driver_task_period }}
 discover_hosts_in_cells_interval = {{ nova_discover_hosts_in_cells_interval }}
 
 [filter_scheduler]
-max_instances_per_host = {{ nova_max_instances_per_host }}
 max_io_ops_per_host = {{ nova_max_io_ops_per_host }}
 ram_weight_multiplier = {{ nova_ram_weight_multiplier }}
-available_filters = {{ nova_scheduler_available_filters }}
 enabled_filters = {{ nova_scheduler_default_filters }}
 host_subset_size = {{ nova_scheduler_host_subset_size }}
-weight_classes = {{ nova_scheduler_weight_classes }}
 tracks_instance_changes = {{ nova_scheduler_tracks_instance_changes }}
-
-[quota]
-cores = {{ nova_quota_cores }}
-injected_file_content_bytes = {{ nova_quota_injected_file_content_bytes }}
-injected_file_path_length = {{ nova_quota_injected_file_path_length }}
-injected_files = {{ nova_quota_injected_files }}
-instances = {{ nova_quota_instances }}
-key_pairs = {{ nova_quota_key_pairs }}
-max_age = {{ nova_max_age }}
-metadata_items = {{ nova_quota_metadata_items }}
-ram = {{ nova_quota_ram }}
-server_group_members = {{ nova_quota_server_group_members }}
-server_groups = {{ nova_quota_server_groups }}
 
 [upgrade_levels]
 compute=auto

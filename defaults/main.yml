@@ -59,8 +59,6 @@ nova_pip_install_args: "{{ pip_install_options | default('') }}"
 nova_venv_tag: "{{ venv_tag | default('untagged') }}"
 nova_bin: "{{ _nova_bin }}"
 
-nova_fatal_deprecations: False
-
 ## Nova user information
 nova_system_user_name: nova
 nova_system_group_name: nova
@@ -135,13 +133,6 @@ nova_oslomsg_notify_vhost: "{{ nova_oslomsg_rpc_vhost }}"
 # TODO(ansmith): Change structure when more backends will be supported
 nova_oslomsg_amqp1_enabled: "{{ nova_oslomsg_rpc_transport == 'amqp' }}"
 
-## RabbitMQ info
-
-## Configuration for RPC communications
-nova_rpc_thread_pool_size: 64
-nova_rpc_conn_pool_size: 30
-nova_rpc_response_timeout: 60
-
 ## Nova virtualization Types
 # The nova_virt_types dictionary contains global overrides used for
 #  specific compute types. Every variable inside of this dictionary
@@ -208,9 +199,6 @@ nova_service_adminurl: "{{ nova_service_adminuri }}/v2.1"
 nova_service_internaluri: "{{ nova_service_internaluri_proto }}://{{ internal_lb_vip_address }}:{{ nova_service_port }}"
 nova_service_internalurl: "{{ nova_service_internaluri }}/v2.1"
 
-## Nova cinder
-nova_cross_az_attach: True
-
 ## Nova spice
 nova_spice_html5proxy_base_proto: "{{ openstack_service_publicuri_proto | default('http') }}"
 nova_spice_html5proxy_base_port: 6082
@@ -246,8 +234,6 @@ nova_metadata_bind_address: 0.0.0.0
 nova_metadata_port: 8775
 
 ## Nova compute
-nova_enable_instance_password: True
-nova_force_config_drive: False
 nova_nested_virt_enabled: False
 
 # Uwsgi settings
@@ -285,11 +271,7 @@ nova_external_ssl: false
 nova_secure_proxy_ssl_header: HTTP_X_FORWARDED_PROTO
 
 ## Nova global config
-nova_max_age: 0
-nova_remove_unused_resized_minimum_age_seconds: 3600
 nova_image_cache_manager_interval: 0
-nova_resume_guests_state_on_host_boot: False
-# nova_default_schedule_zone: nova
 
 # Comma separated list of Glance API servers
 nova_glance_api_servers: "{{ (glance_service_internalurl | default('http://localhost')) | urlsplit('scheme') ~ '://' ~ (glance_service_internalurl | default('http://localhost')) | urlsplit('netloc') }}"
@@ -308,28 +290,14 @@ nova_network_services:
     use_forwarded_for: True
     metadata_proxy_enabled: False
 
-# Nova quota
-nova_quota_cores: 20
-nova_quota_injected_file_content_bytes: 10240
-nova_quota_injected_file_path_length: 255
-nova_quota_injected_files: 5
-nova_quota_instances: 10
-nova_quota_key_pairs: 100
-nova_quota_metadata_items: 128
-nova_quota_ram: 51200
-nova_quota_server_group_members: 10
-nova_quota_server_groups: 10
-
 # Nova Scheduler
 nova_cpu_allocation_ratio: 2.0
 nova_disk_allocation_ratio: 1.0
-nova_max_instances_per_host: 50
 nova_max_io_ops_per_host: 10
 nova_ram_allocation_ratio: 1.0
 nova_ram_weight_multiplier: 5.0
 nova_reserved_host_disk_mb: 2048
 
-nova_scheduler_driver_task_period: 60
 nova_scheduler_host_subset_size: 10
 nova_scheduler_max_attempts: 5
 nova_scheduler_default_filters: >-
@@ -346,9 +314,6 @@ nova_scheduler_default_filters: >-
   ServerGroupAntiAffinityFilter,
   ServerGroupAffinityFilter,
   NUMATopologyFilter
-nova_scheduler_driver: filter_scheduler
-nova_scheduler_available_filters: nova.scheduler.filters.all_filters
-nova_scheduler_weight_classes: nova.scheduler.weights.all_weighers
 
 # This should be tuned depending on the number of compute hosts present in the
 # deployment. Large clouds may wish to disable automatic discovery by setting
@@ -388,17 +353,9 @@ nova_cinder_rbd_inuse: False
 nova_rbd_inuse: "{{ (nova_libvirt_images_rbd_pool is defined) or (nova_cinder_rbd_inuse | bool) }}"
 
 ## General Nova configuration
-# If ``nova_osapi_compute_workers`` is unset the system will use half the number of available VCPUS to
-# compute the number of api workers to use.
-# nova_osapi_compute_workers: 16
-
 # If ``nova_conductor_workers`` is unset the system will use half the number of available VCPUS to
 # compute the number of api workers to use.
 # nova_conductor_workers: 16
-
-# If ``nova_metadata_workers`` is unset the system will use half the number of available VCPUS to
-# compute the number of api workers to use.
-# nova_metadata_workers: 16
 
 # If ``nova_scheduler_workers`` is unset the system will use half the number of available VCPUS to
 # compute the number of api workers to use.
