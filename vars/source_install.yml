@@ -37,4 +37,3 @@ nova_package_list: |-
   {{ packages }}
 
 _nova_bin: "/openstack/venvs/nova-{{ nova_venv_tag }}/bin"
-nova_uwsgi_bin: "{{ _nova_bin }}"

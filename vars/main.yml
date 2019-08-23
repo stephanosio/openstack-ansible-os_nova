@@ -38,12 +38,34 @@ filtered_nova_services: |-
   {% for key, value in nova_services.items() %}
   {%   if (value['group'] in group_names) and
           (('condition' not in value) or
-           ('condition' in value and value['condition'])) %}
+           ('condition' in value and value['condition'])) and
+           not ('wsgi_app' in value and value['wsgi_app']) %}
   {%     set _ = value.update({'service_key': key}) %}
   {%     set _ = services.append(value) %}
   {%   endif %}
   {% endfor %}
   {{ services | sort(attribute='start_order') }}
+
+uwsgi_nova_services: |-
+  {% set services = {} %}
+  {% for key, value in nova_services.items() %}
+  {%   if (value['group'] in group_names) and
+         (('condition' not in value) or ('condition' in value and value['condition']))
+         and ('wsgi_app' in value and value['wsgi_app']) %}
+  {%     set _ = value.update(
+            {
+             'wsgi_path':  nova_bin ~ '/' ~ value.wsgi_name,
+             'wsgi_venv': ((nova_install_method == 'source') | ternary(nova_bin | dirname, None)),
+             'uwsgi_uid': nova_system_user_name,
+             'uwsgi_guid': nova_system_group_name,
+             'uwsgi_processes': nova_wsgi_processes,
+             'uwsgi_threads': nova_wsgi_threads
+           }
+         ) %}
+  {%     set _ = services.update({key: value}) %}
+  {%   endif %}
+  {% endfor %}
+  {{ services }}
 
 # Define all Nova mountpoints when using NFS. If defined
 # the corresponding directory will only be created by the
