@@ -180,9 +180,15 @@
   tags:
     - nova-config
 
-- import_tasks: nova_uwsgi.yml
+- name: Import uwsgi role
+  import_role:
+    name: uwsgi
+  vars:
+    uwsgi_services: "{{ uwsgi_nova_services }}"
+    uwsgi_install_method: "{{ nova_install_method }}"
   tags:
     - nova-config
+    - uwsgi
 
 - name: Run the systemd service role
   import_role:

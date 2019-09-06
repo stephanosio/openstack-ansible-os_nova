@@ -239,7 +239,6 @@ nova_nested_virt_enabled: False
 # Uwsgi settings
 nova_wsgi_processes_max: 16
 nova_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, nova_wsgi_processes_max] | min }}"
-nova_wsgi_buffer_size: 65535
 nova_wsgi_threads: 1
 
 ## Nova libvirt
@@ -396,10 +395,8 @@ nova_services:
     service_name: nova-api-metadata
     init_config_overrides: "{{ nova_api_metadata_init_overrides }}"
     start_order: 5
-    execstarts: "{{ nova_uwsgi_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-api-metadata.ini"
-    execreloads: "{{ nova_uwsgi_bin }}/uwsgi --reload /var/run/nova-api-metadata/nova-api-metadata.pid"
     wsgi_app: True
-    wsgi_overrides: "{{ nova_api_metadata_uwsgi_ini_overrides }}"
+    uwsgi_overrides: "{{ nova_api_metadata_uwsgi_ini_overrides }}"
     uwsgi_bind_address: "{{ nova_metadata_bind_address }}"
     uwsgi_port: "{{ nova_metadata_port }}"
     wsgi_name: nova-metadata-wsgi
@@ -408,10 +405,8 @@ nova_services:
     service_name: nova-api-os-compute
     init_config_overrides: "{{ {'Install': {'Alias': 'nova-api.service'}} | combine(nova_api_os_compute_init_overrides) }}"
     start_order: 4
-    execstarts: "{{ nova_uwsgi_bin }}/uwsgi --autoload --ini /etc/uwsgi/nova-api-os-compute.ini"
-    execreloads: "{{ nova_uwsgi_bin }}/uwsgi --reload /var/run/nova-api-os-compute/nova-api-os-compute.pid"
     wsgi_app: True
-    wsgi_overrides: "{{ nova_api_os_compute_uwsgi_ini_overrides }}"
+    uwsgi_overrides: "{{ nova_api_os_compute_uwsgi_ini_overrides }}"
     uwsgi_bind_address: "{{ nova_service_bind_address }}"
     uwsgi_port: "{{ nova_service_port }}"
     wsgi_name: nova-api-wsgi
@@ -480,7 +475,6 @@ nova_pip_packages:
   - python-novaclient
   - python-openstackclient
   - systemd-python
-  - uWSGI
 
 # Specific pip packages provided by the user
 nova_user_pip_packages: []

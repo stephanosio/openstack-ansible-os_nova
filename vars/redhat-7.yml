@@ -47,9 +47,6 @@ nova_service_extra_distro_packages:
     - openstack-nova-migration
   novnc:
     - openstack-nova-novncproxy
-  nova_api:
-    - uwsgi
-    - uwsgi-plugin-python
   spice:
     - openstack-nova-spicehtml5proxy
   serialconsole:
@@ -89,5 +86,3 @@ nova_compute_oslomsg_amqp1_distro_packages:
   - cyrus-sasl-lib
   - cyrus-sasl-plain
   - cyrus-sasl-md5
-
-nova_uwsgi_bin: '/usr/sbin'

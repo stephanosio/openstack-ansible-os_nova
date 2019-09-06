@@ -43,9 +43,6 @@ nova_service_extra_distro_packages:
     - nova-compute-kvm
   novnc:
     - nova-novncproxy
-  nova_api:
-    - uwsgi
-    - uwsgi-plugin-python3
   spice:
     - nova-spiceproxy
   serialconsole:
@@ -101,5 +98,3 @@ nova_compute_kvm_packages_to_symlink:
 
 nova_compute_ksm_packages:
   - ksmtuned
-
-nova_uwsgi_bin: '/usr/bin'
