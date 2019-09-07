@@ -81,15 +81,19 @@ nova_compute_kvm_distro_packages:
   - qemu-block-rbd
   - qemu-block-ssh
   - qemu-ovmf-x86_64
-  - libvirt-python
+  - python2-libvirt-python
+  - python3-libvirt-python
   - nfs-utils
-  - python-libguestfs
+  - python2-libguestfs
+  - python3-libguestfs
   - qemu-tools
   - sysfsutils
 
 nova_compute_kvm_packages_to_symlink:
-  - "{{ (ansible_distribution_version is version ('42', '>=')) | ternary('libvirt-python', 'python2-libvirt-python') }}"
-  - "{{ (ansible_distribution_version is version ('42', '>=')) | ternary('python-libguestfs', 'python2-libguestfs') }}"
+  - python2-libvirt-python
+  - python3-libvirt-python
+  - python2-libguestfs
+  - python3-libguestfs
 
 nova_compute_ksm_packages:
   - qemu-ksm
