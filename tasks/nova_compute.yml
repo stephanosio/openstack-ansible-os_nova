@@ -17,12 +17,12 @@
   tags:
     - nova-install
 
-- include_tasks: nova_compute_key_populate.yml
+- import_tasks: nova_compute_key_populate.yml
   tags:
     - nova-config
     - nova-key
 
-- include_tasks: nova_compute_key_distribute.yml
+- import_tasks: nova_compute_key_distribute.yml
   tags:
     - nova-config
     - nova-key
