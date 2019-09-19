@@ -190,7 +190,7 @@ nova_service_proto: http
 nova_service_publicuri_proto: "{{ openstack_service_publicuri_proto | default(nova_service_proto) }}"
 nova_service_adminuri_proto: "{{ openstack_service_adminuri_proto | default(nova_service_proto) }}"
 nova_service_internaluri_proto: "{{ openstack_service_internaluri_proto | default(nova_service_proto) }}"
-nova_service_bind_address: 0.0.0.0
+nova_service_bind_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 nova_service_port: 8774
 nova_service_description: "Nova Compute Service"
 nova_service_publicuri: "{{ nova_service_publicuri_proto }}://{{ external_lb_vip_address }}:{{ nova_service_port }}"
@@ -231,7 +231,7 @@ nova_serialconsoleproxy_enabled: True
 
 ## Nova metadata
 nova_metadata_proxy_enabled: "{{ nova_network_services[nova_network_type]['metadata_proxy_enabled'] | bool }}"
-nova_metadata_bind_address: 0.0.0.0
+nova_metadata_bind_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 nova_metadata_port: 8775
 
 ## Nova compute
