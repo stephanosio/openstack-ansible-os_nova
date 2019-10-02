@@ -21,10 +21,10 @@ libvirt_service_name: libvirtd
 
 # Common yum packages
 nova_distro_packages:
+  - git-core
   - iptables
 
 nova_devel_distro_packages:
-  - git-core
   - libxml2-devel
   - systemd-devel
 
