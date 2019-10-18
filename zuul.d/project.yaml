@@ -14,14 +14,6 @@
 # limitations under the License.
 
 - project:
-    check:
-      jobs:
-        - openstack-ansible-deploy-aio_metal-debian-stable:
-            voting: false
-    gate:
-      jobs:
-        - openstack-ansible-deploy-aio_metal-debian-stable:
-            voting: false
     templates:
       - check-requirements
       - openstack-ansible-linters
