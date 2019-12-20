@@ -62,15 +62,22 @@ nova_compute_kvm_distro_packages:
   - libvirt-daemon-kvm
   - "qemu-kvm{% if ansible_distribution_major_version|int <= 7 %}-ev{% endif %}"
   - libvirt-client
-  - libvirt-python
+  - "{{ (ansible_distribution_major_version|int <= 7) | ternary('libvirt-devel', 'python3-libvirt') }}"
   - nfs-utils
-  - python-libguestfs
+  - "{{ (ansible_distribution_major_version|int <= 7) | ternary('libguestfs-devel', 'python3-libguestfs') }}"
   - "qemu-img{% if ansible_distribution_major_version|int <= 7 %}-ev{% endif %}"
   - "{{ (ansible_architecture == 'aarch64') | ternary('AAVMF', 'OVMF') }}"
 
-nova_compute_kvm_packages_to_symlink:
-  - "{% if ansible_distribution_major_version|int <= 7 %}libvirt-python{% else %}python2-libvirt{% endif %}"
-  - "python{% if ansible_distribution_major_version|int > 7 %}2{% endif %}-libguestfs"
+nova_compute_kvm_packages_to_symlink: |-
+  {% set packages = [] %}
+  {% if ansible_distribution_major_version|int > 7 %}
+  {%   set _ = packages.extend(['python3-libvirt', 'python3-libguestfs']) %}
+  {% endif %}
+  {{ packages }}
+
+nova_compute_kvm_pip_packages:
+  - http://download.libguestfs.org/python/guestfs-1.40.2.tar.gz
+  - libvirt-python
 
 nova_compute_ksm_packages:
   - ksmtuned
