@@ -64,7 +64,7 @@ transport_url = {{ nova_oslomsg_notify_transport }}://{% for host in nova_osloms
 [cache]
 enabled = true
 backend = oslo_cache.memcache_pool
-memcache_servers = {{ memcached_servers }}
+memcache_servers = {{ nova_memcached_servers }}
 
 
 # Cinder

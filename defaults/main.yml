@@ -25,6 +25,8 @@ nova_ceilometer_enabled: False
 # Enable/Disable nova versioned notification
 nova_versioned_notification_enabled: False
 
+nova_memcached_servers: "{{ memcached_servers }}"
+
 ## Verbosity Options
 debug: False
 
@@ -465,6 +467,7 @@ nova_pip_packages:
   - nova
   - osprofiler
   - PyMySQL
+  - pymemcache
   - python-memcached
   - systemd-python
 
