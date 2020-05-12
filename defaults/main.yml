@@ -484,12 +484,6 @@ nova_qemu_group: kvm
 # file for /etc/libvirt/qemu.conf
 #qemu_conf_dict: {}
 
-# This variable is used by the repo_build process to determine
-# which host group to check for members of before building the
-# pip packages required by this role. The value is picked up
-# by the py_pkgs lookup.
-nova_role_project_group: nova_all
-
 ## Tunable overrides
 nova_nova_conf_overrides: {}
 nova_rootwrap_conf_overrides: {}
