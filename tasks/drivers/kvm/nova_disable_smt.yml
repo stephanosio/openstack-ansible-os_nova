@@ -37,4 +37,4 @@
   service:
     name: smt
     enabled: yes
-  when: "{{ smt_disable_service | changed }}"
+  when: smt_disable_service | changed
