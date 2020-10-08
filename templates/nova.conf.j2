@@ -90,6 +90,8 @@ enabled = False
 [vnc]
 enabled = {{ nova_novncproxy_agent_enabled }}
 novncproxy_base_url = {{ nova_novncproxy_base_url }}
+novncproxy_host = {{ nova_novncproxy_host }}
+novncproxy_port = {{ nova_novncproxy_port }}
 server_listen = {{ nova_novncproxy_vncserver_listen }}
 server_proxyclient_address = {{ nova_novncproxy_vncserver_proxyclient_address }}
 
