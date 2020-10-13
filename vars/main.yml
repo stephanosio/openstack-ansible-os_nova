@@ -101,4 +101,4 @@ _nova_scheduler_filters: |-
   {% else %}
   {%   set filters = default_filters %}
   {% endif %}
-  {{ default_filters + nova_scheduler_extra_filters }}
+  {{ filters + nova_scheduler_extra_filters }}
