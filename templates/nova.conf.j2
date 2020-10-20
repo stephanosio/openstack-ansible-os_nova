@@ -81,6 +81,7 @@ agent_enabled = {{ nova_console_agent_enabled }}
 enabled = {{ nova_console_agent_enabled }}
 # Console Url and binds
 html5proxy_base_url = {{ nova_spice_html5proxy_base_url }}
+html5proxy_host = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
 server_listen = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
 
 server_proxyclient_address = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
