@@ -15,13 +15,13 @@
 
 
 # Enable/Disable barbican configurations
-nova_barbican_enabled: False
+nova_barbican_enabled: "{{ (groups['barbican_all'] is defined) and (groups['barbican_all'] | length > 0) }}"
 # Enable/Disable designate configurations
-nova_designate_enabled: False
+nova_designate_enabled: "{{ (groups['designate_all'] is defined) and (groups['designate_all'] | length > 0) }}"
 # Notification topics for designate.
 nova_notifications_designate: notifications_designate
 # Enable/Disable ceilometer configurations
-nova_ceilometer_enabled: False
+nova_ceilometer_enabled: "{{ (groups['ceilometer_all'] is defined) and (groups['ceilometer_all'] | length > 0) }}"
 # Enable/Disable nova versioned notification
 nova_versioned_notification_enabled: False
 
@@ -40,13 +40,12 @@ nova_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_pyt
 # for a compute node to be up and running cell discovery.
 nova_conductor_setup_host: "{{ groups[nova_services['nova-conductor']['group']][0] }}"
 
-# Set the package install state for distribution and pip packages
+# Set the package install state for distribution packages
 # Options are 'present' and 'latest'
-nova_package_state: "latest"
-nova_pip_package_state: "latest"
+nova_package_state: "{{ package_state | default('latest') }}"
 
 # Set installation method.
-nova_install_method: "source"
+nova_install_method: "{{ service_install_method | default('source') }}"
 nova_venv_python_executable: "{{ openstack_venv_python_executable | default('python2') }}"
 
 nova_git_repo: https://opendev.org/openstack/nova
@@ -95,7 +94,7 @@ nova_galera_database: nova
 nova_db_max_overflow: 10
 nova_db_max_pool_size: 120
 nova_db_pool_timeout: 30
-nova_galera_port: 3306
+nova_galera_port: "{{ galera_port | default('3306') }}"
 # Toggle whether nova connects via an encrypted connection
 nova_galera_use_ssl: "{{ galera_use_ssl | default(False) }}"
 # The path where to store the database server CA certificate
@@ -176,7 +175,7 @@ nova_supported_virt_types:
   - ironic
 
 ## Nova Auth
-nova_service_region: RegionOne
+nova_service_region: "{{ service_region | default('RegionOne') }}"
 nova_service_project_name: "service"
 nova_service_project_domain_id: default
 nova_service_user_domain_id: default
@@ -263,7 +262,7 @@ nova_libvirt_hw_disk_discard: '{{ nova_libvirt_images_rbd_pool | bool | ternary(
 nova_libvirt_live_migration_inbound_addr: '{{ (nova_management_address == "localhost") | ternary("127.0.0.1", nova_management_address) }}'
 
 ## Nova console
-nova_console_agent_enabled: True
+nova_console_agent_enabled: "{{ ansible_architecture != 'aarch64' }}"
 # Set the console type. Presently the only options are ["spice", "novnc", "serialconsole"].
 nova_console_type: "{{ (ansible_architecture == 'aarch64') | ternary('serialconsole', 'novnc') }}"
 
@@ -273,7 +272,7 @@ nova_console_ssl_cert: "{{ nova_console_ssl_dir }}/nova-console.pem"
 nova_console_ssl_key: "{{ nova_console_ssl_dir }}/nova-console.key"
 
 # Set to true when terminating SSL/TLS at a load balancer
-nova_external_ssl: false
+nova_external_ssl: "{{ openstack_external_ssl | default(False) }}"
 
 # External SSL forwarding proto
 nova_secure_proxy_ssl_header: HTTP_X_FORWARDED_PROTO
@@ -353,8 +352,6 @@ nova_nfs_client: []
 #nova_libvirt_images_rbd_pool: vms
 nova_libvirt_images_rbd_pool: ''
 nova_ceph_client: '{{ cinder_ceph_client }}'
-# TODO(odyssey4me) - the uuid should be removed, there should be no defaults for secrets
-nova_ceph_client_uuid: 517a4663-3927-44bc-9ea7-4a90e1cd4c66
 
 # Enabled upstream if RBD is in use on cinder backends, which requires that
 # ceph be deployed on the nova compute hosts to enable volume backed instances.
@@ -383,7 +380,7 @@ nova_api_threads: "{{ [[(ansible_processor_vcpus//ansible_processor_threads_per_
 #  "compute:create": ""
 #  "compute:create:attach_network": ""
 
-nova_service_in_ldap: false
+nova_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 
 ## libvirtd config options
 nova_libvirtd_listen_tls: 0
