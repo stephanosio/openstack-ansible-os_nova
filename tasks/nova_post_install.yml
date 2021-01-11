@@ -87,6 +87,13 @@
     dest: "/etc/nova/policy.json"
   when:
     - nova_policy_overrides != {}
+  notify:
+    - Manage LB
+    - Restart nova services
+    - Restart uwsgi services
+  tags:
+    - nova-config
+    - nova-policy-override
 
 # NOTE(cloudnull): This is using "cp" instead of copy with a remote_source
 #                  because we only want to copy the original files once. and we
