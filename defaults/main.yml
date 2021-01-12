@@ -53,7 +53,6 @@ nova_git_install_branch: master
 
 nova_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
 nova_git_constraints:
-  - "git+{{ nova_git_repo }}@{{ nova_git_install_branch }}#egg=nova"
   - "--constraint {{ nova_upper_constraints_url }}"
 nova_pip_install_args: "{{ pip_install_options | default('') }}"
 
@@ -474,7 +473,7 @@ nova_compute_ironic_pip_packages:
 
 # Common pip packages
 nova_pip_packages:
-  - nova
+  - "git+{{ nova_git_repo }}@{{ nova_git_install_branch }}#egg=nova"
   - osprofiler
   - PyMySQL
   - pymemcache
