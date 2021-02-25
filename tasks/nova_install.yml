@@ -97,21 +97,51 @@
     - nova-novnc-console
     - nova-spice-console
 
-- name: Populate service facts
-  service_facts:
+# NOTE(jrosser) We do not use the service_facts: module here as it will add
+# a very large quantity of facts for the host. To keep the facts
+# size minimised a more direct approach to check the service status is used
+- name: Check nova-novncproxy service status
+  shell: systemctl is-active nova-novncproxy.service || systemctl is-enabled nova-novncproxy.service
+  failed_when: false
+  changed_when: false
+  become: true
+  register: novnc_proxy_enabled
+  tags:
+    - skip_ansible_lint
+
+- name: Check nova-spicehtml5proxy service status
+  shell: systemctl is-active nova-spicehtml5proxy.service || systemctl is-enabled nova-spicehtml5proxy.service
+  failed_when: false
+  changed_when: false
+  become: true
+  register: spicehtml5_proxy_enabled
+  tags:
+    - skip_ansible_lint
+
+- name: Check nova-serialproxy service status
+  shell: systemctl is-active nova-serialproxy.service || systemctl is-enabled nova-serialproxy.service
+  failed_when: false
+  changed_when: false
+  become: true
+  register: serial_proxy_enabled
+  tags:
+    - skip_ansible_lint
 
 - name: Disable existing services for any unused console types
   systemd:
     name: "{{ item.service }}"
     enabled: no
     state: stopped
-  when: item.service in ansible_facts['services'] and item.type != nova_console_type
+  when: (item.condition | bool) and item.type != nova_console_type
   loop:
     - service: "nova-novncproxy.service"
+      condition: "{{ novnc_proxy_enabled.rc is defined and novnc_proxy_enabled.rc == 0 }}"
       type: "novnc"
     - service: "nova-spicehtml5proxy.service"
+      condition: "{{ spicehtml5_proxy_enabled.rc is defined and spicehtml5_proxy_enabled.rc == 0 }}"
       type: "spice"
     - service: "nova-serialproxy.service"
+      condition: "{{ serial_proxy_enabled.rc is defined and serial_proxy_enabled.rc == 0 }}"
       type: "serialconsole"
 
 - name: Initialise the upgrade facts
