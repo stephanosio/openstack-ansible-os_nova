@@ -138,4 +138,4 @@
 - name: Set default nova console for ppc64le
   set_fact:
     nova_console_type: "novnc"
-  when: ansible_architecture == 'ppc64le'
+  when: ansible_facts['architecture'] == 'ppc64le'

@@ -33,14 +33,14 @@
     apt_package_pinning_priority: "1000"
     apt_pinned_packages: [{ package: "{{ nova_backports_packages | join(' ') }}", release: 'Debian Backports' }]
   when:
-    - ansible_distribution | lower == 'debian'
+    - ansible_facts['distribution'] | lower == 'debian'
 
 - name: Install distro packages
   package:
     name: "{{ nova_package_list }}"
     state: "{{ nova_package_state }}"
-    update_cache: "{{ (ansible_pkg_mgr in ['apt', 'zypper']) | ternary('yes', omit) }}"
-    cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
+    update_cache: "{{ (ansible_facts['pkg_mgr'] in ['apt', 'zypper']) | ternary('yes', omit) }}"
+    cache_valid_time: "{{ (ansible_facts['pkg_mgr'] == 'apt') | ternary(cache_timeout, omit) }}"
   register: install_packages
   until: install_packages is success
   retries: 5
@@ -83,8 +83,8 @@
   when:
     - nova_install_method == 'source'
     - nova_services['nova-compute']['group'] in group_names
-    - ansible_os_family | lower == 'redhat'
-    - ansible_distribution_major_version|int <= 7
+    - ansible_facts['os_family'] | lower == 'redhat'
+    - ansible_facts['distribution_major_version']|int <= 7
 
 - include_tasks: "consoles/nova_console_{{ nova_console_type }}_install.yml"
   when:
@@ -105,7 +105,7 @@
     name: "{{ item.service }}"
     enabled: no
     state: stopped
-  when: item.service in ansible_facts.services and item.type != nova_console_type
+  when: item.service in ansible_facts['services'] and item.type != nova_console_type
   loop:
     - service: "nova-novncproxy.service"
       type: "novnc"

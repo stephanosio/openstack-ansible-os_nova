@@ -86,7 +86,7 @@ nova_management_address: "127.0.0.1"
 
 ## Database info
 nova_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
-nova_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((nova_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_python['executable'])) }}"
+nova_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((nova_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
 nova_galera_address: "{{ galera_address | default('127.0.0.1') }}"
 nova_galera_user: nova
 nova_galera_database: nova
@@ -209,7 +209,7 @@ nova_spice_html5proxy_base_proto: "{{ openstack_service_publicuri_proto | defaul
 nova_spice_html5proxy_base_port: 6082
 nova_spice_html5proxy_base_uri: "{{ nova_spice_html5proxy_base_proto }}://{{ external_lb_vip_address }}:{{ nova_spice_html5proxy_base_port }}"
 nova_spice_html5proxy_base_url: "{{ nova_spice_html5proxy_base_uri }}/spice_auto.html"
-nova_spice_console_agent_enabled: "{{ ansible_architecture != 'aarch64' }}"
+nova_spice_console_agent_enabled: "{{ ansible_facts['architecture'] != 'aarch64' }}"
 nova_spicehtml5_git_repo: https://gitlab.freedesktop.org/spice/spice-html5.git
 nova_spicehtml5_git_install_branch: master
 
@@ -244,7 +244,7 @@ nova_nested_virt_enabled: False
 
 # Uwsgi settings
 nova_wsgi_processes_max: 16
-nova_wsgi_processes: "{{ [[ansible_processor_vcpus|default(1), 1] | max * 2, nova_wsgi_processes_max] | min }}"
+nova_wsgi_processes: "{{ [[ansible_facts['processor_vcpus']|default(1), 1] | max * 2, nova_wsgi_processes_max] | min }}"
 nova_wsgi_threads: 1
 
 ## Nova libvirt
@@ -261,9 +261,9 @@ nova_libvirt_hw_disk_discard: '{{ (nova_libvirt_images_rbd_pool | length > 0) | 
 nova_libvirt_live_migration_inbound_addr: '{{ (nova_management_address == "localhost") | ternary("127.0.0.1", nova_management_address) }}'
 
 ## Nova console
-nova_console_agent_enabled: "{{ ansible_architecture != 'aarch64' }}"
+nova_console_agent_enabled: "{{ ansible_facts['architecture'] != 'aarch64' }}"
 # Set the console type. Presently the only options are ["spice", "novnc", "serialconsole"].
-nova_console_type: "{{ (ansible_architecture == 'aarch64') | ternary('serialconsole', 'novnc') }}"
+nova_console_type: "{{ (ansible_facts['architecture'] == 'aarch64') | ternary('serialconsole', 'novnc') }}"
 
 # Nova console ssl info, presently only used by novnc console type
 nova_console_ssl_dir: "/etc/nova/ssl"
@@ -370,7 +370,7 @@ nova_rbd_inuse: "{{ (nova_libvirt_images_rbd_pool | length > 0) or (nova_cinder_
 
 ## Cap the maximun number of threads / workers when a user value is unspecified.
 nova_api_threads_max: 16
-nova_api_threads: "{{ [[(ansible_processor_vcpus//ansible_processor_threads_per_core)|default(1), 1] | max * 2, nova_api_threads_max] | min }}"
+nova_api_threads: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['processor_threads_per_core'])|default(1), 1] | max * 2, nova_api_threads_max] | min }}"
 
 ## Policy vars
 # Provide a list of access controls to update the default policy.json with. These changes will be merged

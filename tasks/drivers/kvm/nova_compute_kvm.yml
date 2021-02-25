@@ -68,7 +68,7 @@
 - name: Set kernel permissions to enable libguestfs features (Ubuntu)
   include_tasks: nova_kernel_permissions.yml
   when:
-    - ansible_distribution == 'Ubuntu'
+    - ansible_facts['distribution'] == 'Ubuntu'
     - nova_libvirt_inject_key | bool or nova_libvirt_inject_password | bool
 
 - name: Set libvirtd config
@@ -109,7 +109,7 @@
   when:
     - (nova_libvirtd_listen_tcp == 1) or (nova_libvirtd_listen_tls == 1)
     - libvirtd_version is version('5.7', '<')
-    - ansible_pkg_mgr == 'apt'
+    - ansible_facts['pkg_mgr'] == 'apt'
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -124,7 +124,7 @@
     backup: "yes"
   when:
     - (nova_libvirtd_listen_tcp == 0 and nova_libvirtd_listen_tls == 0) or libvirtd_version is version('5.7', '>=')
-    - ansible_pkg_mgr == 'apt'
+    - ansible_facts['pkg_mgr'] == 'apt'
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -140,7 +140,7 @@
   when:
     - (nova_libvirtd_listen_tcp == 1) or (nova_libvirtd_listen_tls == 1)
     - libvirtd_version is version('5.7', '<')
-    - ansible_pkg_mgr in ['yum', 'dnf', 'zypper']
+    - ansible_facts['pkg_mgr'] in ['yum', 'dnf', 'zypper']
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -155,7 +155,7 @@
     backup: "yes"
   when:
     - (nova_libvirtd_listen_tcp == 0 and nova_libvirtd_listen_tls == 0) or libvirtd_version is version('5.7', '>=')
-    - ansible_pkg_mgr in ['yum', 'dnf', 'zypper']
+    - ansible_facts['pkg_mgr'] in ['yum', 'dnf', 'zypper']
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -169,7 +169,7 @@
     regexp: "^KSM_ENABLED=*"
     backup: yes
   when:
-    - ansible_distribution == 'Ubuntu'
+    - ansible_facts['distribution'] == 'Ubuntu'
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -178,7 +178,7 @@
 
 - include_tasks: nova_disable_smt.yml
   when:
-    - ansible_architecture == 'ppc64le'
+    - ansible_facts['architecture'] == 'ppc64le'
   tags:
     - nova-config
 
@@ -202,7 +202,7 @@
     path: /usr/share/OVMF
     state: directory
   when:
-    - ansible_os_family == 'Suse'
+    - ansible_facts['os_family'] == 'Suse'
   tags:
     - nova-config
     - nova-kvm
@@ -210,11 +210,11 @@
 
 - name: Symlink UEFI firmware files
   file:
-    src: "{{ (ansible_os_family == 'RedHat') | ternary('/usr/share/OVMF/OVMF_CODE.secboot.fd', '/usr/share/qemu/ovmf-x86_64-ms-code.bin') }}"
+    src: "{{ (ansible_facts['os_family'] == 'RedHat') | ternary('/usr/share/OVMF/OVMF_CODE.secboot.fd', '/usr/share/qemu/ovmf-x86_64-ms-code.bin') }}"
     dest: /usr/share/OVMF/OVMF_CODE.fd
     state: link
   when:
-    - ansible_os_family in ['RedHat', 'Suse']
+    - ansible_facts['os_family'] in ['RedHat', 'Suse']
   tags:
     - nova-config
     - nova-kvm

@@ -32,9 +32,9 @@ nova_service_distro_packages:
   - openstack-nova-api
   - openstack-nova-conductor
   - openstack-nova-scheduler
-  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('python-memcached', 'python3-memcached') }}"
-  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('python2-PyMySQL', 'python3-PyMySQL') }}"
-  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('systemd-python', 'python3-systemd') }}"
+  - "{{ ansible_facts['distribution_major_version'] is version('8', '<') | ternary('python-memcached', 'python3-memcached') }}"
+  - "{{ ansible_facts['distribution_major_version'] is version('8', '<') | ternary('python2-PyMySQL', 'python3-PyMySQL') }}"
+  - "{{ ansible_facts['distribution_major_version'] is version('8', '<') | ternary('systemd-python', 'python3-systemd') }}"
 
 nova_service_extra_distro_packages:
   kvm:
@@ -52,7 +52,7 @@ nova_compute_packages:
   - genisoimage
   - kpartx
   - nc
-  - "{{ ansible_distribution_major_version is version('8', '<') | ternary('python-libguestfs', 'python3-libguestfs') }}"
+  - "{{ ansible_facts['distribution_major_version'] is version('8', '<') | ternary('python-libguestfs', 'python3-libguestfs') }}"
   - sysfsutils
 
 nova_compute_barbican_distro_packages:
@@ -60,17 +60,17 @@ nova_compute_barbican_distro_packages:
 
 nova_compute_kvm_distro_packages:
   - libvirt-daemon-kvm
-  - "qemu-kvm{% if ansible_distribution_major_version|int <= 7 %}-ev{% endif %}"
+  - "qemu-kvm{% if ansible_facts['distribution_major_version']|int <= 7 %}-ev{% endif %}"
   - libvirt-client
-  - "{{ (ansible_distribution_major_version|int <= 7) | ternary('libvirt-devel', 'python3-libvirt') }}"
+  - "{{ (ansible_facts['distribution_major_version']|int <= 7) | ternary('libvirt-devel', 'python3-libvirt') }}"
   - nfs-utils
-  - "{{ (ansible_distribution_major_version|int <= 7) | ternary('libguestfs-devel', 'python3-libguestfs') }}"
-  - "qemu-img{% if ansible_distribution_major_version|int <= 7 %}-ev{% endif %}"
-  - "{{ (ansible_architecture == 'aarch64') | ternary('AAVMF', 'OVMF') }}"
+  - "{{ (ansible_facts['distribution_major_version']|int <= 7) | ternary('libguestfs-devel', 'python3-libguestfs') }}"
+  - "qemu-img{% if ansible_facts['distribution_major_version']|int <= 7 %}-ev{% endif %}"
+  - "{{ (ansible_facts['architecture'] == 'aarch64') | ternary('AAVMF', 'OVMF') }}"
 
 nova_compute_kvm_packages_to_symlink: |-
   {% set packages = [] %}
-  {% if ansible_distribution_major_version|int > 7 %}
+  {% if ansible_facts['distribution_major_version']|int > 7 %}
   {%   set _ = packages.extend(['python3-libvirt', 'python3-libguestfs']) %}
   {% endif %}
   {{ packages }}
