@@ -46,7 +46,7 @@ nova_package_state: "{{ package_state | default('latest') }}"
 
 # Set installation method.
 nova_install_method: "{{ service_install_method | default('source') }}"
-nova_venv_python_executable: "{{ openstack_venv_python_executable | default('python2') }}"
+nova_venv_python_executable: "{{ openstack_venv_python_executable | default('python3') }}"
 
 nova_git_repo: https://opendev.org/openstack/nova
 nova_git_install_branch: master
