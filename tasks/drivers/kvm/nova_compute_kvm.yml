@@ -140,7 +140,7 @@
   when:
     - (nova_libvirtd_listen_tcp == 1) or (nova_libvirtd_listen_tls == 1)
     - libvirtd_version is version('5.7', '<')
-    - ansible_facts['pkg_mgr'] in ['yum', 'dnf', 'zypper']
+    - ansible_facts['pkg_mgr'] == 'dnf'
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -155,7 +155,7 @@
     backup: "yes"
   when:
     - (nova_libvirtd_listen_tcp == 0 and nova_libvirtd_listen_tls == 0) or libvirtd_version is version('5.7', '>=')
-    - ansible_facts['pkg_mgr'] in ['yum', 'dnf', 'zypper']
+    - ansible_facts['pkg_mgr'] == 'dnf'
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -194,28 +194,3 @@
     - nova-kvm
     - nova-libvirt
     - nova-kvm-virsh-net
-
-# NOTE(mnaser): These 2 tasks should disappear once the following bug is fixed
-#               https://bugs.launchpad.net/nova/+bug/1825386
-- name: Create UEFI firmware folder
-  file:
-    path: /usr/share/OVMF
-    state: directory
-  when:
-    - ansible_facts['os_family'] == 'Suse'
-  tags:
-    - nova-config
-    - nova-kvm
-    - nova-libvirt
-
-- name: Symlink UEFI firmware files
-  file:
-    src: "{{ (ansible_facts['os_family'] == 'RedHat') | ternary('/usr/share/OVMF/OVMF_CODE.secboot.fd', '/usr/share/qemu/ovmf-x86_64-ms-code.bin') }}"
-    dest: /usr/share/OVMF/OVMF_CODE.fd
-    state: link
-  when:
-    - ansible_facts['os_family'] in ['RedHat', 'Suse']
-  tags:
-    - nova-config
-    - nova-kvm
-    - nova-libvirt
