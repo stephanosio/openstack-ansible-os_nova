@@ -15,8 +15,7 @@ cgroup_device_acl = [
 ]
 {% endif %}
 
-{% if qemu_conf_dict is defined %}
-{% for key, value in qemu_conf_dict.items() %}
+
+{% for key, value in _nova_qemu_conf.items() %}
 {{ key }} = {{ value }}
 {% endfor %}
-{% endif %}
