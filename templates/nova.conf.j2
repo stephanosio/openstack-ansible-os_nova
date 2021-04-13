@@ -76,8 +76,8 @@ os_region_name = {{ nova_service_region }}
 
 {% if nova_console_type == 'spice' %}
 [spice]
-agent_enabled = {{ nova_console_agent_enabled }}
-enabled = {{ nova_console_agent_enabled }}
+agent_enabled = {{ nova_spice_console_agent_enabled }}
+enabled = True
 # Console Url and binds
 html5proxy_base_url = {{ nova_spice_html5proxy_base_url }}
 html5proxy_host = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
@@ -92,7 +92,7 @@ enabled = False
 
 {% elif nova_console_type == 'novnc' %}
 [vnc]
-enabled = {{ nova_novncproxy_agent_enabled }}
+enabled = True
 novncproxy_base_url = {{ nova_novncproxy_base_url }}
 novncproxy_host = {{ nova_novncproxy_host }}
 novncproxy_port = {{ nova_novncproxy_port }}
@@ -101,7 +101,7 @@ server_proxyclient_address = {{ nova_novncproxy_vncserver_proxyclient_address }}
 
 {% elif nova_console_type == 'serialconsole' %}
 [serial_console]
-enabled = {{ nova_serialconsoleproxy_enabled }}
+enabled = True
 # Console Url and binds
 base_url= {{ nova_serialconsoleproxy_base_url }}
 proxyclient_address = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
@@ -111,6 +111,10 @@ serialproxy_host= {{ nova_serialconsoleproxy_serialconsole_proxyserver_proxyclie
 serialproxy_port= {{ nova_serialconsoleproxy_port }}
 {% endif %}
 
+[vnc]
+enabled = False
+
+{% elif nova_console_type == 'disabled' %}
 [vnc]
 enabled = False
 
