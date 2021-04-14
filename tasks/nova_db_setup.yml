@@ -55,11 +55,22 @@
     - data_migrations is not skipped
     - data_migrations is succeeded
 
+# We need to check for existance of the cell, since nova-manage cell_v2 create_cell
+# might be not idempotent due to the bug https://bugs.launchpad.net/nova/+bug/1923899
+- name: Get UUID of new Nova Cell
+  shell: "{{ nova_bin }}/nova-manage cell_v2 list_cells | grep ' {{ nova_cell1_name }} '"
+  become: yes
+  become_user: "{{ nova_system_user_name }}"
+  changed_when: false
+  failed_when: false
+  register: _cell_uuid
+
 - name: Create the cell1 mapping entry in the nova API DB
   command: >-
     {{ nova_bin }}/nova-manage cell_v2 create_cell
       --name {{ nova_cell1_name }}
-      --database_connection mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_password }}@{{ nova_galera_address }}/{{ nova_galera_database }}?charset=utf8
+      --database_connection {scheme}://{username}:{password}@{hostname}/{path}?{query}
+      --transport-url {scheme}://{username}:{password}@{hostname}//{path}?{query}
   become: yes
   become_user: "{{ nova_system_user_name }}"
   register: nova_cell1_create
@@ -69,23 +80,20 @@
   # 0: the cell mapping record in the nova API database was
   #    successfully implemented (greenfield install)
   # 2: the cell mapping record in the nova API database already
-  #    exists (brownfield install)
+  #    exists (brownfield install). This is not working for templates
+  #    because of the bug https://bugs.launchpad.net/nova/+bug/1923899
   failed_when: "nova_cell1_create.rc not in [0, 2]"
   changed_when: "nova_cell1_create.rc == 0"
+  when: "_cell_uuid.rc == 1"
 
-# When upgrading we need to map existing instances to the new cell1
-# To do this we need the cell UUID.
-- name: Get UUID of new Nova Cell
-  shell: "{{ nova_bin }}/nova-manage cell_v2 list_cells | grep ' {{ nova_cell1_name }} '"
-  become: yes
-  become_user: "{{ nova_system_user_name }}"
-  register: cell1_uuid
-  changed_when: false
-  when: "nova_cell1_create.rc == 0"
-
-- name: Map instances to new Cell1
-  command: "{{ nova_bin }}/nova-manage cell_v2 map_instances --cell_uuid {{ cell1_uuid['stdout'].split()[3] }}"
+# TODO(noonedeadpunk): Remove this task in X release
+- name: "Upgrade {{ nova_cell1_name }} to use template for connection"
+  command: >-
+    {{ nova_bin }}/nova-manage cell_v2 update_cell
+      --cell_uuid {{ _cell_uuid['stdout'].split()[3] }}
+      --database_connection {scheme}://{username}:{password}@{hostname}/{path}?{query}
+      --transport-url {scheme}://{username}:{password}@{hostname}//{path}?{query}
   become: yes
   become_user: "{{ nova_system_user_name }}"
   changed_when: false
-  when: "nova_cell1_create.rc == 0"
+  when: "_cell_uuid.rc == 0"
