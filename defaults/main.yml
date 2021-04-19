@@ -187,6 +187,10 @@ nova_keystone_auth_plugin: password
 ## Nova enabled apis
 nova_enabled_apis: "osapi_compute,metadata"
 
+## Domain name used to configure FQDN for instances. When empty, only the hostname without
+## a domain will be configured.
+nova_dhcp_domain: "{{ dhcp_domain | default('') }}"
+
 ## Nova v2.1
 nova_service_name: nova
 nova_service_type: compute
