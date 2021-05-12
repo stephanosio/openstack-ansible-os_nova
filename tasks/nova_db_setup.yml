@@ -70,7 +70,7 @@
     {{ nova_bin }}/nova-manage cell_v2 create_cell
       --name {{ nova_cell1_name }}
       --database_connection {scheme}://{username}:{password}@{hostname}/{path}?{query}
-      --transport-url {scheme}://{username}:{password}@{hostname}//{path}?{query}
+      --transport-url {scheme}://{username}:{password}@{hostname}:{port}//{path}?{query}
   become: yes
   become_user: "{{ nova_system_user_name }}"
   register: nova_cell1_create
@@ -92,7 +92,7 @@
     {{ nova_bin }}/nova-manage cell_v2 update_cell
       --cell_uuid {{ _cell_uuid['stdout'].split()[3] }}
       --database_connection {scheme}://{username}:{password}@{hostname}/{path}?{query}
-      --transport-url {scheme}://{username}:{password}@{hostname}//{path}?{query}
+      --transport-url {scheme}://{username}:{password}@{hostname}:{port}//{path}?{query}
   become: yes
   become_user: "{{ nova_system_user_name }}"
   changed_when: false
