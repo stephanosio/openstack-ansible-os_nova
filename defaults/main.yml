@@ -103,6 +103,7 @@ nova_galera_ssl_ca_cert: "{{ galera_ssl_ca_cert | default('/etc/ssl/certs/galera
 nova_api_galera_address: "{{ nova_galera_address }}"
 nova_api_galera_user: nova_api
 nova_api_galera_database: nova_api
+nova_api_galera_port: "{{ galera_port | default('3306') }}"
 nova_api_db_max_overflow: 10
 nova_api_db_max_pool_size: 120
 nova_api_db_pool_timeout: 30

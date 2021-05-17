@@ -185,7 +185,7 @@ memcache_secret_key = {{ memcached_encryption_key }}
 
 {% if group_names | intersect(nova_services.keys() | difference('nova-compute') | map('extract', nova_services, 'group') | list) | count > 0 %}
 [database]
-connection = mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_password }}@{{ nova_galera_address }}/{{ nova_galera_database }}?charset=utf8{% if nova_galera_use_ssl | bool %}&ssl_ca={{ nova_galera_ssl_ca_cert }}{% endif %}
+connection = mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_password }}@{{ nova_galera_address }}:{{ nova_galera_port }}/{{ nova_galera_database }}?charset=utf8{% if nova_galera_use_ssl | bool %}&ssl_ca={{ nova_galera_ssl_ca_cert }}{% endif %}
 
 max_overflow = {{ nova_db_max_overflow }}
 max_pool_size = {{ nova_db_max_pool_size }}
@@ -193,7 +193,7 @@ pool_timeout = {{ nova_db_pool_timeout }}
 
 
 [api_database]
-connection = mysql+pymysql://{{ nova_api_galera_user }}:{{ nova_api_container_mysql_password }}@{{ nova_api_galera_address }}/{{ nova_api_galera_database }}?charset=utf8{% if nova_galera_use_ssl | bool %}&ssl_ca={{ nova_galera_ssl_ca_cert }}{% endif %}
+connection = mysql+pymysql://{{ nova_api_galera_user }}:{{ nova_api_container_mysql_password }}@{{ nova_api_galera_address }}:{{ nova_api_galera_port }}/{{ nova_api_galera_database }}?charset=utf8{% if nova_galera_use_ssl | bool %}&ssl_ca={{ nova_galera_ssl_ca_cert }}{% endif %}
 
 max_overflow = {{ nova_api_db_max_overflow }}
 max_pool_size = {{ nova_api_db_max_pool_size }}
