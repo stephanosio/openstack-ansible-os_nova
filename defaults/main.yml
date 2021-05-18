@@ -313,7 +313,7 @@ nova_ram_allocation_ratio: 1.0
 nova_ram_weight_multiplier: 5.0
 nova_reserved_host_disk_mb: 2048
 
-nova_scheduler_host_subset_size: 10
+nova_scheduler_host_subset_size: "{{ ((((groups['compute_hosts'] | length) * 0.3) | round | int, 10) | min, 1) | max }}"
 nova_scheduler_max_attempts: 5
 nova_scheduler_default_filters:
   - AvailabilityZoneFilter
