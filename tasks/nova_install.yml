@@ -34,6 +34,7 @@
     apt_pinned_packages: [{ package: "{{ nova_backports_packages | join(' ') }}", release: 'Debian Backports' }]
   when:
     - ansible_facts['distribution'] | lower == 'debian'
+    - ansible_facts['distribution_version'] == '10'
   args:
     apply:
       tags:
