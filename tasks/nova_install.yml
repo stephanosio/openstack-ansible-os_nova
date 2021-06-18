@@ -78,21 +78,6 @@
         value: "{{ nova_venv_tag }}"
   when: nova_install_method == 'source'
 
-# NOTE(noonedeadpunk): This task can't be done in python_venv_build role
-# because installation from file/url can't be used with constraints.
-# Here we install packages which are missing in disto, so can't be
-# symlinked inside venv.
-- name: Install kvm pip packages
-  pip:
-    name: "{{ nova_compute_kvm_pip_packages }}"
-    virtualenv: "{{ nova_bin | dirname }}"
-    state: present
-  when:
-    - nova_install_method == 'source'
-    - nova_services['nova-compute']['group'] in group_names
-    - ansible_facts['os_family'] | lower == 'redhat'
-    - ansible_facts['distribution_major_version']|int <= 7
-
 - include_tasks: "consoles/nova_console_{{ nova_console_type }}_install.yml"
   when:
     - "nova_services['nova-novncproxy']['group'] in group_names or
