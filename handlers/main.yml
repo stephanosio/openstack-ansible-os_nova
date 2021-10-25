@@ -20,6 +20,7 @@
     state: "stopped"
   listen:
     - Restart libvirt-bin
+    - "cert installed"
 
 - name: Enable sockets when needed
   service:
@@ -36,6 +37,7 @@
       condition: "{{ nova_libvirtd_listen_tcp | bool }}"
   listen:
     - Restart libvirt-bin
+    - "cert installed"
 
 - name: Start libvirt-bin
   service:
@@ -44,6 +46,7 @@
     state: "started"
   listen:
     - Restart libvirt-bin
+    - "cert installed"
 
 - name: Stop services
   service:

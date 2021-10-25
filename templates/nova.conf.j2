@@ -239,8 +239,13 @@ images_rbd_pool = {{ nova_libvirt_images_rbd_pool }}
 images_rbd_ceph_conf = /etc/ceph/ceph.conf
 {% endif %}
 {% if nova_virt_type in ['kvm', 'qemu'] %}
+{% if nova_libvirtd_listen_tls == 1 %}
+live_migration_with_native_tls = true
+live_migration_scheme = tls
+{% else %}
 live_migration_uri = "qemu+ssh://nova@%s/system?no_verify=1&keyfile={{ nova_system_home_folder }}/.ssh/id_rsa"
 live_migration_tunnelled = True
+{% endif %}
 live_migration_inbound_addr = {{ nova_libvirt_live_migration_inbound_addr }}
 {% endif %}
 hw_disk_discard = {{ nova_libvirt_hw_disk_discard }}
