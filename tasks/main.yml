@@ -119,7 +119,7 @@
     - always
     - nova-config
 
-- import_tasks: nova_vgpu_detect.yml
+- import_tasks: nova_mdev_detect.yml
   tags:
     - always
     - nova-config
