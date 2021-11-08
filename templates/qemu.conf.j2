@@ -62,6 +62,16 @@ default_tls_x509_cert_dir = "{{ nova_qemu_ssl_dir }}"
 default_tls_x509_verify = 1
 {% endif %}
 
+# Enable use of TLS encryption on the VNC server. This requires
+# a VNC client which supports the VeNCrypt protocol extension.
+# Examples include vinagre, virt-viewer, virt-manager and vencrypt
+# itself. UltraVNC, RealVNC, TightVNC do not support this
+#
+# It is necessary to setup CA and issue a server certificate
+# before enabling this.
+#
+vnc_tls = {{ nova_qemu_vnc_tls }}
+
 {% for key, value in _nova_qemu_conf.items() %}
 {{ key }} = {{ value }}
 {% endfor %}

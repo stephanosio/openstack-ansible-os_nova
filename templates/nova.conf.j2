@@ -98,6 +98,13 @@ novncproxy_port = {{ nova_novncproxy_port }}
 server_listen = {{ nova_novncproxy_vncserver_listen }}
 server_proxyclient_address = {{ nova_novncproxy_vncserver_proxyclient_address }}
 
+{% if nova_qemu_vnc_tls == 1 %}
+auth_schemes={{ nova_vencrypt_auth_scheme }}
+vencrypt_client_key={{ nova_vencrypt_client_key }}
+vencrypt_client_cert={{ nova_vencrypt_client_cert }}
+vencrypt_ca_certs={{ nova_vencrypt_ca_certs }}
+{% endif %}
+
 {% elif nova_console_type == 'serialconsole' %}
 [serial_console]
 enabled = True
