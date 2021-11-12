@@ -21,15 +21,23 @@
   tags:
     - always
 
-- import_tasks: nova_compute_key_populate.yml
-  tags:
-    - nova-config
-    - nova-key
+- include_tasks: nova_compute_key_populate.yml
+  args:
+    apply:
+      tags:
+        - nova-config
+        - nova-key
+  when:
+    - nova_libvirtd_listen_tls == 0
 
-- import_tasks: nova_compute_key_distribute.yml
-  tags:
-    - nova-config
-    - nova-key
+- include_tasks: nova_compute_key_distribute.yml
+  args:
+    apply:
+      tags:
+        - nova-config
+        - nova-key
+  when:
+   - nova_libvirtd_listen_tls == 0
 
 - name: Run the systemd mount role
   include_role:

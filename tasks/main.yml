@@ -34,26 +34,6 @@
   tags:
     - always
 
-- name: Fail if TCP and TLS are both enabled
-  fail:
-    msg: |
-      TCP and TLS connectivity are currently enabled for libvirtd. This
-      combination prevents libvirtd from starting properly since this role
-      does not generate TLS certificates for libvirtd at this time.
-
-      To enable TCP connectivity without TLS, set the following variables:
-
-          nova_libvirtd_listen_tcp: 1
-          nova_libvirtd_listen_tls: 0
-
-      Please note that this configuration does not encrypt communication with
-      libvirtd.
-  when:
-    - nova_libvirtd_listen_tcp == 1
-    - nova_libvirtd_listen_tls == 1
-  tags:
-    - always
-
 - name: Fail if service was deployed using a different installation method
   fail:
     msg: "Switching installation methods for OpenStack services is not supported"
@@ -138,6 +118,22 @@
     gather_subset: "!all"
   tags:
     - nova-config
+
+# Create certs after libvirt groups have been created but before handlers
+- name: Create and install SSL certificates
+  include_role:
+    name: pki
+    tasks_from: main_certs.yml
+  vars:
+    pki_setup_host: "{{ nova_pki_setup_host }}"
+    pki_dir: "{{ nova_pki_dir }}"
+    pki_create_certificates: "{{ nova_user_ssl_cert is not defined and nova_user_ssl_key is not defined }}"
+    pki_regen_certificates: "{{ nova_pki_regen_cert }}"
+    pki_certificates: "{{ nova_pki_certificates }}"
+    pki_install_certificates: "{{ nova_pki_install_certificates }}"
+  when:
+    - nova_libvirtd_listen_tls == 1
+    - "'nova_compute' in group_names"
 
 - import_tasks: nova_post_install.yml
   tags:
