@@ -21,6 +21,9 @@
   listen:
     - Restart libvirt-bin
     - "cert installed"
+  when:
+    - "'nova_compute' in group_names"
+    - nova_virt_type != 'ironic'
 
 - name: Enable sockets when needed
   service:
@@ -37,7 +40,6 @@
       condition: "{{ nova_libvirtd_listen_tcp | bool }}"
   listen:
     - Restart libvirt-bin
-    - "cert installed"
 
 - name: Start libvirt-bin
   service:
@@ -47,6 +49,9 @@
   listen:
     - Restart libvirt-bin
     - "cert installed"
+  when:
+    - "'nova_compute' in group_names"
+    - nova_virt_type != 'ironic'
 
 - name: Stop services
   service:
@@ -62,6 +67,7 @@
   listen:
     - "Restart nova services"
     - "venv changed"
+    - "cert installed"
 
 # NOTE (noonedeadpunk): Remove this task after Xena release
 - name: Remove obsoleted policy.json
@@ -86,6 +92,7 @@
   listen:
     - "Restart nova services"
     - "venv changed"
+    - "cert installed"
 
 - meta: noop
   listen: Manage LB

@@ -120,7 +120,7 @@
     - nova-config
 
 # Create certs after libvirt groups have been created but before handlers
-- name: Create and install SSL certificates
+- name: Create and install SSL certificates for compute hosts
   include_role:
     name: pki
     tasks_from: main_certs.yml
@@ -129,11 +129,28 @@
     pki_dir: "{{ nova_pki_dir }}"
     pki_create_certificates: "{{ nova_user_ssl_cert is not defined and nova_user_ssl_key is not defined }}"
     pki_regen_certificates: "{{ nova_pki_regen_cert }}"
-    pki_certificates: "{{ nova_pki_certificates }}"
-    pki_install_certificates: "{{ nova_pki_install_certificates }}"
+    pki_certificates: "{{ nova_pki_compute_certificates }}"
+    pki_install_certificates: "{{ nova_pki_compute_install_certificates }}"
   when:
     - nova_libvirtd_listen_tls == 1
     - "'nova_compute' in group_names"
+
+# Create certs after nova groups have been created but before handlers
+- name: Create and install SSL certificates for console hosts
+  include_role:
+    name: pki
+    tasks_from: main_certs.yml
+  vars:
+    pki_setup_host: "{{ nova_pki_setup_host }}"
+    pki_dir: "{{ nova_pki_dir }}"
+    pki_create_certificates: "{{ nova_user_ssl_cert is not defined and nova_user_ssl_key is not defined }}"
+    pki_regen_certificates: "{{ nova_pki_regen_cert }}"
+    pki_certificates: "{{ nova_pki_console_certificates }}"
+    pki_install_certificates: "{{ nova_pki_console_install_certificates }}"
+  when:
+    - nova_qemu_vnc_tls == 1
+    - nova_console_type == 'novnc'
+    - "'nova_console' in group_names"
 
 - import_tasks: nova_post_install.yml
   tags:

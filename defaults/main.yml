@@ -276,6 +276,18 @@ nova_console_ssl_dir: "/etc/nova/ssl"
 nova_console_ssl_cert: "{{ nova_console_ssl_dir }}/nova-console.pem"
 nova_console_ssl_key: "{{ nova_console_ssl_dir }}/nova-console.key"
 
+# Enable TLS on VNC connection from novnc to compute hosts
+nova_qemu_vnc_tls: 1
+nova_vencrypt_client_key: "/etc/pki/nova-novncproxy/client-key.pem"
+nova_vencrypt_client_cert: "/etc/pki/nova-novncproxy/client-cert.pem"
+nova_vencrypt_ca_certs: "/etc/pki/nova-novncproxy/ca-cert.pem"
+# The auth_schemes values should be listed in order of preference.
+# If enabling VeNCrypt on an existing deployment which already has instances running,
+# the noVNC proxy server must initially be allowed to use vencrypt and none.
+# Once it is confirmed that all Compute nodes have VeNCrypt enabled for VNC,
+# it is possible to remove the none option from the list
+nova_vencrypt_auth_scheme: "vencrypt,none"
+
 # Set to true when terminating SSL/TLS at a load balancer
 nova_external_ssl: "{{ openstack_external_ssl | default(False) }}"
 
@@ -548,8 +560,8 @@ nova_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_nam
 nova_pki_intermediate_chain_path: "{{ nova_pki_dir ~ '/roots/' ~ nova_pki_intermediate_cert_name ~ '/certs/' ~ nova_pki_intermediate_cert_name ~ '-chain.crt' }}"
 nova_pki_regen_cert: ''
 # Create client and server cert for compute hosts
-# This certiticate is used during TLS live migrations
-nova_pki_certificates:
+# This certiticate is used to secure TLS live migrations and VNC sessions
+nova_pki_compute_certificates:
   - name: "nova_{{ ansible_facts['hostname'] }}"
     provider: ownca
     cn: "{{ ansible_facts['nodename'] }}"
@@ -568,9 +580,8 @@ nova_libvirt_ssl_dir: /etc/pki/libvirt
 # QEMU default destination files for SSL certificates
 nova_qemu_ssl_dir: /etc/pki/qemu
 
-# Installation details for SSL certificates for TLS live migration
-nova_pki_install_certificates:
-  # Server certificate used by libvirt for live migrations
+# Installation details for SSL certificates for compute hosts TLS live migration
+nova_pki_compute_install_certificates:
   - src: "{{ nova_user_ssl_cert | default(nova_pki_certs_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
     dest: "{{ nova_libvirt_ssl_dir }}/servercert.pem"
     owner: "root"
@@ -640,3 +651,36 @@ nova_pki_install_certificates:
 #nova_user_ssl_cert: <path to cert on ansible deployment host>
 #nova_user_ssl_key: <path to cert on ansible deployment host>
 #nova_user_ssl_ca_cert: <path to cert on ansible deployment host>
+
+# TLS certficates for console hosts
+nova_pki_console_certificates:
+  # Client certificate used by novnv proxy to authenticate with compute hosts using vencrypt
+  - name: "nova_{{ ansible_facts['hostname'] }}-client"
+    provider: ownca
+    cn: "{{ ansible_facts['nodename'] }}"
+    san: "{{ 'DNS:' ~ ansible_facts['hostname'] ~ ',DNS:' ~ ansible_facts['nodename'] ~ ',IP:' ~ (nova_management_address == 'localhost') | ternary('127.0.0.1', nova_management_address) }}"
+    signed_by: "{{ nova_pki_intermediate_cert_name }}"
+    key_usage:
+      - digitalSignature
+      - keyAgreement
+      - keyEncipherment
+    extended_key_usage:
+      - clientAuth
+
+# Installation details for SSL certificates for console hosts
+nova_pki_console_install_certificates:
+  - src: "{{ nova_user_ssl_cert | default(nova_pki_certs_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '-client-chain.crt') }}"
+    dest: "{{ nova_vencrypt_client_cert }}"
+    owner: "root"
+    group: "{{ nova_system_group_name }}"
+    mode: "0640"
+  - src: "{{ nova_user_ssl_key | default(nova_pki_keys_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '-client.key.pem') }}"
+    dest: "{{ nova_vencrypt_client_key }}"
+    owner: "root"
+    group: "{{ nova_system_group_name }}"
+    mode: "0640"
+  - src: "{{ nova_user_ssl_ca_cert | default(nova_pki_intermediate_chain_path) }}"
+    dest: "{{ nova_vencrypt_ca_certs }}"
+    owner: "root"
+    group: "{{ nova_system_group_name }}"
+    mode: "0640"
