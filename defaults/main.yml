@@ -529,9 +529,11 @@ nova_api_os_compute_uwsgi_ini_overrides: {}
 # Example 2:
 # nova_enabled_mdev_types:
 #   - type: nvidia-35
-#     address: <device address>
+#     address: "<device address.0>,<device address.1>"
 #   - type: nvidia-36
-#     address: <another device address>
+#     address:
+#       - "<another device address.0>"
+#       - "<another device address.1>"
 nova_enabled_mdev_types: "{{ nova_enabled_vgpu_types | default({}) }}"
 
 # PCI devices passthrough to nova

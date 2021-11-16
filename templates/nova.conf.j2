@@ -307,7 +307,7 @@ enabled_mdev_types = {{ nova_enabled_mdev_types | map(attribute='type') | list |
 
 {% for record in nova_enabled_mdev_types | selectattr('address', 'defined') | list %}
 [mdev_{{ record.type }}]
-device_addresses = {{ record.address }}
+device_addresses = {{ (record.address is string) | ternary(record.address, record.address | join(',')) }}
 {% endfor %}
 {% endif %}
 
