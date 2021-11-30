@@ -56,7 +56,7 @@
     - nova-post-install
 
 - name: Generate nova config
-  config_template:
+  openstack.config_template.config_template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "root"
@@ -82,7 +82,7 @@
     - nova-post-install
 
 - name: Implement policy.yaml if there are overrides configured
-  config_template:
+  openstack.config_template.config_template:
     content: "{{ nova_policy_overrides }}"
     dest: "/etc/nova/policy.yaml"
     owner: "root"
@@ -124,7 +124,7 @@
   with_items: "{{ nova_core_files }}"
 
 - name: Copy common config
-  config_template:
+  openstack.config_template.config_template:
     src: "{{ item.tmp_f }}"
     dest: "{{ item.target_f }}"
     owner: "root"
