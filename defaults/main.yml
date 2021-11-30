@@ -612,26 +612,26 @@ nova_pki_compute_install_certificates:
   - src: "{{ nova_user_ssl_cert | default(nova_pki_certs_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
     dest: "{{ nova_qemu_ssl_dir }}/server-cert.pem"
     owner: "root"
-    group: "{{ nova_qemu_user }}"
+    group: "{{ nova_qemu_group }}"
     mode: "0640"
   # Server certificate key used by QEMU for live migrations
   - src: "{{ nova_user_ssl_key | default(nova_pki_keys_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
     dest: "{{ nova_qemu_ssl_dir }}/server-key.pem"
     owner: "root"
-    group: "{{ nova_qemu_user }}"
+    group: "{{ nova_qemu_group }}"
     mode: "0640"
   # Client certificate used by QEMU for live migrations
   # Defaults to using the server certificate which is signed for both clientAuth and serverAuth
   - src: "{{ nova_user_ssl_cert | default(nova_pki_certs_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
     dest: "{{ nova_qemu_ssl_dir }}/client-cert.pem"
     owner: "root"
-    group: "{{ nova_qemu_user }}"
+    group: "{{ nova_qemu_group }}"
     mode: "0640"
   # Client certificate key used by QEMU for live migrations
   - src: "{{ nova_user_ssl_key | default(nova_pki_keys_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
     dest: "{{ nova_qemu_ssl_dir }}/client-key.pem"
     owner: "root"
-    group: "{{ nova_qemu_user }}"
+    group: "{{ nova_qemu_group }}"
     mode: "0640"
   # Root CA for libvirt
   # libvirt requires that the CA cert file has any intermediate certificates for the server cert,
