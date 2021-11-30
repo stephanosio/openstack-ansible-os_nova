@@ -66,9 +66,10 @@ nova_system_group_name: nova
 nova_system_shell: /bin/bash
 nova_system_comment: nova system user
 nova_system_home_folder: "/var/lib/{{ nova_system_user_name }}"
+nova_system_slice_name: nova
 nova_libvirt_save_path: "{{ nova_system_home_folder }}/save"
 
-nova_lock_path: "/var/lock/nova"
+nova_lock_dir: "{{ openstack_lock_dir | default('/run/lock') }}"
 
 nova_management_address: "127.0.0.1"
 
