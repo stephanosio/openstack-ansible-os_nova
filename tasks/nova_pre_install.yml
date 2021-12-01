@@ -112,15 +112,11 @@
       mode: "0750"
       owner: "root"
       group: "root"
-    - path: "/var/cache/nova"
     - path: "{{ nova_system_home_folder }}"
     - path: "{{ nova_system_home_folder }}/.ssh"
       mode: "0700"
     - path: "{{ nova_system_home_folder }}/cache/api"
     - path: "{{ nova_system_home_folder }}/instances"
-    - path: "{{ nova_lock_path }}"
-      mode: "2755"
-    - path: "/var/run/nova"
   tags:
     - nova-dirs
 
