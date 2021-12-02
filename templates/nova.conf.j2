@@ -197,6 +197,7 @@ connection = mysql+pymysql://{{ nova_galera_user }}:{{ nova_container_mysql_pass
 max_overflow = {{ nova_db_max_overflow }}
 max_pool_size = {{ nova_db_max_pool_size }}
 pool_timeout = {{ nova_db_pool_timeout }}
+connection_recycle_time = {{ nova_db_connection_recycle_time }}
 
 
 [api_database]
@@ -205,6 +206,7 @@ connection = mysql+pymysql://{{ nova_api_galera_user }}:{{ nova_api_container_my
 max_overflow = {{ nova_api_db_max_overflow }}
 max_pool_size = {{ nova_api_db_max_pool_size }}
 pool_timeout = {{ nova_api_db_pool_timeout }}
+connection_recycle_time = {{ nova_api_db_connection_recycle_time }}
 
 {% endif %}
 
