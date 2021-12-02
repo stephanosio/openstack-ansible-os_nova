@@ -83,7 +83,7 @@
     - "nova_services['nova-novncproxy']['group'] in group_names or
         nova_services['nova-spicehtml5proxy']['group'] in group_names or
         nova_services['nova-serialconsole-proxy']['group'] in group_names"
-    - "nova_console_type != 'serialconsole'"
+    - "nova_console_type not in ['serialconsole', 'disabled']"
   args:
     apply:
       tags:
