@@ -134,7 +134,7 @@
   when:
     - nova_libvirtd_listen_tls == 1
     - "'nova_compute' in group_names"
-    - "'ironic_compute' not in group_names"
+    - nova_virt_type != 'ironic'
 
 # Create certs after nova groups have been created but before handlers
 - name: Create and install SSL certificates for console hosts
