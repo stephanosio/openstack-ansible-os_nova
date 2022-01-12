@@ -49,7 +49,12 @@
   tags:
     - always
 
-- import_tasks: db_setup.yml
+- include_role:
+    name: openstack.osa.db_setup
+    apply:
+      tags:
+        - common-db
+        - nova-config
   when:
     - _nova_is_first_play_host
   vars:
@@ -71,10 +76,14 @@
           - username: "{{ nova_api_galera_user }}"
             password: "{{ nova_api_container_mysql_password }}"
   tags:
-    - common-db
-    - nova-config
+    - always
 
-- import_tasks: mq_setup.yml
+- include_role:
+    name: openstack.osa.mq_setup
+    apply:
+      tags:
+        - common-mq
+        - nova-config
   when:
     - _nova_is_first_play_host
   vars:
@@ -89,8 +98,7 @@
     _oslomsg_notify_vhost: "{{ nova_oslomsg_notify_vhost }}"
     _oslomsg_notify_transport: "{{ nova_oslomsg_notify_transport }}"
   tags:
-    - common-mq
-    - nova-config
+    - always
 
 - import_tasks: nova_virt_detect.yml
   when:
@@ -157,7 +165,12 @@
   tags:
     - nova-config
 
-- import_tasks: service_setup.yml
+- include_role:
+    name: openstack.osa.service_setup
+    apply:
+      tags:
+        - common-service
+        - nova-config
   vars:
     _service_adminuri_insecure: "{{ keystone_service_adminuri_insecure }}"
     _service_in_ldap: "{{ nova_service_in_ldap }}"
@@ -186,7 +199,7 @@
   when:
     - _nova_is_first_play_host
   tags:
-    - nova-config
+    - always
 
 - import_tasks: nova_db_setup.yml
   when:
