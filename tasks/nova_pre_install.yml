@@ -22,20 +22,6 @@
   tags:
     - nova-group
 
-- name: Remove old key file(s) if found
-  file:
-    path: "{{ item }}"
-    state: "absent"
-  with_items:
-    - "{{ nova_system_home_folder }}/.ssh/authorized_keys"
-    - "{{ nova_system_home_folder }}/.ssh/id_rsa"
-    - "{{ nova_system_home_folder }}/.ssh/id_rsa.pub"
-  when:
-    - nova_recreate_keys | bool
-  tags:
-    - nova-key
-    - nova-key-create
-
 - name: Create the nova system user
   user:
     name: "{{ nova_system_user_name }}"
@@ -50,7 +36,6 @@
   tags:
     - nova-user
     - nova-key
-    - nova-key-create
 
 - name: Create Nova NFS mount point(s)
   file:

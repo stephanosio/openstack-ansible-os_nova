@@ -343,10 +343,6 @@ nova_scheduler_extra_filters: []
 # this value to -1.
 nova_discover_hosts_in_cells_interval: "{{ 300 if groups['nova_compute'] | length > 10 else 60 }}"
 
-# If you want to regenerate the nova users SSH keys, on each run, set this var to True
-# Otherwise keys will be generated on the first run and not regenerated each run.
-nova_recreate_keys: False
-
 # Define nfs information to enable nfs shares as mounted directories for
 # nova. The ``nova_nfs_client`` value is a list of dictionaries that must
 # be filled out completely to enable the persistent NFS mounts.
@@ -683,3 +679,34 @@ nova_pki_console_install_certificates:
     owner: "root"
     group: "{{ nova_system_group_name }}"
     mode: "0640"
+
+# host which holds the ssh certificate authority
+nova_ssh_keypairs_setup_host: "{{ openstack_ssh_keypairs_setup_host  | default('localhost') }}"
+
+# directory on the deploy host to create and store SSH keypairs
+nova_ssh_keypairs_dir: "{{ openstack_ssh_keypairs_dir }}"
+
+#Each compute host needs a signed ssh certificate to log into the others
+nova_ssh_keypairs:
+  - name: "nova-{{ inventory_hostname }}"
+    cert:
+      signed_by: "{{ openstack_ssh_signing_key }}"
+      principals: "{{ nova_ssh_key_principals | default('nova') }}"
+      valid_from: "{{ nova_ssh_key_valid_from | default('always') }}"
+      valid_to: "{{ nova_ssh_key_valid_to | default('forever') }}"
+
+#Each compute host needs the signed ssh certificate installing to the nova user
+nova_ssh_keypairs_install_keys:
+  owner: "{{ nova_system_user_name }}"
+  group: "{{ nova_system_group_name }}"
+  keys:
+    - cert: "nova-{{ inventory_hostname }}"
+      dest: "{{ nova_system_home_folder }}/.ssh/id_rsa"
+
+#Each compute host must trust the SSHD certificate authoritiy in the sshd configuration
+nova_ssh_keypairs_install_ca: "{{ openstack_ssh_keypairs_authorities }}"
+
+#Each compute host must allow SSH certificates with the appropriate principal to log into the nova user
+nova_ssh_keypairs_principals:
+  - user: "{{ nova_system_user_name }}"
+    principals: "{{ nova_ssh_key_principals | default(['nova']) }}"

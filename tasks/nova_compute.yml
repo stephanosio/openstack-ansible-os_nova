@@ -21,21 +21,41 @@
   tags:
     - always
 
-- include_tasks: nova_compute_key_populate.yml
-  args:
-    apply:
-      tags:
-        - nova-config
-        - nova-key
+- name: Create the nova SSH config file
+  copy:
+    src: "ssh_config"
+    dest: "{{ nova_system_home_folder }}/.ssh/config"
+    owner: "{{ nova_system_user_name }}"
+    group: "{{ nova_system_user_name }}"
+    mode: "0644"
   tags:
-    - always
+    - nova-key
 
-- include_tasks: nova_compute_key_distribute.yml
+# NOTE(jrosser) Remove this task in the Z development cycle
+- name: Clean up legacy ssh keys configuration
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/usr/local/bin/openstack-nova-key.sh"
+    - "{{ nova_system_home_folder }}/.ssh/authorized_keys"
+  tags:
+    - nova-key
+
+- name: Create ssh keys and config for cold migrations
+  include_role:
+    name: openstack.osa.ssh_keypairs
   args:
     apply:
       tags:
-        - nova-config
         - nova-key
+  vars:
+      ssh_keypairs_setup_host: "{{ nova_ssh_keypairs_setup_host }}"
+      ssh_keypairs_dir: "{{ nova_ssh_keypairs_dir }}"
+      ssh_keypairs: "{{ nova_ssh_keypairs }}"
+      ssh_keypairs_install_keys: "{{ nova_ssh_keypairs_install_keys }}"
+      ssh_keypairs_install_ca: "{{ nova_ssh_keypairs_install_ca }}"
+      ssh_keypairs_principals: "{{ nova_ssh_keypairs_principals }}"
   tags:
     - always
 
