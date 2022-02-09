@@ -279,9 +279,7 @@ insecure = {{ keystone_service_adminuri_insecure | bool }}
 
 [wsgi]
 api_paste_config = /etc/nova/api-paste.ini
-{% if nova_external_ssl | bool %}
-secure_proxy_ssl_header = {{ nova_secure_proxy_ssl_header }}
-{% endif %}
+
 
 [api]
 use_forwarded_for = {{ nova_network_services[nova_network_type]['use_forwarded_for'] | bool }}

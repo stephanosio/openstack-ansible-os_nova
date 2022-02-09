@@ -291,12 +291,6 @@ nova_vencrypt_ca_certs: "/etc/pki/nova-novncproxy/ca-cert.pem"
 # it is possible to remove the none option from the list
 nova_vencrypt_auth_scheme: "vencrypt,none"
 
-# Set to true when terminating SSL/TLS at a load balancer
-nova_external_ssl: "{{ openstack_external_ssl | default(False) }}"
-
-# External SSL forwarding proto
-nova_secure_proxy_ssl_header: HTTP_X_FORWARDED_PROTO
-
 ## Nova global config
 nova_image_cache_manager_interval: 0
 
