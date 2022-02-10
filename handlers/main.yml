@@ -31,8 +31,6 @@
     state: "{{ item.condition | default(False) | ternary('started', 'stopped') }}"
     enabled: "{{ item.condition | default(False) }}"
     masked: no
-  when:
-    - libvirtd_version is version('5.7', '>=')
   with_items:
     - name: libvirtd-tls.socket
       condition: "{{ nova_libvirtd_listen_tls | bool }}"
