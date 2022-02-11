@@ -365,11 +365,16 @@ nova_nfs_client: []
 # Enble and define nova_libvirt_images_rbd_pool to use rbd as nova backend
 #nova_libvirt_images_rbd_pool: vms
 nova_libvirt_images_rbd_pool: ''
-nova_ceph_client: '{{ cinder_ceph_client }}'
+nova_ceph_client: "{{ cinder_ceph_client }}"
 
 # Enabled upstream if RBD is in use on cinder backends, which requires that
 # ceph be deployed on the nova compute hosts to enable volume backed instances.
 nova_cinder_rbd_inuse: False
+
+# Enable compute nodes to retrieve images from RBD directly rather then through
+# HTTP if images_type is NOT set to RBD. Must be False if nova images stored in RBD.
+nova_glance_rbd_inuse: False
+nova_glance_images_rbd_pool: "{{ glance_rbd_store_pool | default('images') }}"
 
 # Used to determine if we need a Ceph client
 nova_rbd_inuse: "{{ (nova_libvirt_images_rbd_pool | length > 0) or (nova_cinder_rbd_inuse | bool) }}"
