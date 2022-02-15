@@ -294,9 +294,6 @@ nova_vencrypt_auth_scheme: "vencrypt,none"
 ## Nova global config
 nova_image_cache_manager_interval: 0
 
-# Comma separated list of Glance API servers
-nova_glance_api_servers: "{{ (glance_service_internalurl | default('http://localhost')) | urlsplit('scheme') ~ '://' ~ (glance_service_internalurl | default('http://localhost')) | urlsplit('netloc') }}"
-
 nova_network_type: linuxbridge
 
 nova_network_services:
