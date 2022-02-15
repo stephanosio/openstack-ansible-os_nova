@@ -21,25 +21,6 @@
   tags:
     - always
 
-- name: Check libvirtd version
-  command: "libvirtd --version"
-  register: _libvirtd_version_cmd
-  changed_when: false
-  tags:
-    - nova-install
-    - nova-config
-    - nova-kvm
-    - nova-libvirt
-
-- name: Set libvirtd version
-  set_fact:
-    libvirtd_version: "{{ _libvirtd_version_cmd['stdout'].split()[-1] }}"
-  tags:
-    - nova-install
-    - nova-config
-    - nova-kvm
-    - nova-libvirt
-
 - name: Set nested kvm virt
   copy:
     src: kvm.conf
@@ -112,22 +93,6 @@
     - nova-kvm
     - nova-libvirt
 
-- name: Set libvirt runtime options (Ubuntu)
-  lineinfile:
-    dest: "/etc/default/libvirtd"
-    line: 'libvirtd_opts="-l"'
-    regexp: "^libvirtd_opts="
-    backup: "yes"
-  when:
-    - (nova_libvirtd_listen_tcp == 1) or (nova_libvirtd_listen_tls == 1)
-    - libvirtd_version is version('5.7', '<')
-    - ansible_facts['pkg_mgr'] == 'apt'
-  notify: Restart libvirt-bin
-  tags:
-    - nova-config
-    - nova-kvm
-    - nova-libvirt
-
 - name: Unset libvirt runtime options (Ubuntu)
   lineinfile:
     dest: "/etc/default/libvirtd"
@@ -135,24 +100,7 @@
     regexp: "^libvirtd_opts="
     backup: "yes"
   when:
-    - (nova_libvirtd_listen_tcp == 0 and nova_libvirtd_listen_tls == 0) or libvirtd_version is version('5.7', '>=')
     - ansible_facts['pkg_mgr'] == 'apt'
-  notify: Restart libvirt-bin
-  tags:
-    - nova-config
-    - nova-kvm
-    - nova-libvirt
-
-- name: Set libvirt runtime options (RPM)
-  lineinfile:
-    dest: "/etc/sysconfig/libvirtd"
-    line: 'LIBVIRTD_ARGS="-l"'
-    regexp: "^(#)?LIBVIRTD_ARGS=*"
-    backup: "yes"
-  when:
-    - (nova_libvirtd_listen_tcp == 1) or (nova_libvirtd_listen_tls == 1)
-    - libvirtd_version is version('5.7', '<')
-    - ansible_facts['pkg_mgr'] == 'dnf'
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -166,7 +114,6 @@
     regexp: "^(#)?LIBVIRTD_ARGS=*"
     backup: "yes"
   when:
-    - (nova_libvirtd_listen_tcp == 0 and nova_libvirtd_listen_tls == 0) or libvirtd_version is version('5.7', '>=')
     - ansible_facts['pkg_mgr'] == 'dnf'
   notify: Restart libvirt-bin
   tags:
