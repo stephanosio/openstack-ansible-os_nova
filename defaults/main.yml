@@ -689,7 +689,7 @@ nova_pki_console_install_certificates:
 nova_ssh_keypairs_setup_host: "{{ openstack_ssh_keypairs_setup_host  | default('localhost') }}"
 
 # directory on the deploy host to create and store SSH keypairs
-nova_ssh_keypairs_dir: "{{ openstack_ssh_keypairs_dir }}"
+nova_ssh_keypairs_dir: "{{ openstack_ssh_keypairs_dir | default('/etc/openstack_deploy/ssh_keypairs') }}"
 
 #Each compute host needs a signed ssh certificate to log into the others
 nova_ssh_keypairs:
