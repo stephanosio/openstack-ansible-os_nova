@@ -115,6 +115,7 @@
     backup: "yes"
   when:
     - ansible_facts['pkg_mgr'] == 'dnf'
+    - ansible_facts['distribution_version'] is version('9', '<')
   notify: Restart libvirt-bin
   tags:
     - nova-config
