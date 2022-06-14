@@ -86,7 +86,3 @@
     - "Restart nova services"
     - "venv changed"
     - "cert installed"
-
-- meta: noop
-  listen: Manage LB
-  when: false

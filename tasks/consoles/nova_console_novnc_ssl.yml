@@ -41,7 +41,6 @@
     - { content: "{{ nova_console_user_ssl_combined.stdout ~ '\n' }}", dest: "{{ nova_console_ssl_cert }}", mode: "0644" }
     - { src: "{{ nova_console_user_ssl_key }}", dest: "{{ nova_console_ssl_key }}", mode: "0640" }
   notify:
-    - Manage LB
     - Restart nova services
     - Restart uwsgi services
   tags:
