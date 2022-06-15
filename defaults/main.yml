@@ -190,7 +190,12 @@ nova_service_project_name: "service"
 nova_service_project_domain_id: default
 nova_service_user_domain_id: default
 nova_service_user_name: "nova"
-nova_service_role_name: "admin"
+nova_service_role_names:
+  - admin
+  - service
+nova_service_token_roles:
+  - service
+nova_service_token_roles_required: "{{ openstack_service_token_roles_required | default(True) }}"
 
 ## Keystone authentication middleware
 nova_keystone_auth_plugin: password

@@ -185,7 +185,7 @@
     _service_users:
       - name: "{{ nova_service_user_name }}"
         password: "{{ nova_service_password }}"
-        role: "{{ nova_service_role_name }}"
+        role: "{{ nova_service_role_names }}"
     _service_endpoints:
       - service: "{{ nova_service_name }}"
         interface: "public"
