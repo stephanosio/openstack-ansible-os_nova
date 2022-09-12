@@ -249,6 +249,11 @@ virt_type = {{ nova_virt_type }}
 cpu_mode = {{ nova_cpu_mode }}
 {% endif %}
 
+{% if (neutron_plugin_type == "ml2.ovs") | default(False) %}
+[os_vif_ovs]
+isolate_vif = True
+{% endif %}
+
 {% if nova_rbd_inuse %}
 # ceph rbd support
 rbd_user = {{ nova_ceph_client }}
