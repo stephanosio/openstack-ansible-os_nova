@@ -25,7 +25,10 @@ nova_ceilometer_enabled: "{{ (groups['ceilometer_all'] is defined) and (groups['
 # Enable/Disable nova versioned notification
 nova_versioned_notification_enabled: False
 
-nova_memcached_servers: "{{ memcached_servers }}"
+# Caching
+nova_cache_servers: "{{ nova_memcached_servers | default(memcached_servers) }}"
+nova_cache_backend: "{{ openstack_cache_backend | default('oslo_cache.memcache_pool') }}"
+nova_cache_backend_map: "{{ openstack_cache_backend_map | default(_nova_cache_backend_map) }}"
 
 ## Verbosity Options
 debug: False
@@ -496,8 +499,7 @@ nova_pip_packages:
   - "git+{{ nova_git_repo }}@{{ nova_git_install_branch }}#egg=nova"
   - osprofiler
   - PyMySQL
-  - pymemcache
-  - python-memcached
+  - "{{ _nova_cache_backend_package }}"
   - systemd-python
 
 # Specific pip packages provided by the user

@@ -68,8 +68,10 @@ manager_interval = {{ nova_image_cache_manager_interval }}
 # Cache
 [cache]
 enabled = true
-backend = oslo_cache.memcache_pool
-memcache_servers = {{ nova_memcached_servers }}
+backend = {{ nova_cache_backend }}
+{% if nova_cache_backend in nova_cache_backend_map['dogpile'] %}
+memcache_servers = {{ nova_cache_servers }}
+{% endif %}
 
 
 # Cinder
@@ -194,13 +196,15 @@ service_token_roles_required = {{ nova_service_token_roles_required | bool }}
 service_token_roles = {{ nova_service_token_roles | join(',') }}
 service_type = {{ nova_service_type }}
 
-memcached_servers = {{ memcached_servers }}
+{% if nova_cache_backend in nova_cache_backend_map['dogpile'] %}
+memcached_servers = {{ nova_cache_servers }}
 
 token_cache_time = 300
 
 # if your memcached server is shared, use these settings to avoid cache poisoning
 memcache_security_strategy = ENCRYPT
 memcache_secret_key = {{ memcached_encryption_key }}
+{% endif %}
 
 {% if group_names | intersect(nova_services.keys() | difference('nova-compute') | map('extract', nova_services, 'group') | list) | count > 0 %}
 [database]
