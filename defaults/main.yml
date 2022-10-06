@@ -250,7 +250,7 @@ nova_serialconsoleproxy_port: 6083
 nova_serialconsoleproxy_port_range: 10000:20000
 nova_serialconsoleproxy_base_uri: "{{ nova_serialconsoleproxy_proto }}://{{ external_lb_vip_address }}:{{ nova_serialconsoleproxy_port }}"
 nova_serialconsoleproxy_base_url: "{{ nova_serialconsoleproxy_base_uri }}"
-nova_serialconsoleproxy_serialconsole_proxyserver_proxyclient_address: "{{ ansible_host }}"
+nova_serialconsoleproxy_serialconsole_proxyserver_proxyclient_address: "{{ nova_management_address }}"
 
 ## Nova metadata
 nova_metadata_proxy_enabled: "{{ nova_network_services[nova_network_type]['metadata_proxy_enabled'] | bool }}"
