@@ -282,6 +282,10 @@ nova_libvirt_live_migration_inbound_addr: '{{ (nova_management_address == "local
 # Set the console type. Presently the only options are ["spice", "novnc", "serialconsole", "disabled"].
 nova_console_type: "{{ (ansible_facts['architecture'] == 'aarch64') | ternary('serialconsole', 'novnc') }}"
 
+## Nova ironic console
+# Set the console type. Presently the only options are ["serialconsole", "disabled"].
+nova_ironic_console_type: "disabled"
+
 # Nova console ssl info, presently only used by novnc console type
 nova_console_ssl_dir: "/etc/nova/ssl"
 nova_console_ssl_cert: "{{ nova_console_ssl_dir }}/nova-console.pem"
@@ -482,6 +486,13 @@ nova_services:
     service_name: nova-serialproxy
     init_config_overrides: "{{ nova_serialproxy_init_overrides }}"
     condition: "{{ nova_console_type == 'serialconsole' }}"
+    start_order: 5
+    execstarts: "{{ nova_bin }}/nova-serialproxy"
+  nova_ironic_sericalconsole-proxy:
+    group: ironic_console
+    service_name: nova-serialproxy
+    init_config_overrides: "{{ nova_serialproxy_init_overrides }}"
+    condition: "{{ nova_ironic_console_type == 'serialconsole' }}"
     start_order: 5
     execstarts: "{{ nova_bin }}/nova-serialproxy"
 
