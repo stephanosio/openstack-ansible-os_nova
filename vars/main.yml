@@ -116,3 +116,23 @@ _qemu_default_conf_dict: |-
 _nova_qemu_conf: "{{ _qemu_default_conf_dict | combine(qemu_conf_dict) }}"
 
 _nova_oslomsg_heartbeat_in_pthread: "{{ (nova_services['nova-compute']['group'] in group_names) | ternary(False, True) }}"
+
+_nova_cache_backend_map:
+  dogpile:
+    - oslo_cache.memcache_pool
+    - dogpile.cache.pymemcache
+    - dogpile.cache.memcached
+    - dogpile.cache.bmemcached
+  mongo:
+    - oslo_cache.mongo
+  etcd3gw:
+    - oslo_cache.etcd3gw
+
+_nova_cache_backend_package: |-
+    {% set oslo = namespace(backend='dogpile') %}
+    {% for key, value in _nova_cache_backend_map.items() %}
+    {%   if nova_cache_backend in value %}
+    {%     set oslo.backend = key %}
+    {%-   endif %}
+    {%- endfor %}
+    oslo.cache[{{ oslo.backend }}]
