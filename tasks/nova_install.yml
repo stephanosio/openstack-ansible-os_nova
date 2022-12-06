@@ -37,6 +37,8 @@
   delay: 2
   tags:
     - nova-pip-packages
+  notify:
+    - "Restart nova services"
 
 - name: Install the python venv
   import_role:
@@ -123,21 +125,31 @@
       condition: "{{ serial_proxy_enabled.rc is defined and serial_proxy_enabled.rc == 0 }}"
       type: "serialconsole"
 
-- name: Initialise the upgrade facts
-  ini_file:
-    dest: "/etc/ansible/facts.d/openstack_ansible.fact"
-    section: nova
-    option: "{{ item.name }}"
-    value: "{{ item.state }}"
-  with_items:
-    - name: "need_service_restart"
-      state: "True"
-    - name: "need_online_data_migrations"
-      state: "True"
-  when:
-    - (install_packages is changed) or
-      (ansible_local is not defined) or
-      ('openstack_ansible' not in ansible_local) or
-      ('nova' not in ansible_local['openstack_ansible']) or
-      ('need_online_data_migrations' not in ansible_local['openstack_ansible']['nova']) or
-      ('need_service_restart' not in ansible_local['openstack_ansible']['nova'])
+- name: Record local facts for distro path
+  when: nova_install_method == 'distro'
+  block:
+    - name: Record the osa version deployed
+      ini_file:
+        dest: "/etc/ansible/facts.d/openstack_ansible.fact"
+        section: nova
+        option: venv_tag
+        value: "{{ nova_venv_tag }}"
+
+    - name: Initialise the upgrade facts
+      ini_file:
+        dest: "/etc/ansible/facts.d/openstack_ansible.fact"
+        section: nova
+        option: "{{ item.name }}"
+        value: "{{ item.state }}"
+      with_items:
+        - name: "need_service_restart"
+          state: "True"
+        - name: "need_online_data_migrations"
+          state: "True"
+      when:
+        - (install_packages is changed) or
+          (ansible_local is not defined) or
+          ('openstack_ansible' not in ansible_local) or
+          ('nova' not in ansible_local['openstack_ansible']) or
+          ('need_online_data_migrations' not in ansible_local['openstack_ansible']['nova']) or
+          ('need_service_restart' not in ansible_local['openstack_ansible']['nova'])
