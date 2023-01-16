@@ -93,6 +93,9 @@
       state: link
       force: true
       condition: "{{ nova_install_method == 'source' }}"
+    - path: "/etc/nova/provider_config"
+      owner: "root"
+      mode: "0640"
     - path: "/etc/sudoers.d"
       mode: "0750"
       owner: "root"

@@ -406,6 +406,31 @@ nova_api_threads: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['proces
 #  "compute:create": ""
 #  "compute:create:attach_network": ""
 
+## Resource provider vars
+# Optionally specify a set of resource providers that a particular compute node exposes
+# See https://docs.openstack.org/nova/latest/admin/managing-resource-providers.html
+nova_provider_overrides: []
+# nova_provider_overrides:
+#   - name: my_provider
+#     content:
+#       meta:
+#         schema_version: '1.0'
+#       providers:
+#         - identification:
+#             name: 'EXAMPLE_RESOURCE_PROVIDER'
+#           inventories:
+#             additional:
+#               - CUSTOM_EXAMPLE_RESOURCE_CLASS:
+#                  total: 100
+#                  reserved: 0
+#                  min_unit: 1
+#                  max_unit: 10
+#                  step_size: 1
+#                  allocation_ratio: 1.0
+#           traits:
+#             additional:
+#               - 'CUSTOM_EXAMPLE_TRAIT'
+
 nova_service_in_ldap: "{{ service_ldap_backend_enabled | default(False) }}"
 
 ## libvirtd config options
