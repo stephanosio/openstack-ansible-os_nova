@@ -25,6 +25,16 @@
     filter: ansible_local
     gather_subset: "!all"
 
+- name: Add dependency repos for RDO
+  package:
+    name: "{{ nova_distro_repos }}"
+    state: "{{ nova_package_state }}"
+  retries: 5
+  delay: 2
+  when:
+    - ansible_facts['pkg_mgr'] == 'dnf'
+    - nova_install_method == 'distro'
+
 - name: Install distro packages
   package:
     name: "{{ nova_package_list }}"
