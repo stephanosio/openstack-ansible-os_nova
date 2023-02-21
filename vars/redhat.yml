@@ -26,6 +26,9 @@ nova_distro_packages:
   - iptables
   - libxml2
 
+nova_distro_repos:
+  - centos-release-nfv-openvswitch
+
 nova_devel_distro_packages:
   - libxml2-devel
   - systemd-devel
@@ -51,7 +54,7 @@ nova_service_extra_distro_packages:
 
 nova_compute_packages:
   - dosfstools
-  - genisoimage
+  - xorriso
   - kpartx
   - nc
   - python3-libguestfs
