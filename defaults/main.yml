@@ -267,6 +267,9 @@ nova_nested_virt_enabled: False
 nova_wsgi_processes_max: 16
 nova_wsgi_processes: "{{ [[ansible_facts['processor_vcpus']|default(1), 1] | max * 2, nova_wsgi_processes_max] | min }}"
 nova_wsgi_threads: 1
+nova_uwsgi_tls:
+  crt: "{{ nova_ssl_cert }}"
+  key: "{{ nova_ssl_key }}"
 
 ## Nova libvirt
 # Warning: If nova_libvirt_inject_key or nova_libvirt_inject_password are enabled for Ubuntu compute hosts
@@ -459,6 +462,7 @@ nova_services:
     uwsgi_overrides: "{{ nova_api_metadata_uwsgi_ini_overrides }}"
     uwsgi_bind_address: "{{ nova_metadata_bind_address }}"
     uwsgi_port: "{{ nova_metadata_port }}"
+    uwsgi_tls: "{{ nova_backend_ssl | ternary(nova_uwsgi_tls, {}) }}"
     wsgi_name: nova-metadata-wsgi
   nova-api-os-compute:
     group: nova_api_os_compute
@@ -469,6 +473,7 @@ nova_services:
     uwsgi_overrides: "{{ nova_api_os_compute_uwsgi_ini_overrides }}"
     uwsgi_bind_address: "{{ nova_service_bind_address }}"
     uwsgi_port: "{{ nova_service_port }}"
+    uwsgi_tls: "{{ nova_backend_ssl | ternary(nova_uwsgi_tls, {}) }}"
     wsgi_name: nova-api-wsgi
   nova-compute:
     group: nova_compute
@@ -494,7 +499,7 @@ nova_services:
     init_config_overrides: "{{ nova_novncproxy_init_overrides }}"
     condition: "{{ nova_console_type == 'novnc' }}"
     start_order: 5
-    execstarts: "{{ nova_bin }}/nova-novncproxy"
+    execstarts: "{{ nova_bin }}/nova-novncproxy {{ nova_backend_ssl | ternary('--ssl_only --cert ' ~ nova_ssl_cert ~ ' --key ' ~ nova_ssl_key, '') }}"
   nova-scheduler:
     group: nova_scheduler
     service_name: nova-scheduler
@@ -508,21 +513,21 @@ nova_services:
     init_config_overrides: "{{ {'Install': {'Alias': 'nova-spiceproxy.service'}} | combine(nova_spicehtml5proxy_init_overrides, recursive=True) }}"
     condition: "{{ nova_console_type == 'spice' }}"
     start_order: 5
-    execstarts: "{{ nova_bin }}/nova-spicehtml5proxy"
+    execstarts: "{{ nova_bin }}/nova-spicehtml5proxy {{ nova_backend_ssl | ternary('--ssl_only --cert ' ~ nova_ssl_cert ~ ' --key ' ~ nova_ssl_key, '') }}"
   nova-serialconsole-proxy:
     group: nova_console
     service_name: nova-serialproxy
     init_config_overrides: "{{ nova_serialproxy_init_overrides }}"
     condition: "{{ nova_console_type == 'serialconsole' }}"
     start_order: 5
-    execstarts: "{{ nova_bin }}/nova-serialproxy"
+    execstarts: "{{ nova_bin }}/nova-serialproxy {{ nova_backend_ssl | ternary('--ssl_only --cert ' ~ nova_ssl_cert ~ ' --key ' ~ nova_ssl_key, '') }}"
   nova_ironic_sericalconsole-proxy:
     group: ironic_console
     service_name: nova-serialproxy
     init_config_overrides: "{{ nova_serialproxy_init_overrides }}"
     condition: "{{ nova_ironic_console_type == 'serialconsole' }}"
     start_order: 5
-    execstarts: "{{ nova_bin }}/nova-serialproxy"
+    execstarts: "{{ nova_bin }}/nova-serialproxy {{ nova_backend_ssl | ternary('--ssl_only --cert ' ~ nova_ssl_cert ~ ' --key ' ~ nova_ssl_key, '') }}"
 
 nova_novnc_pip_packages:
   - websockify
@@ -601,6 +606,7 @@ nova_pki_certs_path: "{{ nova_pki_dir ~ '/certs/certs/' }}"
 nova_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name }}"
 nova_pki_intermediate_chain_path: "{{ nova_pki_dir ~ '/roots/' ~ nova_pki_intermediate_cert_name ~ '/certs/' ~ nova_pki_intermediate_cert_name ~ '-chain.crt' }}"
 nova_pki_regen_cert: ''
+nova_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
 # Create client and server cert for compute hosts
 # This certiticate is used to secure TLS live migrations and VNC sessions
 nova_pki_compute_certificates:
@@ -708,6 +714,7 @@ nova_pki_console_certificates:
       - keyEncipherment
     extended_key_usage:
       - clientAuth
+    condition: "{{ nova_qemu_vnc_tls == 1 and nova_console_type == 'novnc' }}"
 
 # Installation details for SSL certificates for console hosts
 nova_pki_console_install_certificates:
@@ -716,16 +723,19 @@ nova_pki_console_install_certificates:
     owner: "root"
     group: "{{ nova_system_group_name }}"
     mode: "0640"
+    condition: "{{ nova_qemu_vnc_tls == 1 and nova_console_type == 'novnc' }}"
   - src: "{{ nova_user_ssl_key | default(nova_pki_keys_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '-client.key.pem') }}"
     dest: "{{ nova_vencrypt_client_key }}"
     owner: "root"
     group: "{{ nova_system_group_name }}"
     mode: "0640"
+    condition: "{{ nova_qemu_vnc_tls == 1 and nova_console_type == 'novnc' }}"
   - src: "{{ nova_user_ssl_ca_cert | default(nova_pki_intermediate_chain_path) }}"
     dest: "{{ nova_vencrypt_ca_certs }}"
     owner: "root"
     group: "{{ nova_system_group_name }}"
     mode: "0640"
+    condition: "{{ nova_qemu_vnc_tls == 1 and nova_console_type == 'novnc' }}"
 
 # host which holds the ssh certificate authority
 nova_ssh_keypairs_setup_host: "{{ openstack_ssh_keypairs_setup_host  | default('localhost') }}"
@@ -757,3 +767,39 @@ nova_ssh_keypairs_install_ca: "{{ openstack_ssh_keypairs_authorities }}"
 nova_ssh_keypairs_principals:
   - user: "{{ nova_system_user_name }}"
     principals: "{{ nova_ssh_key_principals | default(['nova']) }}"
+
+###
+### Backend TLS
+###
+
+# Define if communication between haproxy and service backends should be
+# encrypted with TLS.
+nova_backend_ssl: "{{ openstack_service_backend_ssl | default(False) }}"
+
+nova_pki_certificates:
+   # Used to encrypt traffic between haproxy and nova backends
+  - name: "nova_{{ ansible_facts['hostname'] }}"
+    provider: ownca
+    cn: "{{ ansible_facts['hostname'] }}"
+    san: "{{ nova_pki_san }}"
+    signed_by: "{{ nova_pki_intermediate_cert_name }}"
+    condition: "{{ nova_backend_ssl }}"
+
+# nova destination files for SSL certificates
+nova_ssl_cert: /etc/nova/nova.pem
+nova_ssl_key: /etc/nova/nova.key
+
+# Installation details for SSL certificates
+nova_pki_install_certificates:
+  - src: "{{ nova_user_ssl_cert | default(nova_pki_certs_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+    dest: "{{ nova_ssl_cert }}"
+    owner: "{{ nova_system_user_name }}"
+    group: "{{ nova_system_user_name }}"
+    mode: "0644"
+    condition: "{{ nova_backend_ssl }}"
+  - src: "{{ nova_user_ssl_key | default(nova_pki_keys_path ~ 'nova_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    dest: "{{ nova_ssl_key }}"
+    owner: "{{ nova_system_user_name }}"
+    group: "{{ nova_system_user_name }}"
+    mode: "0600"
+    condition: "{{ nova_backend_ssl }}"
