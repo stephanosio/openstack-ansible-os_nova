@@ -78,7 +78,6 @@ nova_compute_kvm_distro_packages:
   - qemu-utils
   - qemu-user
   - qemu-block-extra
-  - qemu-system
   - "{{ (ansible_facts['architecture'] == 'x86_64') | ternary('qemu-system-x86', 'qemu-system-arm') }}"
   - qemu-system-misc
 
