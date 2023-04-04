@@ -86,7 +86,6 @@
     mode: "0600"
   when:
     - _nova_qemu_conf | length > 0
-      or nova_network_type == 'calico'
   notify: Restart libvirt-bin
   tags:
     - nova-config

@@ -1,20 +1,5 @@
 # {{ ansible_managed }}
 
-{% if nova_network_type == 'calico' %}
-# Calico specific qemu settings
-# Information available at:
-# http://docs.projectcalico.org/en/latest/ubuntu-opens-install.html
-clear_emulator_capabilities = 0
-user = "root"
-group = "root"
-cgroup_device_acl = [
-     "/dev/null", "/dev/full", "/dev/zero",
-     "/dev/random", "/dev/urandom",
-     "/dev/ptmx", "/dev/kvm", "/dev/kqemu",
-     "/dev/rtc", "/dev/hpet", "/dev/net/tun",
-]
-{% endif %}
-
 {% if nova_libvirtd_listen_tls == 1 %}
 # Use of TLS requires that x509 certificates be issued. The default is
 # to keep them in /etc/pki/qemu. This directory must contain

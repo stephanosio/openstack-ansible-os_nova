@@ -319,9 +319,6 @@ nova_network_services:
     use_forwarded_for: True
     metadata_proxy_enabled: True
     ovs_bridge: alubr0
-  calico:
-    use_forwarded_for: True
-    metadata_proxy_enabled: False
   nsx:
     use_forwarded_for: True
     metadata_proxy_enabled: True
