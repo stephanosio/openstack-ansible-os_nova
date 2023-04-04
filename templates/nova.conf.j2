@@ -157,9 +157,6 @@ auth_url = {{ keystone_service_adminurl }}
 insecure = {{ keystone_service_adminuri_insecure | bool }}
 metadata_proxy_shared_secret = {{ nova_metadata_proxy_secret }}
 service_metadata_proxy = {{ nova_metadata_proxy_enabled }}
-{% if nova_network_services[nova_network_type]['ovs_bridge'] is defined %}
-ovs_bridge = {{ nova_network_services[nova_network_type]['ovs_bridge'] }}
-{% endif %}
 
 {% if nova_ceilometer_enabled %}
 [notifications]

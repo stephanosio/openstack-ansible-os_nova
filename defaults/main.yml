@@ -256,7 +256,7 @@ nova_serialconsoleproxy_base_url: "{{ nova_serialconsoleproxy_base_uri }}"
 nova_serialconsoleproxy_serialconsole_proxyserver_proxyclient_address: "{{ nova_management_address }}"
 
 ## Nova metadata
-nova_metadata_proxy_enabled: "{{ nova_network_services[nova_network_type]['metadata_proxy_enabled'] | bool }}"
+nova_metadata_proxy_enabled: True
 nova_metadata_bind_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 nova_metadata_port: 8775
 
@@ -308,18 +308,6 @@ nova_vencrypt_auth_scheme: "vencrypt,none"
 
 ## Nova global config
 nova_image_cache_manager_interval: 0
-
-nova_network_type: linuxbridge
-
-nova_network_services:
-  linuxbridge:
-    metadata_proxy_enabled: True
-  nuage:
-    metadata_proxy_enabled: True
-    ovs_bridge: alubr0
-  nsx:
-    metadata_proxy_enabled: True
-    ovs_bridge: nsx-managed
 
 # Nova Scheduler
 nova_cpu_allocation_ratio: 2.0
