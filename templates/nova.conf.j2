@@ -306,7 +306,6 @@ api_paste_config = /etc/nova/api-paste.ini
 
 
 [api]
-use_forwarded_for = {{ nova_network_services[nova_network_type]['use_forwarded_for'] | bool }}
 vendordata_jsonfile_path = /etc/nova/vendor_data.json
 dhcp_domain = {{ nova_dhcp_domain }}
 
