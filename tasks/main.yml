@@ -276,11 +276,7 @@
 - name: Flush handlers
   meta: flush_handlers
 
-# We delegate this back to the conductor because that is
-# where we want to isolate the clouds.yaml configuration,
-# rather than have it implemented on all compute nodes.
 - import_tasks: nova_compute_wait.yml
-  delegate_to: "{{ nova_conductor_setup_host }}"
   when:
     - "nova_services['nova-compute']['group'] in group_names"
     - "nova_discover_hosts_in_cells_interval | int < 1"
