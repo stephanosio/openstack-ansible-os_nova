@@ -25,25 +25,31 @@
   become_user: "{{ _db_nova_system_user_name }}"
   changed_when: false
 
-# The nova-status upgrade check command is typically run after upgrading the
-# controller services to new code, but is also OK to run for a greenfield
-# install to verify everything is setup correctly. This must run after cell
-# mapping setup and online data migrations have run.
-# https://docs.openstack.org/nova/latest/cli/nova-status.html
-- name: Run nova-status upgrade check to validate a healthy configuration
-  command: "{{ _db_nova_bin }}/nova-status upgrade check"
+
+# If it exits with partial updates (exit status 1) it should be called again,
+# even if some updates initially generated errors,
+# because some updates may depend on others having completed. If it exits with status 2,
+# intervention is required to resolve the issue causing remaining updates to fail.
+# It should be considered successfully completed only when the exit status is 0.
+- name: Perform online data migrations
+  command: "{{ _db_nova_bin }}/nova-manage db online_data_migrations"
   become: yes
   become_user: "{{ _db_nova_system_user_name }}"
-  register: nova_status_upgrade_check
-  until: nova_status_upgrade_check is success
-  retries: 8
-  delay: 15
-  # The nova-status upgrade check command has three standard return codes:
-  # 0: all checks were successful
-  # 1: warning: there might be some checks that require investigation, but
-  #    generally will not block an automated install/upgrade; digging into
-  #    warnings is useful for debugging post-install/upgrade issues
-  # 2: at least one check failed and must stop the install/upgrade because
-  #    something was not setup properly
-  failed_when: "nova_status_upgrade_check.rc not in [0, 1]"
-  changed_when: false
+  when:
+    - hostvars[nova_conductor_setup_host]['ansible_local']['openstack_ansible']['nova']['need_online_data_migrations'] | bool
+  retries: 5
+  delay: 3
+  until: "data_migrations.rc in [0, 2]"
+  register: data_migrations
+
+- name: Disable the online migrations requirement
+  delegate_to: "{{ item }}"
+  ini_file:
+    dest: "/etc/ansible/facts.d/openstack_ansible.fact"
+    section: nova
+    option: need_online_data_migrations
+    value: False
+  with_items: "{{ groups[nova_services['nova-conductor']['group']] }}"
+  when:
+    - data_migrations is not skipped
+    - data_migrations is succeeded
