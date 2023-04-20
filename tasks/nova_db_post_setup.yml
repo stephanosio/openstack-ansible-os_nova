@@ -53,3 +53,49 @@
   when:
     - data_migrations is not skipped
     - data_migrations is succeeded
+
+- name: Create service and timer for archiving deleted records
+  include_role:
+    name: systemd_service
+  vars:
+    systemd_service_restart_changed: false
+    systemd_user_name: "{{ nova_system_user_name }}"
+    systemd_group_name: "{{ nova_system_group_name }}"
+    systemd_tempd_prefix: openstack
+    systemd_slice_name: "{{ nova_system_slice_name }}"
+    systemd_lock_dir: "{{ nova_lock_dir }}"
+    systemd_services:
+      - service_name: "nova-archive-deleted"
+        execstarts:
+          - /bin/sh -c "{{ _db_nova_bin }}/nova-manage db archive_deleted_rows --until-complete --all-cells --before \"$(date -d '{{ nova_archive_deleted_before }}' +'%%Y-%%m-%%d %%H:%%M')\" {{ (nova_archive_deleted_purge) | ternary('--purge', '') }} {{ (nova_archive_task_log) | ternary('--task-log', '') }}"
+        environment:
+          UMASK: '0640'
+          UMASK_DIR: '0750'
+        program_sandboxing:
+          RuntimeDirectory: 'nova-archive-deleted'
+        enabled: "{{ nova_archive_deleted }}"
+        timer:
+          state: "{{ nova_archive_deleted | ternary('started', 'stopped') }}"
+          enabled: "{{ nova_archive_deleted }}"
+          options:
+            OnCalendar: "{{ nova_archive_deleted_on_calendar }}"
+            RandomizedDelaySec: "{{ nova_archive_deleted_randomized_delay_sec }}"
+            Persistent: true
+            Unit: "nova-archive-deleted.service"
+      - service_name: "nova-purge-deleted"
+        execstarts:
+          - /bin/sh -c "{{ _db_nova_bin }}/nova-manage db purge --until-complete --all-cells --before \"$(date -d '{{ nova_purge_deleted_before }}' +'%%Y-%%m-%%d %%H:%%M')\""
+        environment:
+          UMASK: '0640'
+          UMASK_DIR: '0750'
+        program_sandboxing:
+          RuntimeDirectory: 'nova-purge-deleted'
+        enabled: "{{ nova_purge_deleted }}"
+        timer:
+          state: "{{ nova_purge_deleted | ternary('started', 'stopped') }}"
+          enabled: "{{ nova_purge_deleted }}"
+          options:
+            OnCalendar: "{{ nova_purge_deleted_on_calendar }}"
+            RandomizedDelaySec: "{{ nova_purge_deleted_randomized_delay_sec }}"
+            Persistent: true
+            Unit: "nova-purge-deleted.service"
