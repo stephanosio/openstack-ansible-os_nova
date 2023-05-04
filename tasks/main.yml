@@ -103,17 +103,15 @@
   tags:
     - always
 
-- import_tasks: nova_virt_detect.yml
+- include_tasks: nova_virt_detect.yml
   when:
     - nova_virt_type is not defined
   tags:
     - always
-    - nova-config
 
 - import_tasks: nova_mdev_detect.yml
   tags:
     - always
-    - nova-config
 
 - import_tasks: nova_pre_install.yml
   tags:
@@ -233,11 +231,15 @@
   tags:
     - always
 
-- import_tasks: nova_db_setup.yml
+- include_tasks: nova_db_setup.yml
+  args:
+    apply:
+      tags:
+        - nova-config
   when:
     - _nova_is_first_play_host
   tags:
-    - nova-config
+    - always
 
 - name: Import uwsgi role
   import_role:
@@ -245,6 +247,8 @@
   vars:
     uwsgi_services: "{{ uwsgi_nova_services }}"
     uwsgi_install_method: "{{ nova_install_method }}"
+  when:
+    - uwsgi_nova_services | length > 0
   tags:
     - nova-config
     - uwsgi
@@ -282,16 +286,23 @@
     - nova-config
     - systemd-service
 
-- import_tasks: nova_compute.yml
+- include_tasks: nova_compute.yml
+  args:
+    apply:
+      tags:
+        - nova-compute
   when:
     - nova_virt_type != 'ironic'
     - "nova_services['nova-compute']['group'] in group_names"
   tags:
-    - nova-compute
+    - always
 
 - name: Include ceph_client role
-  import_role:
+  include_role:
     name: ceph_client
+    apply:
+      tags:
+        - ceph
   vars:
     openstack_service_system_user: "{{ nova_system_user_name }}"
     openstack_service_venv_bin: "{{ (nova_install_method == 'source') | ternary(nova_bin, '') }}"
@@ -300,7 +311,7 @@
     - nova_services['nova-compute']['group'] in group_names
     - (nova_rbd_inuse | bool) or (nova_glance_rbd_inuse | bool)
   tags:
-    - ceph
+    - always
 
 - name: Flush handlers
   meta: flush_handlers
