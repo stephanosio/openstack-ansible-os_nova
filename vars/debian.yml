@@ -80,6 +80,7 @@ nova_compute_kvm_distro_packages:
   - qemu-block-extra
   - "{{ (ansible_facts['architecture'] == 'x86_64') | ternary('qemu-system-x86', 'qemu-system-arm') }}"
   - qemu-system-misc
+  - ipxe-qemu
 
 nova_compute_kvm_packages_to_symlink:
   - python3-libvirt
