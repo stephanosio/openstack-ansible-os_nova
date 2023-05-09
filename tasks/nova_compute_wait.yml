@@ -13,34 +13,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Implement openrc/clouds.yaml
-  include_role:
-    name: "openstack_openrc"
-
-- name: Set the delegated task facts
-  set_fact:
-    _wait_nova_bin: "{{ hostvars[nova_conductor_setup_host]['nova_bin'] | default(nova_bin) }}"
-
-- block:
+- name: Ensure compute is discovered
+  block:
     - name: Wait for the nova-compute service to initialize
-      command: "{{ _wait_nova_bin }}/openstack --os-cloud default compute service list --service nova-compute --format value --column Host"
-      changed_when: false
+      delegate_to: "{{ nova_service_setup_host }}"
+      vars:
+        ansible_python_interpreter: "{{ nova_service_setup_host_python_interpreter }}"
+      openstack.cloud.compute_service_info:
+        cloud: default
+        binary: "nova-compute"
+        host: "{{ compute_host_to_wait_for }}"
       register: _compute_host_list
       retries: 10
       delay: 5
-      until: "compute_host_to_wait_for in _compute_host_list.stdout_lines"
+      until: "_compute_host_list.compute_services"
 
   rescue:
     - name: Restart nova-compute service
       service:
         name: "{{ nova_services['nova-compute']['service_name'] }}"
         state: restarted
-      delegate_to: "{{ compute_host_to_wait_for }}"
 
     - name: Wait for the nova-compute service to initialize
-      command: "{{ _wait_nova_bin }}/openstack --os-cloud default compute service list --service nova-compute --format value --column Host"
+      delegate_to: "{{ nova_service_setup_host }}"
+      vars:
+        ansible_python_interpreter: "{{ nova_service_setup_host_python_interpreter }}"
+      openstack.cloud.compute_service_info:
+        cloud: default
+        binary: "nova-compute"
+        host: "{{ compute_host_to_wait_for }}"
       changed_when: false
       register: _compute_host_list
       retries: 10
       delay: 5
-      until: "compute_host_to_wait_for in _compute_host_list.stdout_lines"
+      until: "_compute_host_list.compute_services"
