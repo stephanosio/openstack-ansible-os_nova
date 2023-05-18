@@ -785,3 +785,28 @@ nova_pki_install_certificates:
     group: "{{ nova_system_user_name }}"
     mode: "0600"
     condition: "{{ nova_backend_ssl }}"
+
+# Periodically move records for deleted resources to shadow tables
+nova_archive_deleted: False
+# When to start archive task. Reffer to Systemd Calendar Events for guidance
+# on format:
+# https://www.freedesktop.org/software/systemd/man/systemd.time.html#Calendar%20Events
+nova_archive_deleted_on_calendar: "*-*-* 00:00:00"
+# Archive events that are older then the timeframe below.
+# Should be in a format of bash date string
+nova_archive_deleted_before: "6 month ago"
+# Delete records instead of moving them to shadow tables
+nova_archive_deleted_purge: False
+# Archive instance task log
+nova_archive_task_log: False
+# Delay the timer by a randomly selected amount of time.
+nova_archive_deleted_randomized_delay_sec: 0
+
+# Periodically purge shadow tables, where archived records are stored
+nova_purge_deleted: False
+# When to start purge task.
+nova_purge_deleted_on_calendar: "*-*-* 01:00:00"
+# Purge events that are older then the timeframe below.
+nova_purge_deleted_before: "24 month ago"
+# Delay the timer by a randomly selected amount of time.
+nova_purge_deleted_randomized_delay_sec: 0
