@@ -104,6 +104,10 @@
     - always
 
 - include_tasks: nova_virt_detect.yml
+  args:
+    apply:
+      tags:
+        - always
   when:
     - nova_virt_type is not defined
   tags:
