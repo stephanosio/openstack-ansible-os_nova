@@ -19,6 +19,20 @@ _nova_is_first_play_host: >-
       inventory_hostname == (groups[nova_services['nova-conductor']['group']] | intersect(ansible_play_hosts)) | first) | bool
   }}
 
+_nova_oslomsg_rpc_vhost_conf: >-
+  {{
+    (nova_oslomsg_rpc_vhost is string) | ternary(
+      nova_oslomsg_rpc_vhost, nova_oslomsg_rpc_vhost | selectattr('state', 'eq', 'present') | map(attribute='name') | first
+    )
+  }}
+
+_nova_oslomsg_notify_vhost_conf: >-
+  {{
+    (nova_oslomsg_notify_vhost is string) | ternary(
+      nova_oslomsg_notify_vhost, nova_oslomsg_notify_vhost | selectattr('state', 'eq', 'present') | map(attribute='name') | first
+    )
+  }}
+
 nova_venv_packages: |-
   {%- set pkg_list = nova_pip_packages | union(nova_user_pip_packages) %}
   {%- if nova_oslomsg_amqp1_enabled | bool %}

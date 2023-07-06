@@ -140,7 +140,11 @@ nova_oslomsg_rpc_servers: "{{ oslomsg_rpc_servers | default('127.0.0.1') }}"
 nova_oslomsg_rpc_port: "{{ oslomsg_rpc_port | default('5672') }}"
 nova_oslomsg_rpc_use_ssl: "{{ oslomsg_rpc_use_ssl | default(False) }}"
 nova_oslomsg_rpc_userid: nova
-nova_oslomsg_rpc_vhost: /nova
+nova_oslomsg_rpc_vhost:
+  - name: /nova
+    state: "{{ (nova_oslomsg_rabbit_quorum_queues | bool) | ternary('absent', 'present') }}"
+  - name: nova
+    state: "{{ (nova_oslomsg_rabbit_quorum_queues | bool) | ternary('present', 'absent') }}"
 nova_oslomsg_rpc_ssl_version: "{{ oslomsg_rpc_ssl_version | default('TLSv1_2') }}"
 nova_oslomsg_rpc_ssl_ca_file: "{{ oslomsg_rpc_ssl_ca_file | default('') }}"
 
@@ -160,6 +164,13 @@ nova_oslomsg_notify_ssl_ca_file: "{{ oslomsg_notify_ssl_ca_file | default('') }}
 ## Qdrouterd info
 # TODO(ansmith): Change structure when more backends will be supported
 nova_oslomsg_amqp1_enabled: "{{ nova_oslomsg_rpc_transport == 'amqp' }}"
+
+###
+### RabbitMQ info
+###
+nova_oslomsg_rabbit_quorum_queues: "{{ oslomsg_rabbit_quorum_queues | default(True) }}"
+nova_oslomsg_rabbit_quorum_delivery_limit: "{{ oslomsg_rabbit_quorum_delivery_limit | default(0) }}"
+nova_oslomsg_rabbit_quorum_max_memory_bytes: "{{ oslomsg_rabbit_quorum_max_memory_bytes | default(0) }}"
 
 ## Nova virtualization Types
 # The nova_virt_types dictionary contains global overrides used for
