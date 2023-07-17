@@ -12,4 +12,3 @@
     state: started
   when:
     - ansible_facts['pkg_mgr'] in ['dnf', 'apt']
-

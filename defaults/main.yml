@@ -37,7 +37,11 @@ debug: False
 # for the service setup. The host must already have
 # clouds.yaml properly configured.
 nova_service_setup_host: "{{ openstack_service_setup_host | default('localhost') }}"
-nova_service_setup_host_python_interpreter: "{{ openstack_service_setup_host_python_interpreter | default((nova_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
+nova_service_setup_host_python_interpreter: >-
+  {{
+    openstack_service_setup_host_python_interpreter | default(
+      (nova_service_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable']))
+  }}
 
 # Set the host which will run compute initialization tasks such as checking
 # for a compute node to be up and running cell discovery.
@@ -54,7 +58,8 @@ nova_venv_python_executable: "{{ openstack_venv_python_executable | default('pyt
 nova_git_repo: https://opendev.org/openstack/nova
 nova_git_install_branch: master
 
-nova_upper_constraints_url: "{{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
+nova_upper_constraints_url: >-
+  {{ requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}
 nova_git_constraints:
   - "--constraint {{ nova_upper_constraints_url }}"
 nova_pip_install_args: "{{ pip_install_options | default('') }}"
@@ -90,7 +95,11 @@ nova_management_address: "127.0.0.1"
 
 ## Database info
 nova_db_setup_host: "{{ openstack_db_setup_host | default('localhost') }}"
-nova_db_setup_python_interpreter: "{{ openstack_db_setup_python_interpreter | default((nova_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable'])) }}"
+nova_db_setup_python_interpreter: >-
+  {{
+    openstack_db_setup_python_interpreter | default(
+      (nova_db_setup_host == 'localhost') | ternary(ansible_playbook_python, ansible_facts['python']['executable']))
+  }}
 nova_galera_address: "{{ galera_address | default('127.0.0.1') }}"
 nova_galera_user: nova
 nova_galera_database: nova
@@ -176,12 +185,12 @@ nova_virt_types:
 
 
 # If this is not set, then the playbook will try to guess it.
-#nova_virt_type: kvm
+# nova_virt_type: kvm
 
 # Enable Kernel Shared Memory (KSM)
 nova_compute_ksm_enabled: False
 
-#if set, nova_virt_type must be one of these:
+# if set, nova_virt_type must be one of these:
 nova_supported_virt_types:
   - qemu
   - kvm
@@ -265,7 +274,7 @@ nova_nested_virt_enabled: False
 
 # Uwsgi settings
 nova_wsgi_processes_max: 16
-nova_wsgi_processes: "{{ [[ansible_facts['processor_vcpus']|default(1), 1] | max * 2, nova_wsgi_processes_max] | min }}"
+nova_wsgi_processes: "{{ [[ansible_facts['processor_vcpus'] | default(1), 1] | max * 2, nova_wsgi_processes_max] | min }}"
 nova_wsgi_threads: 1
 nova_uwsgi_tls:
   crt: "{{ nova_ssl_cert }}"
@@ -355,7 +364,7 @@ nova_nfs_client: []
 
 # Nova Ceph rbd
 # Enble and define nova_libvirt_images_rbd_pool to use rbd as nova backend
-#nova_libvirt_images_rbd_pool: vms
+# nova_libvirt_images_rbd_pool: vms
 nova_libvirt_images_rbd_pool: ''
 nova_ceph_client: "{{ cinder_ceph_client }}"
 
@@ -382,14 +391,15 @@ nova_rbd_inuse: "{{ (nova_libvirt_images_rbd_pool | length > 0) or (nova_cinder_
 
 ## Cap the maximun number of threads / workers when a user value is unspecified.
 nova_api_threads_max: 16
-nova_api_threads: "{{ [[(ansible_facts['processor_vcpus']//ansible_facts['processor_threads_per_core'])|default(1), 1] | max * 2, nova_api_threads_max] | min }}"
+nova_api_threads: >-
+  {{ [[(ansible_facts['processor_vcpus'] // ansible_facts['processor_threads_per_core']) | default(1), 1] | max * 2, nova_api_threads_max] | min }}
 
 ## Policy vars
 # Provide a list of access controls to update the default policy.json with. These changes will be merged
 # with the access controls in the default policy.json. E.g.
-#nova_policy_overrides:
-#  "compute:create": ""
-#  "compute:create:attach_network": ""
+# nova_policy_overrides:
+#   "compute:create": ""
+#   "compute:create:attach_network": ""
 
 ## Resource provider vars
 # Optionally specify a set of resource providers that a particular compute node exposes
@@ -586,7 +596,8 @@ nova_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
 nova_pki_keys_path: "{{ nova_pki_dir ~ '/certs/private/' }}"
 nova_pki_certs_path: "{{ nova_pki_dir ~ '/certs/certs/' }}"
 nova_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name }}"
-nova_pki_intermediate_chain_path: "{{ nova_pki_dir ~ '/roots/' ~ nova_pki_intermediate_cert_name ~ '/certs/' ~ nova_pki_intermediate_cert_name ~ '-chain.crt' }}"
+nova_pki_intermediate_chain_path: >-
+  {{ nova_pki_dir ~ '/roots/' ~ nova_pki_intermediate_cert_name ~ '/certs/' ~ nova_pki_intermediate_cert_name ~ '-chain.crt' }}
 nova_pki_regen_cert: ''
 nova_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
 # Create client and server cert for compute hosts
@@ -595,7 +606,11 @@ nova_pki_compute_certificates:
   - name: "nova_{{ ansible_facts['hostname'] }}"
     provider: ownca
     cn: "{{ ansible_facts['nodename'] }}"
-    san: "{{ 'DNS:' ~ ansible_facts['hostname'] ~ ',DNS:' ~ ansible_facts['nodename'] ~ ',IP:' ~ (nova_management_address == 'localhost') | ternary('127.0.0.1', nova_management_address) }}"
+    san: >-
+      {{
+        'DNS:' ~ ansible_facts['hostname'] ~ ',DNS:' ~ ansible_facts['nodename'] ~ ',IP:' ~ (nova_management_address == 'localhost') | ternary(
+          '127.0.0.1', nova_management_address)
+      }}
     signed_by: "{{ nova_pki_intermediate_cert_name }}"
     key_usage:
       - digitalSignature
@@ -678,9 +693,9 @@ nova_pki_compute_install_certificates:
 
 # Define user-provided SSL certificates in:
 # /etc/openstack_deploy/user_variables.yml
-#nova_user_ssl_cert: <path to cert on ansible deployment host>
-#nova_user_ssl_key: <path to cert on ansible deployment host>
-#nova_user_ssl_ca_cert: <path to cert on ansible deployment host>
+# nova_user_ssl_cert: <path to cert on ansible deployment host>
+# nova_user_ssl_key: <path to cert on ansible deployment host>
+# nova_user_ssl_ca_cert: <path to cert on ansible deployment host>
 
 # TLS certficates for console hosts
 nova_pki_console_certificates:
@@ -688,7 +703,11 @@ nova_pki_console_certificates:
   - name: "nova_{{ ansible_facts['hostname'] }}-client"
     provider: ownca
     cn: "{{ ansible_facts['nodename'] }}"
-    san: "{{ 'DNS:' ~ ansible_facts['hostname'] ~ ',DNS:' ~ ansible_facts['nodename'] ~ ',IP:' ~ (nova_management_address == 'localhost') | ternary('127.0.0.1', nova_management_address) }}"
+    san: >-
+      {{
+        'DNS:' ~ ansible_facts['hostname'] ~ ',DNS:' ~ ansible_facts['nodename'] ~ ',IP:' ~ (nova_management_address == 'localhost') | ternary(
+          '127.0.0.1', nova_management_address)
+      }}
     signed_by: "{{ nova_pki_intermediate_cert_name }}"
     key_usage:
       - digitalSignature
@@ -720,12 +739,12 @@ nova_pki_console_install_certificates:
     condition: "{{ nova_qemu_vnc_tls == 1 and nova_console_type == 'novnc' }}"
 
 # host which holds the ssh certificate authority
-nova_ssh_keypairs_setup_host: "{{ openstack_ssh_keypairs_setup_host  | default('localhost') }}"
+nova_ssh_keypairs_setup_host: "{{ openstack_ssh_keypairs_setup_host | default('localhost') }}"
 
 # directory on the deploy host to create and store SSH keypairs
 nova_ssh_keypairs_dir: "{{ openstack_ssh_keypairs_dir | default('/etc/openstack_deploy/ssh_keypairs') }}"
 
-#Each compute host needs a signed ssh certificate to log into the others
+# Each compute host needs a signed ssh certificate to log into the others
 nova_ssh_keypairs:
   - name: "nova-{{ inventory_hostname }}"
     cert:
@@ -734,7 +753,7 @@ nova_ssh_keypairs:
       valid_from: "{{ nova_ssh_key_valid_from | default('always') }}"
       valid_to: "{{ nova_ssh_key_valid_to | default('forever') }}"
 
-#Each compute host needs the signed ssh certificate installing to the nova user
+# Each compute host needs the signed ssh certificate installing to the nova user
 nova_ssh_keypairs_install_keys:
   owner: "{{ nova_system_user_name }}"
   group: "{{ nova_system_group_name }}"
@@ -742,10 +761,10 @@ nova_ssh_keypairs_install_keys:
     - cert: "nova-{{ inventory_hostname }}"
       dest: "{{ nova_system_home_folder }}/.ssh/id_rsa"
 
-#Each compute host must trust the SSHD certificate authoritiy in the sshd configuration
+# Each compute host must trust the SSHD certificate authoritiy in the sshd configuration
 nova_ssh_keypairs_install_ca: "{{ openstack_ssh_keypairs_authorities }}"
 
-#Each compute host must allow SSH certificates with the appropriate principal to log into the nova user
+# Each compute host must allow SSH certificates with the appropriate principal to log into the nova user
 nova_ssh_keypairs_principals:
   - user: "{{ nova_system_user_name }}"
     principals: "{{ nova_ssh_key_principals | default(['nova']) }}"

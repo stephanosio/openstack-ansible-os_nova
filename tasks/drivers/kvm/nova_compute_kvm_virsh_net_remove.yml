@@ -18,11 +18,11 @@
   changed_when: false
   register: default_net
 
-- name: Disable libvirt default network
+- name: Disable libvirt default network # noqa: no-changed-when
   command: "virsh net-autostart default --disable"
   failed_when: false
   when: default_net.stdout.find('default') != -1
 
-- name: Destroy libvirt default network
+- name: Destroy libvirt default network # noqa: no-changed-when
   command: "virsh net-destroy default"
   when: default_net.stdout.find('default') != -1

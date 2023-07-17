@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include_tasks: "drivers/{{ nova_virt_type }}/nova_compute_{{ nova_virt_type }}.yml"
+- name: Including nova_compute tasks for {{ nova_virt_type }}
+  include_tasks: "drivers/{{ nova_virt_type }}/nova_compute_{{ nova_virt_type }}.yml"
   args:
     apply:
       tags:
@@ -50,12 +51,12 @@
       tags:
         - nova-key
   vars:
-      ssh_keypairs_setup_host: "{{ nova_ssh_keypairs_setup_host }}"
-      ssh_keypairs_dir: "{{ nova_ssh_keypairs_dir }}"
-      ssh_keypairs: "{{ nova_ssh_keypairs }}"
-      ssh_keypairs_install_keys: "{{ nova_ssh_keypairs_install_keys }}"
-      ssh_keypairs_install_ca: "{{ nova_ssh_keypairs_install_ca }}"
-      ssh_keypairs_principals: "{{ nova_ssh_keypairs_principals }}"
+    ssh_keypairs_setup_host: "{{ nova_ssh_keypairs_setup_host }}"
+    ssh_keypairs_dir: "{{ nova_ssh_keypairs_dir }}"
+    ssh_keypairs: "{{ nova_ssh_keypairs }}"
+    ssh_keypairs_install_keys: "{{ nova_ssh_keypairs_install_keys }}"
+    ssh_keypairs_install_ca: "{{ nova_ssh_keypairs_install_ca }}"
+    ssh_keypairs_principals: "{{ nova_ssh_keypairs_principals }}"
   tags:
     - always
 

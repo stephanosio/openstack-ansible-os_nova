@@ -17,7 +17,8 @@
 #  dynamically loading facts from the nova_virt_types based on the
 #  nova_virt_type setting.
 - name: Set nova config facts
-  set_fact: '{{ item.key }}="{{ item.value }}"'
+  set_fact:
+    "{{ item.key }}": "{{ item.value }}" # noqa: var-naming[no-jinja]
   with_dict: "{{ nova_virt_types[nova_virt_type] }}"
   when:
     - item.key not in hostvars[inventory_hostname] or item.key is undefined
@@ -31,8 +32,8 @@
   file:
     path: "{{ item.path | default(omit) }}"
     state: "directory"
-    owner: "{{ item.owner|default(nova_system_user_name) }}"
-    group: "{{ item.group|default(nova_system_group_name) }}"
+    owner: "{{ item.owner | default(nova_system_user_name) }}"
+    group: "{{ item.group | default(nova_system_group_name) }}"
     mode: "{{ item.mode | default(omit) }}"
   with_items:
     - path: "/etc/nova/rootwrap.d"
@@ -45,6 +46,7 @@
     dest: "/etc/nova/rootwrap.d/"
     owner: "root"
     group: "root"
+    mode: "0644"
   with_fileglob:
     - rootwrap.d/*
   notify:
@@ -59,7 +61,7 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "root"
-    group: "{{ item.group|default(nova_system_group_name) }}"
+    group: "{{ item.group | default(nova_system_group_name) }}"
     mode: "0640"
     config_overrides: "{{ item.config_overrides }}"
     config_type: "{{ item.config_type }}"
@@ -99,7 +101,7 @@
     dest: "/etc/nova/provider_config/{{ item.name }}.yaml"
     owner: "root"
     group: "{{ nova_system_group_name }}"
-    mode: 0640
+    mode: "0640"
     config_type: yaml
   with_items:
     - "{{ nova_provider_overrides }}"

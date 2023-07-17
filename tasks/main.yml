@@ -52,7 +52,8 @@
   tags:
     - always
 
-- include_role:
+- name: Including osa.db_setup role
+  include_role:
     name: openstack.osa.db_setup
     apply:
       tags:
@@ -81,7 +82,8 @@
   tags:
     - always
 
-- include_role:
+- name: Including osa.mq_setup role
+  include_role:
     name: openstack.osa.mq_setup
     apply:
       tags:
@@ -103,7 +105,8 @@
   tags:
     - always
 
-- include_tasks: nova_virt_detect.yml
+- name: Including nova_virt_detect tasks
+  include_tasks: nova_virt_detect.yml
   args:
     apply:
       tags:
@@ -113,19 +116,22 @@
   tags:
     - always
 
-- import_tasks: nova_mdev_detect.yml
+- name: Importing nova_mdev_detect tasks
+  import_tasks: nova_mdev_detect.yml
   tags:
     - always
 
-- import_tasks: nova_pre_install.yml
+- name: Importing nova_pre_install tasks
+  import_tasks: nova_pre_install.yml
   tags:
     - nova-install
 
-- import_tasks: nova_install.yml
+- name: Importing nova_install tasks
+  import_tasks: nova_install.yml
   tags:
     - nova-install
 
-- name: refresh local facts
+- name: Refresh local facts
   setup:
     filter: ansible_local
     gather_subset: "!all"
@@ -195,11 +201,13 @@
   tags:
     - always
 
-- import_tasks: nova_post_install.yml
+- name: Including nova_post_install tasks
+  import_tasks: nova_post_install.yml
   tags:
     - nova-config
 
-- include_role:
+- name: Including osa.service_setup tasks
+  include_role:
     name: openstack.osa.service_setup
     apply:
       tags:
@@ -235,7 +243,8 @@
   tags:
     - always
 
-- include_tasks: nova_db_setup.yml
+- name: Including nova_db_setup tasks
+  include_tasks: nova_db_setup.yml
   args:
     apply:
       tags:
@@ -266,10 +275,10 @@
     systemd_tempd_prefix: openstack
     systemd_slice_name: "{{ nova_system_slice_name }}"
     systemd_lock_dir: "{{ nova_lock_dir }}"
-    systemd_CPUAccounting: true
-    systemd_BlockIOAccounting: true
-    systemd_MemoryAccounting: true
-    systemd_TasksAccounting: true
+    systemd_service_cpu_accounting: true
+    systemd_service_block_io_accounting: true
+    systemd_service_memory_accounting: true
+    systemd_service_tasks_accounting: true
     systemd_services: |-
       {% set services = [] %}
       {% for service in filtered_nova_services %}
@@ -290,7 +299,8 @@
     - nova-config
     - systemd-service
 
-- include_tasks: nova_compute.yml
+- name: Including nova_compute tasks
+  include_tasks: nova_compute.yml
   args:
     apply:
       tags:
@@ -320,7 +330,8 @@
 - name: Flush handlers
   meta: flush_handlers
 
-- import_tasks: nova_compute_wait.yml
+- name: Importing nova_compute_wait tasks
+  import_tasks: nova_compute_wait.yml
   when:
     - "nova_services['nova-compute']['group'] in group_names"
     - "nova_discover_hosts_in_cells_interval | int < 1"
@@ -333,7 +344,8 @@
 # because the compute hosts do not have access to
 # the database connection string and therefore
 # cannot run nova-manage.
-- import_tasks: nova_db_post_setup.yml
+- name: Importing nova_db_post_setup tasks
+  import_tasks: nova_db_post_setup.yml
   delegate_to: "{{ nova_conductor_setup_host }}"
   run_once: true
   when:
