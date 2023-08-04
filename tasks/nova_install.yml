@@ -78,7 +78,8 @@
     - "nova_services['nova-novncproxy']['group'] in group_names or
         nova_services['nova-spicehtml5proxy']['group'] in group_names or
         nova_services['nova-serialconsole-proxy']['group'] in group_names"
-    - "nova_console_type not in ['serialconsole', 'disabled']"
+    - "'novnc' in nova_console_proxy_types or
+        'spice' in nova_console_proxy_types"
   args:
     apply:
       tags:
@@ -123,7 +124,7 @@
     name: "{{ item.service }}"
     enabled: no
     state: stopped
-  when: (item.condition | bool) and item.type != nova_console_type
+  when: (item.condition | bool) and item.type not in nova_console_proxy_types
   loop:
     - service: "nova-novncproxy.service"
       condition: "{{ novnc_proxy_enabled.rc is defined and novnc_proxy_enabled.rc == 0 }}"
