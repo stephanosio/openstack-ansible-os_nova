@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: create the system group
+- name: Create the system group
   group:
     name: "{{ nova_system_group_name }}"
-    gid: "{{ nova_system_group_gid|default(omit) }}"
+    gid: "{{ nova_system_group_gid | default(omit) }}"
     state: "present"
     system: "yes"
   tags:
@@ -25,7 +25,7 @@
 - name: Create the nova system user
   user:
     name: "{{ nova_system_user_name }}"
-    uid: "{{ nova_system_user_uid|default(omit) }}"
+    uid: "{{ nova_system_user_uid | default(omit) }}"
     group: "{{ nova_system_group_name }}"
     comment: "{{ nova_system_comment }}"
     shell: "{{ nova_system_shell }}"
@@ -72,8 +72,8 @@
     path: "{{ item.path }}"
     src: "{{ item.src | default(omit) }}"
     state: "{{ item.state | default('directory') }}"
-    owner: "{{ item.owner|default(nova_system_user_name) }}"
-    group: "{{ item.group|default(nova_system_group_name) }}"
+    owner: "{{ item.owner | default(nova_system_user_name) }}"
+    group: "{{ item.group | default(nova_system_group_name) }}"
     mode: "{{ item.mode | default('0755') }}"
     force: "{{ item.force | default(omit) }}"
   when:

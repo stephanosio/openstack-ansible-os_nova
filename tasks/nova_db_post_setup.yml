@@ -20,7 +20,9 @@
 
 # This needs to be done after Compute hosts are added.
 - name: Perform a cell_v2 discover
-  command: "{{ _db_nova_bin }}/nova-manage cell_v2 discover_hosts{{ (debug | bool) | ternary(' --verbose', '') }}{{ (nova_virt_type == 'ironic') | ternary(' --by-service', '') }}"
+  command: >-
+    {{ _db_nova_bin }}/nova-manage cell_v2 discover_hosts{{ (debug | bool) | ternary(' --verbose', '') }}{{
+      (nova_virt_type == 'ironic') | ternary(' --by-service', '') }}
   become: yes
   become_user: "{{ _db_nova_system_user_name }}"
   changed_when: false
@@ -35,6 +37,7 @@
   command: "{{ _db_nova_bin }}/nova-manage db online_data_migrations"
   become: yes
   become_user: "{{ _db_nova_system_user_name }}"
+  changed_when: false
   when:
     - hostvars[nova_conductor_setup_host]['ansible_local']['openstack_ansible']['nova']['need_online_data_migrations'] | bool
   retries: 5
@@ -49,6 +52,7 @@
     section: nova
     option: need_online_data_migrations
     value: False
+    mode: "0644"
   with_items: "{{ groups[nova_services['nova-conductor']['group']] }}"
   when:
     - data_migrations is not skipped
@@ -67,7 +71,7 @@
     systemd_services:
       - service_name: "nova-archive-deleted"
         execstarts:
-          - /bin/sh -c "{{ _db_nova_bin }}/nova-manage db archive_deleted_rows --until-complete --all-cells --before \"$(date -d '{{ nova_archive_deleted_before }}' +'%%Y-%%m-%%d %%H:%%M')\" {{ (nova_archive_deleted_purge) | ternary('--purge', '') }} {{ (nova_archive_task_log) | ternary('--task-log', '') }}"
+          - /bin/sh -c "{{ _db_nova_bin }}/nova-manage db archive_deleted_rows --until-complete --all-cells --before \"$(date -d '{{ nova_archive_deleted_before }}' +'%%Y-%%m-%%d %%H:%%M')\" {{ (nova_archive_deleted_purge) | ternary('--purge', '') }} {{ (nova_archive_task_log) | ternary('--task-log', '') }}" # noqa: yaml[line-length]
         environment:
           UMASK: '0640'
           UMASK_DIR: '0750'
@@ -84,7 +88,7 @@
             Unit: "nova-archive-deleted.service"
       - service_name: "nova-purge-deleted"
         execstarts:
-          - /bin/sh -c "{{ _db_nova_bin }}/nova-manage db purge --until-complete --all-cells --before \"$(date -d '{{ nova_purge_deleted_before }}' +'%%Y-%%m-%%d %%H:%%M')\""
+          - /bin/sh -c "{{ _db_nova_bin }}/nova-manage db purge --until-complete --all-cells --before \"$(date -d '{{ nova_purge_deleted_before }}' +'%%Y-%%m-%%d %%H:%%M')\"" # noqa: yaml[line-length]
         environment:
           UMASK: '0640'
           UMASK_DIR: '0750'

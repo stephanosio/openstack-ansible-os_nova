@@ -13,7 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_nova_is_first_play_host: "{{ (nova_services['nova-conductor']['group'] in group_names and inventory_hostname == (groups[nova_services['nova-conductor']['group']] | intersect(ansible_play_hosts)) | first) | bool }}"
+_nova_is_first_play_host: >-
+  {{
+    (nova_services['nova-conductor']['group'] in group_names and
+      inventory_hostname == (groups[nova_services['nova-conductor']['group']] | intersect(ansible_play_hosts)) | first) | bool
+  }}
 
 nova_venv_packages: |-
   {%- set pkg_list = nova_pip_packages | union(nova_user_pip_packages) %}
@@ -106,7 +110,7 @@ nova_core_files:
 _nova_scheduler_filters: |-
   {% set default_filters = nova_scheduler_default_filters %}
   {% if default_filters is not iterable and default_filters is string %}
-  {%   set filters = default_filters.split(',')  %}
+  {%   set filters = default_filters.split(',') %}
   {% else %}
   {%   set filters = default_filters %}
   {% endif %}

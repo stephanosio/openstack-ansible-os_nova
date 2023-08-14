@@ -37,7 +37,7 @@
     - _qemu_save_dir.stat.isdir | bool
 
 - name: Move the existing save directory to nova_libvirt_save_path
-  command: "mv /var/lib/libvirt/qemu/save {{ nova_libvirt_save_path }}"
+  command: "mv /var/lib/libvirt/qemu/save {{ nova_libvirt_save_path }}" # noqa: no-changed-when
   when:
     - _qemu_save_dir.stat.isdir is defined
     - _qemu_save_dir.stat.isdir | bool
@@ -47,6 +47,7 @@
   file:
     path: "{{ nova_libvirt_save_path }}"
     state: directory
+    mode: "0755"
 
 - name: Symlink qemu save dir to nova_libvirt_save_path
   file:

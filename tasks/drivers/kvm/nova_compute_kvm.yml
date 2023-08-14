@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include_tasks: nova_compute_kvm_install.yml
+- name: Including nova_compute_kvm_install tasks
+  include_tasks: nova_compute_kvm_install.yml
   args:
     apply:
       tags:
@@ -27,7 +28,7 @@
     dest: /etc/modprobe.d/kvm.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when:
     - nova_nested_virt_enabled | bool
   tags:
@@ -70,7 +71,7 @@
     dest: /etc/libvirt/libvirtd.conf
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: "0644"
   notify: Restart libvirt-bin
   tags:
     - nova-config
@@ -125,7 +126,7 @@
 - name: Set qemu-kvm KSM config (Ubuntu)
   lineinfile:
     dest: "/etc/default/qemu-kvm"
-    line: "KSM_ENABLED={{ nova_compute_ksm_enabled | ternary('1','0') }}"
+    line: "KSM_ENABLED={{ nova_compute_ksm_enabled | ternary('1', '0') }}"
     regexp: "^KSM_ENABLED=*"
     backup: yes
   when:
@@ -136,7 +137,8 @@
     - nova-kvm
     - nova-libvirt
 
-- include_tasks: nova_disable_smt.yml
+- name: Including nova_disable_smt tasks
+  include_tasks: nova_disable_smt.yml
   when:
     - ansible_facts['architecture'] == 'ppc64le'
   args:
@@ -146,7 +148,8 @@
   tags:
     - always
 
-- include_tasks: nova_enable_ksm.yml
+- name: Including nova_enable_ksm tasks
+  include_tasks: nova_enable_ksm.yml
   when:
     - nova_compute_ksm_enabled | bool
   args:
@@ -156,7 +159,8 @@
   tags:
     - always
 
-- include_tasks: nova_compute_kvm_virsh_net_remove.yml
+- name: Including nova_compute_kvm_virsh_net_remove tasks
+  include_tasks: nova_compute_kvm_virsh_net_remove.yml
   args:
     apply:
       tags:
