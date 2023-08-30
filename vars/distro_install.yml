@@ -23,13 +23,13 @@ nova_package_list: |-
   {% if nova_services['nova-novncproxy']['group'] in group_names or
       nova_services['nova-spicehtml5proxy']['group'] in group_names or
       nova_services['nova-serialconsole-proxy']['group'] in group_names %}
-  {%   if nova_console_type == 'novnc' %}
+  {%   if 'novnc' in nova_console_proxy_types %}
   {%     set _ = packages.extend(nova_service_extra_distro_packages['novnc']) %}
   {%   endif %}
-  {%   if nova_console_type == 'spice' %}
+  {%   if 'spice' in nova_console_proxy_types %}
   {%     set _ = packages.extend(nova_service_extra_distro_packages['spice']) %}
   {%   endif %}
-  {%   if nova_console_type == 'serialconsole' %}
+  {%   if 'serialconsole' in nova_console_proxy_types %}
   {%     set _ = packages.extend(nova_service_extra_distro_packages['serialconsole']) %}
   {%   endif %}
   {% endif %}
