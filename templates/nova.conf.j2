@@ -30,7 +30,7 @@ key = {{ nova_console_ssl_key }}
 enabled_apis = {{ nova_enabled_apis }}
 
 # Rpc all
-transport_url = {{ nova_oslomsg_rpc_transport }}://{% for host in nova_oslomsg_rpc_servers.split(',') %}{{ nova_oslomsg_rpc_userid }}:{{ nova_oslomsg_rpc_password }}@{{ host }}:{{ nova_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ nova_oslomsg_rpc_vhost }}{% if nova_oslomsg_rpc_use_ssl | bool %}?ssl=1&ssl_version={{ nova_oslomsg_rpc_ssl_version }}&ssl_ca_file={{ nova_oslomsg_rpc_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
+transport_url = {{ nova_oslomsg_rpc_transport }}://{% for host in nova_oslomsg_rpc_servers.split(',') %}{{ nova_oslomsg_rpc_userid }}:{{ nova_oslomsg_rpc_password }}@{{ host }}:{{ nova_oslomsg_rpc_port }}{% if not loop.last %},{% else %}/{{ _nova_oslomsg_rpc_vhost_conf }}{% if nova_oslomsg_rpc_use_ssl | bool %}?ssl=1&ssl_version={{ nova_oslomsg_rpc_ssl_version }}&ssl_ca_file={{ nova_oslomsg_rpc_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
 # Network
 my_ip = {% if nova_management_address == 'localhost' %}127.0.0.1{% else %}{{ nova_management_address }}{% endif %}
@@ -55,11 +55,14 @@ instance_usage_audit_period = hour
 {% endif %}
 topics = {{ notification_topics | join(',') }}
 driver = {{ (notification_topics | length > 0) | ternary('messagingv2', 'noop') }}
-transport_url = {{ nova_oslomsg_notify_transport }}://{% for host in nova_oslomsg_notify_servers.split(',') %}{{ nova_oslomsg_notify_userid }}:{{ nova_oslomsg_notify_password }}@{{ host }}:{{ nova_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ nova_oslomsg_notify_vhost }}{% if nova_oslomsg_notify_use_ssl | bool %}?ssl=1&ssl_version={{ nova_oslomsg_notify_ssl_version }}&ssl_ca_file={{ nova_oslomsg_notify_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
+transport_url = {{ nova_oslomsg_notify_transport }}://{% for host in nova_oslomsg_notify_servers.split(',') %}{{ nova_oslomsg_notify_userid }}:{{ nova_oslomsg_notify_password }}@{{ host }}:{{ nova_oslomsg_notify_port }}{% if not loop.last %},{% else %}/{{ _nova_oslomsg_notify_vhost_conf }}{% if nova_oslomsg_notify_use_ssl | bool %}?ssl=1&ssl_version={{ nova_oslomsg_notify_ssl_version }}&ssl_ca_file={{ nova_oslomsg_notify_ssl_ca_file }}{% else %}?ssl=0{% endif %}{% endif %}{% endfor %}
 
 # Messaging
 [oslo_messaging_rabbit]
 heartbeat_in_pthread = {{ nova_oslomsg_heartbeat_in_pthread }}
+rabbit_quorum_queue = {{ nova_oslomsg_rabbit_quorum_queues }}
+rabbit_quorum_delivery_limit = {{ nova_oslomsg_rabbit_quorum_delivery_limit }}
+rabbit_quorum_max_memory_bytes = {{ nova_oslomsg_rabbit_quorum_max_memory_bytes }}
 
 # Image cache
 [image_cache]

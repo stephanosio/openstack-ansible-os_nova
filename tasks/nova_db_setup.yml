@@ -51,7 +51,7 @@
     {{ nova_bin }}/nova-manage cell_v2 create_cell
       --name {{ nova_cell1_name }}
       --database_connection {scheme}://{username}:{password}@{hostname}:{port}/{path}?{query}
-      --transport-url {scheme}://{username}:{password}@{hostname}:{port}//{path}?{query}
+      --transport-url {scheme}://{username}:{password}@{hostname}:{port}/{{ (not nova_oslomsg_rabbit_quorum_queues | bool) | ternary('/{path}', '{path}') }}?{query}
   become: yes
   become_user: "{{ nova_system_user_name }}"
   register: nova_cell1_create
@@ -66,6 +66,19 @@
   failed_when: "nova_cell1_create.rc not in [0, 2]"
   changed_when: "nova_cell1_create.rc == 0"
   when: "_cell_uuid.rc == 1"
+
+- name: "Change the template for cell {{ nova_cell1_name }}"
+  command: >-
+    {{ nova_bin }}/nova-manage cell_v2 update_cell
+      --cell_uuid {{ _cell_uuid['stdout'].split()[3] }}
+      --database_connection {scheme}://{username}:{password}@{hostname}:{port}/{path}?{query}
+      --transport-url {scheme}://{username}:{password}@{hostname}:{port}/{{ (not nova_oslomsg_rabbit_quorum_queues | bool) | ternary('/{path}', '{path}') }}?{query}
+  become: yes
+  become_user: "{{ nova_system_user_name }}"
+  changed_when: false
+  when:
+    - "_cell_uuid.rc == 0"
+    - (nova_oslomsg_rpc_port ~ '/' ~ _nova_oslomsg_rpc_vhost_conf) not in _cell_uuid.stdout
 
 # The nova-status upgrade check command is typically run after upgrading the
 # controller services to new code, but is also OK to run for a greenfield
