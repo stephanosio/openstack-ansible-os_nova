@@ -328,15 +328,3 @@
     compute_host_to_wait_for: "{{ ansible_facts['nodename'] }}"
   tags:
     - nova-config
-
-# We have to delegate this back to the conductor
-# because the compute hosts do not have access to
-# the database connection string and therefore
-# cannot run nova-manage.
-- import_tasks: nova_db_post_setup.yml
-  delegate_to: "{{ nova_conductor_setup_host }}"
-  run_once: true
-  when:
-    - "nova_services['nova-compute']['group'] in group_names"
-  tags:
-    - nova-config
