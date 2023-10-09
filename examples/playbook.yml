@@ -3,7 +3,9 @@
   hosts: nova_all
   user: root
   roles:
-    - { role: "os_nova", tags: [ "os-nova" ] }
+    - role: "os_nova"
+      tags:
+        - os-nova
   vars:
     nova_galera_address: "{{ internal_lb_vip_address }}"
     galera_root_user: root
