@@ -32,7 +32,6 @@
     system: "yes"
     createhome: "yes"
     home: "{{ nova_system_home_folder }}"
-    generate_ssh_key: "yes"
   tags:
     - nova-user
     - nova-key
