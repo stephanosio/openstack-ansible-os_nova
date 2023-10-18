@@ -22,7 +22,7 @@
 - name: Perform a cell_v2 discover
   command: >-
     {{ _db_nova_bin }}/nova-manage cell_v2 discover_hosts{{ (debug | bool) | ternary(' --verbose', '') }}{{
-      (nova_virt_type == 'ironic') | ternary(' --by-service', '') }}
+      (nova_ironic_used | bool) | ternary(' --by-service', '') }}
   become: yes
   become_user: "{{ _db_nova_system_user_name }}"
   changed_when: false

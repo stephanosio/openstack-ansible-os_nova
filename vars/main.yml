@@ -33,6 +33,15 @@ _nova_oslomsg_notify_vhost_conf: >-
     )
   }}
 
+_nova_ironic_used: |-
+  {% set _virt_types = [] %}
+  {% for hv in groups[nova_services['nova-compute']['group']] %}
+  {%   if 'nova_virt_type' in hostvars[hv] %}
+  {%     set _ = _virt_types.append(hostvars[hv]['nova_virt_type']) %}
+  {%   endif %}
+  {% endfor %}
+  {{ ('ironic' in _virt_types | unique) }}
+
 nova_venv_packages: |-
   {%- set pkg_list = nova_pip_packages | union(nova_user_pip_packages) %}
   {%- if nova_oslomsg_amqp1_enabled | bool %}

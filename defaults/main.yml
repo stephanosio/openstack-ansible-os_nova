@@ -311,6 +311,7 @@ nova_console_type: "{{ (ansible_facts['architecture'] == 'aarch64') | ternary('s
 ## Nova ironic console
 # Set the console type. Presently the only options are ["serialconsole", "disabled"].
 nova_ironic_console_type: "disabled"
+nova_ironic_used: "{{ _nova_ironic_used }}"
 
 ## Nova console proxies
 # Set the console proxy types.
