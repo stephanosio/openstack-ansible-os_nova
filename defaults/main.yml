@@ -617,17 +617,19 @@ nova_pki_intermediate_chain_path: >-
   {{ nova_pki_dir ~ '/roots/' ~ nova_pki_intermediate_cert_name ~ '/certs/' ~ nova_pki_intermediate_cert_name ~ '-chain.crt' }}
 nova_pki_regen_cert: ''
 nova_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
+nova_pki_compute_san: >-
+  {{
+    'DNS:' ~ ansible_facts['hostname'] ~ ',DNS:' ~ ansible_facts['nodename'] ~ ',IP:' ~ (nova_management_address == 'localhost') | ternary(
+    '127.0.0.1', nova_management_address) ~ (nova_libvirt_live_migration_inbound_addr != nova_management_address) |ternary(
+    ',IP:' ~ nova_libvirt_live_migration_inbound_addr, '')
+  }}
 # Create client and server cert for compute hosts
 # This certiticate is used to secure TLS live migrations and VNC sessions
 nova_pki_compute_certificates:
   - name: "nova_{{ ansible_facts['hostname'] }}"
     provider: ownca
     cn: "{{ ansible_facts['nodename'] }}"
-    san: >-
-      {{
-        'DNS:' ~ ansible_facts['hostname'] ~ ',DNS:' ~ ansible_facts['nodename'] ~ ',IP:' ~ (nova_management_address == 'localhost') | ternary(
-          '127.0.0.1', nova_management_address)
-      }}
+    san: "{{ nova_pki_compute_san }}"
     signed_by: "{{ nova_pki_intermediate_cert_name }}"
     key_usage:
       - digitalSignature
@@ -720,11 +722,7 @@ nova_pki_console_certificates:
   - name: "nova_{{ ansible_facts['hostname'] }}-client"
     provider: ownca
     cn: "{{ ansible_facts['nodename'] }}"
-    san: >-
-      {{
-        'DNS:' ~ ansible_facts['hostname'] ~ ',DNS:' ~ ansible_facts['nodename'] ~ ',IP:' ~ (nova_management_address == 'localhost') | ternary(
-          '127.0.0.1', nova_management_address)
-      }}
+    san: "{{ nova_pki_compute_san }}"
     signed_by: "{{ nova_pki_intermediate_cert_name }}"
     key_usage:
       - digitalSignature
