@@ -32,17 +32,6 @@
   tags:
     - nova-key
 
-# NOTE(jrosser) Remove this task in the Z development cycle
-- name: Clean up legacy ssh keys configuration
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "/usr/local/bin/openstack-nova-key.sh"
-    - "{{ nova_system_home_folder }}/.ssh/authorized_keys"
-  tags:
-    - nova-key
-
 - name: Create ssh keys and config for cold migrations
   include_role:
     name: openstack.osa.ssh_keypairs
