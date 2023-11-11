@@ -135,14 +135,14 @@ You can customize these settings using the following Ansible variables:
 Multipath
 ~~~~~~~~~
 
-Nova supports multipath for iSCSI-based storage. Enable multipath support in
-nova through a configuration override:
+Nova supports multipath for iSCSI and Fibre Channel-based storage. Enable
+multipath support in nova through a configuration override:
 
 .. code-block:: yaml
 
     nova_nova_conf_overrides:
       libvirt:
-          iscsi_use_multipath: true
+          volume_use_multipath: true
 
 Shared storage and synchronized UID/GID
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
